@@ -497,7 +497,6 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
     return sb.toString();
   }
 
-  @Nullable
   @Override
   public Environment getEnvironment() {
     return this.environment;
