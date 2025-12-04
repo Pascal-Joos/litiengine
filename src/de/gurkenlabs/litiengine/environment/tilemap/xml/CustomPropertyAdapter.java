@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,9 @@ public class CustomPropertyAdapter
 
   @Override
   public Map<String, ICustomProperty> unmarshal(PropertyList v) {
+    if (v.properties == null || v.properties.isEmpty()) {
+      return Collections.emptyMap();
+    }
     Map<String, ICustomProperty> map =
         new HashMap<>(v.properties.size()); // use hashtable to reject null keys/values
     for (Property property : v.properties) {
