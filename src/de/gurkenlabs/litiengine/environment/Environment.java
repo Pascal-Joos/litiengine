@@ -1257,6 +1257,7 @@ public final class Environment implements IRenderable {
    *
    * @return The map of this environment.
    */
+  @Nullable
   public IMap getMap() {
     return this.map;
   }
