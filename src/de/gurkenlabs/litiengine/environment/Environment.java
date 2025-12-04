@@ -456,7 +456,7 @@ public final class Environment implements IRenderable {
     for (RenderType renderType : RenderType.values()) {
       this.miscEntities.get(renderType).clear();
       this.renderListeners.get(renderType).clear();
-      java.util.Objects.requireNonNull(this.renderables.get(renderType)).clear();
+      this.renderables.get(renderType).clear();
     }
 
     dispose(this.allEntities.values());
