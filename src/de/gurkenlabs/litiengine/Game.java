@@ -85,7 +85,7 @@ public final class Game {
 
   private static GameLoop gameLoop;
   @Nullable private static ScreenManager screenManager;
-  private static GameWindow gameWindow = new GameWindow();
+  @Nullable private static GameWindow gameWindow;
 
   private static GameWorld world = new GameWorld();
 
@@ -265,7 +265,6 @@ public final class Game {
    * @see GameWindow#setIcon(java.awt.Image)
    * @see GameWindow#cursor()
    */
-  @Nullable
   public static GameWindow window() {
     return gameWindow;
   }
