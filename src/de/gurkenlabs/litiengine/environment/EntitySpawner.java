@@ -102,6 +102,10 @@ public abstract class EntitySpawner<T extends IEntity> implements IEntitySpawner
 
   @Override
   public List<Spawnpoint> getSpawnPoints() {
+    if (this.spawnpoints == null) {
+      this.spawnpoints = new ArrayList<>();
+    }
+
     return this.spawnpoints;
   }
 
