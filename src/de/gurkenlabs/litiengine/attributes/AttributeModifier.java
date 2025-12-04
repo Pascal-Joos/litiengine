@@ -129,6 +129,6 @@ public class AttributeModifier<T extends Number> implements Comparable<Attribute
       return (T) Integer.valueOf(modValue.intValue());
     }
 
-    return originalValue;
+    return null;
   }
 }
