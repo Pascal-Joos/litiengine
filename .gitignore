@@ -1,4 +1,5 @@
 **/.gradle/
+.gradle-cache
 /build/
 /bin/
 /config.properties
@@ -10,3 +11,4 @@ hs_err_pid*.log
 /out
 /utiliti/out
 annotator-out/
+*.log
