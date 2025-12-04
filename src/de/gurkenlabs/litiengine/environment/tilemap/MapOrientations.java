@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javax.annotation.Nullable;
 
 /** A class containing various standard map orientations. */
 public class MapOrientations {
@@ -98,10 +97,12 @@ public class MapOrientations {
       return this.getShape(x, y, map).getBounds2D();
     }
 
-    @Nullable
     @Override
     public Rectangle2D getBounds(Point tile, IMap map) {
-      return tile == null ? null : this.getBounds(tile.x, tile.y, map);
+      if (tile == null) {
+        throw new IllegalArgumentException("tile must not be null");
+      }
+      return this.getBounds(tile.x, tile.y, map);
     }
 
     @Override
