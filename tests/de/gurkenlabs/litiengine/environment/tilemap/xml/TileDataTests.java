@@ -132,7 +132,7 @@ public class TileDataTests {
 
   @Test
   public void testEncodeBase64Gzip() throws IOException {
-    String compressed = "H4sIAAAAAAAAAGNkYGBghGJkwIgDgwATEWoYsagBAFsJTlBsAAAA";
+    String compressed = "H4sIAAAAAAAA/2NkYGBghGJkwIgDgwATEWoYsagBAFsJTlBsAAAA";
 
     Tile[] tiles =
         new Tile[] {

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.environment.tilemap.IMap;
@@ -60,7 +61,7 @@ public class ResourcesTests {
   public void testResourceFromWeb() throws IOException {
     try (InputStream stream =
         Resources.get(
-            "https://github.com/gurkenlabs/litiengine/raw/master/resources/litiengine-banner.png")) {
+            "https://github.com/gurkenlabs/litiengine/blob/main/litiengine/src/main/resources/litiengine-banner.png")) {
       assertNotNull(stream);
     }
   }
