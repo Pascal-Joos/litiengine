@@ -26,10 +26,11 @@ public class SoundSource extends Entity {
   private int range;
 
   private boolean loop;
+  @Nullable
   private Sound sound;
+  @Nullable
   private SFXPlayback playback;
 
-  /** An empty constructor that just calls the super constructor of {@link Entity}. */
   public SoundSource() {
     super();
   }
@@ -127,39 +128,21 @@ public class SoundSource extends Entity {
    *
    * @return the sound instance used for playback.
    */
+  @Nullable
   public Sound getSound() {
-    return sound;
-  }
-
-  /**
-   * The playback used for playing the sound.
-   *
-   * @return the playback instance.
-   */
-  public SFXPlayback getPlayback() {
-    return this.playback;
+    return this.sound;
   }
 
   /**
    * The name of the currently set sound.
    *
-   * @return A String containing the sound name.
+   * @return a String containing the sound name, or {@code null} if no sound is set.
    */
   @Nullable
   public String getSoundName() {
-    return this.sound.getName();
+    return this.sound == null ? null : this.sound.getName();
   }
 
-  /**
-   * The range in pixels for which the sound can be heard.
-   *
-   * @return an {@code int} representing the range in pixels.
-   */
-  public int getRange() {
-    return range;
-  }
-
-  /**
    * Sets the range in pixels for which the sound can be heard.
    *
    * @param range an {@code int} representing the range in pixels.
