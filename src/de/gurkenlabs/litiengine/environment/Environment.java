@@ -2569,12 +2569,7 @@ public final class Environment implements IRenderable {
   }
 
   private void fireRenderEvent(Graphics2D g, RenderType type) {
-    Collection<EnvironmentRenderedListener> listenersForType = this.renderListeners.get(type);
-    if (listenersForType == null) {
-      return;
-    }
-
-    for (EnvironmentRenderedListener listener : listenersForType) {
+    for (EnvironmentRenderedListener listener : this.renderListeners.get(type)) {
       listener.rendered(g, type);
     }
   }
