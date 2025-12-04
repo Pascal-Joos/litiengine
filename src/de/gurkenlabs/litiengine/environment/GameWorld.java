@@ -227,6 +227,7 @@ public final class GameWorld implements IUpdateable {
    * @return The currently active camera.
    * @see ICamera
    */
+  @Nullable
   public ICamera camera() {
     return this.camera;
   }
