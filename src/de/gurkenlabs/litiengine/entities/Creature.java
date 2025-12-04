@@ -35,6 +35,7 @@ public class Creature extends CombatEntity implements IMobileEntity {
   @TmxProperty(name = MapObjectProperty.MOVEMENT_TURNONMOVE)
   private boolean turnOnMove;
 
+  @Nullable
   @TmxProperty(name = MapObjectProperty.MOVEMENT_VELOCITY)
   private Attribute<Float> velocity;
 
@@ -67,8 +68,6 @@ public class Creature extends CombatEntity implements IMobileEntity {
       this.deceleration = movementInfo.deceleration();
       this.setTurnOnMove(movementInfo.turnOnMove());
       this.addController(this.createMovementController());
-    } else {
-      this.velocity = new Attribute<>(0f);
     }
 
     if (spritesheetName != null) {
