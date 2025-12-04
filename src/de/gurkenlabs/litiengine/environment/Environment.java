@@ -258,9 +258,7 @@ public final class Environment implements IRenderable {
    * @param listener The listener to add.
    */
   public void onRendered(RenderType renderType, EnvironmentRenderedListener listener) {
-    this.renderListeners
-        .computeIfAbsent(renderType, rt -> java.util.concurrent.ConcurrentHashMap.newKeySet())
-        .add(listener);
+    this.renderListeners.get(renderType).add(listener);
   }
 
   /**
