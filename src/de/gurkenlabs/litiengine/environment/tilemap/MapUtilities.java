@@ -270,11 +270,7 @@ public final class MapUtilities {
     }
 
     if (mapObject.isPolyline()) {
-      IPolyShape polyline = mapObject.getPolyline();
-      if (polyline == null) {
-        return new ArrayList<>();
-      }
-      return polyline.getAbsolutePoints(mapObject.getLocation());
+      return mapObject.getPolyline().getAbsolutePoints(mapObject.getLocation());
     }
 
     return new ArrayList<>();
