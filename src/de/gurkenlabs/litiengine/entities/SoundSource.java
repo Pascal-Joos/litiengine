@@ -61,7 +61,6 @@ public class SoundSource extends Entity {
    * @param y The y coordinate
    */
   public SoundSource(double x, double y) {
-    this();
     this.setX(x);
     this.setY(y);
   }
