@@ -196,8 +196,7 @@ public class StaticShadow extends MapArea {
   }
 
   private void createArea() {
-    final StaticShadowType currentShadowType = this.getShadowType();
-    if (currentShadowType == null || currentShadowType == StaticShadowType.NONE) {
+    if (this.getShadowType() == StaticShadowType.NONE) {
       return;
     }
 
@@ -207,48 +206,48 @@ public class StaticShadow extends MapArea {
 
     parallelogram.moveTo(this.getX(), this.getY());
     parallelogram.lineTo(right, this.getY());
-    if (currentShadowType.equals(StaticShadowType.DOWN)) {
+    if (shadowType.equals(StaticShadowType.DOWN)) {
       parallelogram.lineTo(right, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom + this.getOffset());
-    } else if (currentShadowType.equals(StaticShadowType.DOWNLEFT)) {
+    } else if (shadowType.equals(StaticShadowType.DOWNLEFT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom + this.getOffset());
-    } else if (currentShadowType.equals(StaticShadowType.DOWNRIGHT)) {
+    } else if (shadowType.equals(StaticShadowType.DOWNRIGHT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom + this.getOffset());
-    } else if (currentShadowType.equals(StaticShadowType.LEFT)) {
+    } else if (shadowType.equals(StaticShadowType.LEFT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.LEFTDOWN)) {
+    } else if (shadowType.equals(StaticShadowType.LEFTDOWN)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.LEFTRIGHT)) {
+    } else if (shadowType.equals(StaticShadowType.LEFTRIGHT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.RIGHTLEFT)) {
+    } else if (shadowType.equals(StaticShadowType.RIGHTLEFT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right - this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.RIGHT)) {
+    } else if (shadowType.equals(StaticShadowType.RIGHT)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.RIGHTDOWN)) {
+    } else if (shadowType.equals(StaticShadowType.RIGHTDOWN)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(right, bottom + this.getOffset());
       parallelogram.lineTo(this.getX() + this.getOffset() / 2.0, bottom + this.getOffset());
       parallelogram.lineTo(this.getX(), bottom);
-    } else if (currentShadowType.equals(StaticShadowType.NOOFFSET)) {
+    } else if (shadowType.equals(StaticShadowType.NOOFFSET)) {
       parallelogram.lineTo(right, bottom);
       parallelogram.lineTo(this.getX(), bottom);
     }
@@ -261,8 +260,8 @@ public class StaticShadow extends MapArea {
     return shadowOffset;
   }
 
-  public void setOffset(final int offset) {
-    this.shadowOffset = offset;
+  public void setOffset(int shadowOffset) {
+    this.shadowOffset = shadowOffset;
     this.area = null;
   }
 }
