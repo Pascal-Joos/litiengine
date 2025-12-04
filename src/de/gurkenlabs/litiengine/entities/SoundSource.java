@@ -26,8 +26,8 @@ public class SoundSource extends Entity {
   private int range;
 
   private boolean loop;
-  @Nullable private Sound sound;
-  @Nullable private SFXPlayback playback;
+  private Sound sound;
+  private SFXPlayback playback;
 
   /** An empty constructor that just calls the super constructor of {@link Entity}. */
   public SoundSource() {
@@ -125,19 +125,17 @@ public class SoundSource extends Entity {
   /**
    * The sound to be played.
    *
-   * @return the sound instance used for playback, or {@code null} if none is set.
+   * @return the sound instance used for playback.
    */
-  @Nullable
   public Sound getSound() {
-    return this.sound;
+    return sound;
   }
 
   /**
    * The playback used for playing the sound.
    *
-   * @return the playback instance, or {@code null} if no playback is active.
+   * @return the playback instance.
    */
-  @Nullable
   public SFXPlayback getPlayback() {
     return this.playback;
   }
@@ -145,11 +143,11 @@ public class SoundSource extends Entity {
   /**
    * The name of the currently set sound.
    *
-   * @return a String containing the sound name, or {@code null} if no sound is set.
+   * @return A String containing the sound name.
    */
   @Nullable
   public String getSoundName() {
-    return this.sound == null ? null : this.sound.getName();
+    return this.sound.getName();
   }
 
   /**
@@ -208,9 +206,7 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#pausePlayback()
    */
   public void pause() {
-    if (this.getPlayback() != null) {
-      this.getPlayback().pausePlayback();
-    }
+    this.getPlayback().pausePlayback();
   }
 
   /**
@@ -219,9 +215,7 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#resumePlayback()
    */
   public void resume() {
-    if (this.getPlayback() != null) {
-      this.getPlayback().resumePlayback();
-    }
+    this.getPlayback().resumePlayback();
   }
 
   /**
@@ -230,8 +224,6 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#cancel()
    */
   public void stop() {
-    if (this.getPlayback() != null) {
-      this.getPlayback().cancel();
-    }
+    this.getPlayback().cancel();
   }
 }
