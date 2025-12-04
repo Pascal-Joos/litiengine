@@ -2302,12 +2302,10 @@ public final class Environment implements IRenderable {
       rend.render(g);
     }
 
-    Map<Integer, IEntity> miscForType = this.miscEntities.get(renderType);
-    if (miscForType == null) {
-      miscForType = java.util.Collections.emptyMap();
-    }
     // 3. Render entities
-    Game.graphics().renderEntities(g, miscForType.values(), renderType == RenderType.NORMAL);
+    Game.graphics()
+        .renderEntities(
+            g, this.miscEntities.get(renderType).values(), renderType == RenderType.NORMAL);
 
     // 4. fire event
     this.fireRenderEvent(g, renderType);
