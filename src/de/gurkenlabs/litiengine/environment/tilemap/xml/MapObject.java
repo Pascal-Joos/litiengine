@@ -366,9 +366,6 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
 
   @Override
   public IMapObjectLayer getLayer() {
-    if (this.layer == null) {
-      throw new IllegalStateException("MapObject layer has not been set");
-    }
     return this.layer;
   }
 
