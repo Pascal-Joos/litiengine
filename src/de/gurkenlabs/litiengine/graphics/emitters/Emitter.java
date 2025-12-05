@@ -370,11 +370,12 @@ public class Emitter extends Entity implements IUpdateable, ITimeToLive, IRender
         particle = new LineParticle(width, height);
         break;
       case TEXT:
+        java.util.List<String> texts = this.data().getTexts();
         String text;
-        if (this.data().getTexts().isEmpty()) {
+        if (texts == null || texts.isEmpty()) {
           text = EmitterData.DEFAULT_TEXT;
         } else {
-          text = Game.random().choose(this.data().getTexts());
+          text = Game.random().choose(texts);
         }
         particle = new TextParticle(text);
         break;
