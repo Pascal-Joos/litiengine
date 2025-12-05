@@ -201,8 +201,7 @@ public class ResourceBundle implements Serializable {
       if (distinctList.stream()
           .anyMatch(
               x ->
-                  java.util.Objects.equals(x.getName(), sprite.getName())
-                      && java.util.Objects.equals(x.getImage(), sprite.getImage()))) {
+                  x.getName().equals(sprite.getName()) && x.getImage().equals(sprite.getImage()))) {
         continue;
       }
 
@@ -213,8 +212,7 @@ public class ResourceBundle implements Serializable {
 
     List<Tileset> distinctTilesets = new ArrayList<>();
     for (Tileset tileset : this.getTilesets()) {
-      if (distinctTilesets.stream()
-          .anyMatch(x -> java.util.Objects.equals(x.getName(), tileset.getName()))) {
+      if (distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))) {
         continue;
       }
 
