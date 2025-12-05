@@ -52,6 +52,9 @@ public class MouseDrawComponent extends ImageComponent {
 
     double brushX = e.getX();
     double brushY = e.getY();
+    if (this.drawingSpace == null) {
+      return;
+    }
     Graphics2D g = (Graphics2D) this.drawingSpace.getGraphics();
     int brushXInt = (int) (brushX - this.getX() - this.brushSize * 1 / 2);
     int brushYInt = (int) (brushY - this.getY() - this.brushSize * 1 / 2);
