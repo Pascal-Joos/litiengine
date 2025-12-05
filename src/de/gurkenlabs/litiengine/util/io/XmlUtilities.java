@@ -80,8 +80,9 @@ public final class XmlUtilities {
       return jaxbContext;
     } catch (final JAXBException e) {
       log.log(Level.SEVERE, e.getMessage(), e);
-      throw new RuntimeException("Failed to create JAXBContext for class " + cls.getName(), e);
     }
+
+    return null;
   }
 
   @Nullable
