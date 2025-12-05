@@ -30,6 +30,12 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
   /** Instantiates a new {@code MapImage} instance. */
   public MapImage() {
     super();
+    this.transparentcolor = new Color(0, 0, 0, 0);
+    try {
+      this.absolutePath = new URL("file", "", "");
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -38,7 +44,7 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
    * @param original the original we want to copy
    */
   public MapImage(MapImage original) {
-    super(original);
+    this();
 
     if (original == null) {
       return;
