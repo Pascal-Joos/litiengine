@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
@@ -97,12 +96,10 @@ public final class PhysicsEngine implements IUpdateable {
       return;
     }
 
-    final Collision collisionType = entity.getCollisionType();
-
-    switch (collisionType) {
+    switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        Objects.requireNonNull(this.collisionEntities.get(collisionType)).remove(entity);
+        this.collisionEntities.get(entity.getCollisionType()).remove(entity);
         break;
       default:
         return;
