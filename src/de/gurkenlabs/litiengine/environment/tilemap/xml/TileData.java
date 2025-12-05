@@ -152,21 +152,6 @@ public class TileData {
     }
 
     this.rawValue.add(0, value);
-
-    // Ensure non-null encoding for later processing
-    if (this.encoding == null) {
-      this.encoding = Encoding.CSV;
-    }
-
-    // If this TileData represents an infinite map, make sure chunks is initialized
-    if (this.chunks == null) {
-      for (Object val : this.rawValue) {
-        if (val instanceof TileChunk) {
-          this.chunks = new ArrayList<>();
-          break;
-        }
-      }
-    }
   }
 
   public List<Tile> getTiles() {
