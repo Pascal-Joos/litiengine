@@ -20,7 +20,7 @@ public final class Input {
   private static final Logger log = Logger.getLogger(Input.class.getName());
 
   @Nullable private static GamepadManager gamePadManager;
-  @Nullable private static IKeyboard keyboard;
+  private static IKeyboard keyboard = new Keyboard();
   @Nullable private static IMouse mouse;
 
   private Input() {
