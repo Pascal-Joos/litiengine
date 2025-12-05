@@ -22,7 +22,7 @@ public abstract class Particle implements ITimeToLive {
   private float deltaAngle;
 
   private Collision collisionType;
-  private Color color;
+  @Nullable private Color color;
   private float deltaHeight;
   private float deltaWidth;
 
@@ -74,7 +74,6 @@ public abstract class Particle implements ITimeToLive {
     this.setWidth(width);
     this.setHeight(height);
     this.collisionType = Collision.NONE;
-    this.color = Color.WHITE;
     this.fade = true;
     this.setStopOnCollision(true);
     this.setContinuousCollision(false);
