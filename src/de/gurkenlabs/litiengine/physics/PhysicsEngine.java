@@ -689,10 +689,15 @@ public final class PhysicsEngine implements IUpdateable {
       }
 
       this.collisionBoxes.get(type).clear();
+
+      List<ICollisionEntity> entities = this.collisionEntities.get(type);
+      if (entities == null) {
+        continue;
+      }
       this.collisionBoxes
           .get(type)
           .addAll(
-              this.collisionEntities.get(type).stream()
+              entities.stream()
                   .map(ICollisionEntity::getCollisionBox)
                   .collect(Collectors.toList()));
     }
