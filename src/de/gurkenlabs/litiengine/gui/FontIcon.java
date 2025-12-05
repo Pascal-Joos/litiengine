@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 /** A fonticon is an class that represents a single character of an icon font. */
 public class FontIcon {
   /** The font. */
-  @Nullable private final Font font;
+  private final Font font;
 
   /** The text. */
   private final String text;
@@ -26,7 +26,7 @@ public class FontIcon {
   }
 
   public FontIcon(@Nullable final Font font, final String unicode) {
-    this.font = font;
+    this.font = font != null ? font : new Font("Dialog", Font.PLAIN, 12);
     this.text = unicode;
   }
 
