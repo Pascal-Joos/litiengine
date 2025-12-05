@@ -53,9 +53,6 @@ public abstract class ColorLayer implements IRenderable {
   }
 
   public void updateSection(Rectangle2D section) {
-    if (this.layer == null) {
-      return;
-    }
     if (this.getColor() == null) {
       return;
     }
