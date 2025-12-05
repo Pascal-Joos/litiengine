@@ -31,9 +31,6 @@ public class EmitterLoader {
 
   @Nullable
   public static EmitterData load(@Nullable URL emitterXml) {
-    if (emitterXml == null) {
-      return null;
-    }
     final String name = emitterXml.getFile();
     if (loadedEmitters.containsKey(name)) {
       return loadedEmitters.get(name);
@@ -50,11 +47,7 @@ public class EmitterLoader {
     return load(loaded);
   }
 
-  @Nullable
   public static EmitterData load(@Nullable EmitterData emitterData) {
-    if (emitterData == null) {
-      return null;
-    }
     if (loadedEmitters.containsKey(emitterData.getName())) {
       return loadedEmitters.get(emitterData.getName());
     }
