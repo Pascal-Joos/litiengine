@@ -136,6 +136,9 @@ public class Camera implements ICamera {
 
   @Override
   public void setFocus(@Nullable final Point2D focus) {
+    if (focus == null) {
+      return;
+    }
     this.focus = this.clampToMap(focus);
 
     // dunno why but without the factor of 0.01 sometimes everything starts to
@@ -225,6 +228,10 @@ public class Camera implements ICamera {
         this.setFocus(this.targetFocus);
         this.targetFocus = null;
       } else {
+        if (this.targetFocus == null) {
+          return;
+        }
+
         double diff = this.panTime / (this.panTime + 1.0);
         this.focus =
             new Point2D.Double(
