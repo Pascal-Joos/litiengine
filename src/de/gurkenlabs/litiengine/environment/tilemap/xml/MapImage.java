@@ -30,12 +30,6 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
   /** Instantiates a new {@code MapImage} instance. */
   public MapImage() {
     super();
-    this.transparentcolor = new Color(0, 0, 0, 0);
-    try {
-      this.absolutePath = new URL("file", "", "/");
-    } catch (MalformedURLException e) {
-      throw new IllegalStateException(e);
-    }
   }
 
   /**
