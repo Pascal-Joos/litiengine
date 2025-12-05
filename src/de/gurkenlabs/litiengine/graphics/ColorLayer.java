@@ -33,22 +33,16 @@ public abstract class ColorLayer implements IRenderable {
     ImageRenderer.render(g, this.layer, -viewport.getX(), -viewport.getY());
   }
 
-  @Nullable
   public Color getColor() {
     return this.color;
   }
 
   public void setAlpha(int ambientAlpha) {
-    final Color current = this.getColor();
-    if (current == null) {
-      return;
-    }
-
     this.setColor(
         new Color(
-            current.getRed(),
-            current.getGreen(),
-            current.getBlue(),
+            this.getColor().getRed(),
+            this.getColor().getGreen(),
+            this.getColor().getBlue(),
             MathUtilities.clamp(ambientAlpha, 0, 255)));
     this.updateSection(this.environment.getMap().getBounds());
   }
@@ -64,10 +58,6 @@ public abstract class ColorLayer implements IRenderable {
     }
 
     int minX = (int) Math.floor(section.getX());
-    if (this.layer == null) {
-      return;
-    }
-
     int minY = (int) Math.floor(section.getY());
     int maxX = (int) Math.ceil(section.getMaxX());
     int maxY = (int) Math.ceil(section.getMaxY());
