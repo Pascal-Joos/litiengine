@@ -119,10 +119,7 @@ public final class PhysicsEngine implements IUpdateable {
       }
 
       this.collisionEntities.get(type).clear();
-      final java.util.List<java.awt.geom.Rectangle2D> boxesForType = this.collisionBoxes.get(type);
-      if (boxesForType != null) {
-        boxesForType.clear();
-      }
+      this.collisionBoxes.get(type).clear();
     }
 
     this.setBounds(null);
