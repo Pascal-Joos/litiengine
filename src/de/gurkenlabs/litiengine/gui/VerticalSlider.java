@@ -88,6 +88,9 @@ public class VerticalSlider extends Slider {
             this.getSliderSpritesheet(),
             "",
             null));
-    this.getSliderComponent().setSpriteSheet(this.getSliderSpritesheet());
+    ImageComponent slider = this.getSliderComponent();
+    if (slider != null) {
+      slider.setSpriteSheet(this.getSliderSpritesheet());
+    }
   }
 }
