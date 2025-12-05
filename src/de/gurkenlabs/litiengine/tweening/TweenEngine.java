@@ -30,10 +30,16 @@ public class TweenEngine implements IUpdateable, ILaunchable {
    * @return the Tween instance
    */
   public Tween begin(final Tweenable target, final TweenType type, final int duration) {
-    Tween tween = this.getTween(target, type);
+    Map<TweenType, Tween> targetTweens = this.getTweens().get(target);
+    if (targetTweens == null) {
+      targetTweens = new ConcurrentHashMap<>();
+      this.getTweens().put(target, targetTweens);
+    }
+
+    Tween tween = targetTweens.get(type);
     if (tween == null) {
       tween = new Tween(target, type, duration).ease(TweenFunction.QUAD_INOUT);
-      this.getTweens().get(target).put(type, tween);
+      targetTweens.put(type, tween);
     } else {
       tween.setDuration(duration);
     }
@@ -51,11 +57,13 @@ public class TweenEngine implements IUpdateable, ILaunchable {
    */
   @Nullable
   public Tween getTween(final Tweenable target, final TweenType type) {
-    if (this.getTweens().get(target) == null) {
-      this.getTweens().put(target, new ConcurrentHashMap<>());
+    Map<TweenType, Tween> targetTweens = this.getTweens().get(target);
+    if (targetTweens == null) {
+      targetTweens = new ConcurrentHashMap<>();
+      this.getTweens().put(target, targetTweens);
     }
 
-    return this.getTweens().get(target).get(type);
+    return targetTweens.get(type);
   }
 
   /**
