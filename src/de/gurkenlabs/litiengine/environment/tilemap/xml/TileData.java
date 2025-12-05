@@ -342,6 +342,9 @@ public class TileData {
       throws InvalidTileLayerException {
 
     List<Tile> parsed = new ArrayList<>();
+    if (value == null || value.trim().isEmpty()) {
+      return parsed;
+    }
 
     // trim 'space', 'tab', 'newline'. pay attention to additional unicode chars
     // like \u2028, \u2029, \u0085 if necessary
