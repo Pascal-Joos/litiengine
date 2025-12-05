@@ -186,6 +186,7 @@ public abstract class ResourcesContainer<T> {
    * @param resourceName The resource's name.
    * @return The resource with the specified name or null if not found.
    */
+  @Nullable
   public T get(@Nullable String resourceName) {
     return this.get(this.getIdentifier(resourceName), false);
   }
