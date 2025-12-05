@@ -270,6 +270,11 @@ public class ListField extends GuiComponent {
           continue;
         }
 
+        ImageComponent entry = this.getListEntry(column, row);
+        if (entry == null) {
+          continue;
+        }
+
         if (row + this.getVerticalLowerBound()
                 < this.getContent()[column + this.getHorizontalLowerBound()].length
             && this.getContent()[column + this.getHorizontalLowerBound()][
@@ -278,21 +283,19 @@ public class ListField extends GuiComponent {
           if (this.getContent()[column + this.getHorizontalLowerBound()][
                   row + this.getVerticalLowerBound()]
               instanceof Image) {
-            this.getListEntry(column, row)
-                .setImage(
-                    (Image)
-                        this.getContent()[column + this.getHorizontalLowerBound()][
-                            row + this.getVerticalLowerBound()]);
+            entry.setImage(
+                (Image)
+                    this.getContent()[column + this.getHorizontalLowerBound()][
+                        row + this.getVerticalLowerBound()]);
           } else {
-            this.getListEntry(column, row)
-                .setText(
-                    this
-                        .getContent()[column + this.getHorizontalLowerBound()][
-                        row + this.getVerticalLowerBound()]
-                        .toString());
+            entry.setText(
+                this
+                    .getContent()[column + this.getHorizontalLowerBound()][
+                    row + this.getVerticalLowerBound()]
+                    .toString());
           }
         } else {
-          this.getListEntry(column, row).setText("");
+          entry.setText("");
         }
       }
     }
