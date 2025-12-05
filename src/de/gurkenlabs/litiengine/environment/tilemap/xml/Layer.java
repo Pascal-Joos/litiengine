@@ -155,6 +155,10 @@ public abstract class Layer extends CustomPropertyProvider implements ILayer {
 
   @Override
   public IMap getMap() {
+    if (this.parentMap == null) {
+      this.parentMap = new TmxMap();
+    }
+
     return this.parentMap;
   }
 
