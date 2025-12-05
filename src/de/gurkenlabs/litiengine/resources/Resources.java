@@ -364,9 +364,6 @@ public final class Resources {
   @Nullable
   private static InputStream getResource(@Nullable final URL file) {
     try {
-      if (file == null) {
-        return null;
-      }
       return file.openStream();
     } catch (IOException e) {
       return null;
