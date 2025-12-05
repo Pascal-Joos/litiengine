@@ -287,6 +287,10 @@ public class TileData {
       throws InvalidTileLayerException {
     List<Tile> parsed = new ArrayList<>();
 
+    if (value == null) {
+      throw new InvalidTileLayerException("tile layer data must not be null");
+    }
+
     String enc = value.trim();
     byte[] dec;
     try {
