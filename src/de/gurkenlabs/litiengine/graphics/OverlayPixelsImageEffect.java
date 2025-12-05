@@ -24,6 +24,11 @@ public class OverlayPixelsImageEffect extends ImageEffect {
     final BufferedImage bimage =
         Imaging.getCompatibleImage(image.getWidth(null), image.getHeight(null));
 
+    if (bimage == null) {
+      // Fallback to the original image if no compatible image could be created
+      return image;
+    }
+
     // Draw the image on to the buffered image
     final Graphics2D bGr = bimage.createGraphics();
     bGr.drawImage(image, 0, 0, null);
