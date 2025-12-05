@@ -65,7 +65,7 @@ public class TextFieldComponent extends ImageComponent {
 
   @Override
   public String getText() {
-    return this.fullText == null ? "" : this.fullText;
+    return this.fullText;
   }
 
   public void handleTypedKey(final KeyEvent event) {
