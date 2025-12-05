@@ -839,36 +839,26 @@ public final class PhysicsEngine implements IUpdateable {
     return resolvedPosition;
   }
 
-	  private Point2D clamptoMap(IMobileEntity entity, Point2D newLocation) {
-	    Rectangle2D bounds = this.getBounds();
-	    if (bounds == null) {
-	      return newLocation;
-	    }
-	    double collisionLocationX =
-	        entity.getCollisionBoxAlign().getLocation(entity.getWidth(), entity.getCollisionBoxWidth());
-	    double leftBoundX = bounds.getMinX() - collisionLocationX;
-	    double deltaX = entity.getWidth() - entity.getCollisionBoxWidth() - collisionLocationX;
-	    double rightBoundX = bounds.getMaxX() - entity.getWidth() + deltaX;
-	
-	    double collisionLocationY =
-	        entity
-	            .getCollisionBoxValign()
-	            .getLocation(entity.getHeight(), entity.getCollisionBoxHeight());
-	    double topBoundY = bounds.getMinY() - collisionLocationY;
-	    double deltaY = entity.getHeight() - entity.getCollisionBoxHeight() - collisionLocationY;
-	    double buttomBoundY = bounds.getMaxY() - entity.getHeight() + deltaY;
-	
-	    // right and left border minus the collision box width
-	    double x = MathUtilities.clamp(newLocation.getX(), leftBoundX, rightBoundX);
-	    // bottom and top border minus the collision box height
-	    double y = MathUtilities.clamp(newLocation.getY(), topBoundY, buttomBoundY);
-	    return new Point2D.Double(x, y);
-	  }
-	    double x = MathUtilities.clamp(newLocation.getX(), leftBoundX, rightBoundX);
-	    // bottom and top border minus the collision box height
-	    double y = MathUtilities.clamp(newLocation.getY(), topBoundY, buttomBoundY);
-	    return new Point2D.Double(x, y);
-	  }
+  private Point2D clamptoMap(IMobileEntity entity, Point2D newLocation) {
+    double collisionLocationX =
+        entity.getCollisionBoxAlign().getLocation(entity.getWidth(), entity.getCollisionBoxWidth());
+    double leftBoundX = this.getBounds().getMinX() - collisionLocationX;
+    double deltaX = entity.getWidth() - entity.getCollisionBoxWidth() - collisionLocationX;
+    double rightBoundX = this.getBounds().getMaxX() - entity.getWidth() + deltaX;
+
+    double collisionLocationY =
+        entity
+            .getCollisionBoxValign()
+            .getLocation(entity.getHeight(), entity.getCollisionBoxHeight());
+    double topBoundY = this.getBounds().getMinY() - collisionLocationY;
+    double deltaY = entity.getHeight() - entity.getCollisionBoxHeight() - collisionLocationY;
+    double buttomBoundY = this.getBounds().getMaxY() - entity.getHeight() + deltaY;
+
+    // right and left border minus the collision box width
+    double x = MathUtilities.clamp(newLocation.getX(), leftBoundX, rightBoundX);
+    // bottom and top border minus the collision box height
+    double y = MathUtilities.clamp(newLocation.getY(), topBoundY, buttomBoundY);
+    return new Point2D.Double(x, y);
   }
 
   private boolean resolveCollisionForNewPosition(ICollisionEntity entity, Point2D location) {
