@@ -50,9 +50,6 @@ public class IntroTrack implements Track {
   public IntroTrack(Sound intro, Sound loop) {
     Objects.requireNonNull(intro);
     Objects.requireNonNull(loop);
-    if (intro.getFormat() == null || loop.getFormat() == null) {
-      throw new IllegalArgumentException("Intro and loop sounds must have a non-null audio format");
-    }
     if (!intro.getFormat().matches(loop.getFormat())) {
       throw new IllegalArgumentException(intro.getFormat() + " does not match " + loop.getFormat());
     }
