@@ -17,6 +17,9 @@ public class Tilesets extends ResourcesContainer<Tileset> {
   protected Tileset load(@Nullable URL resourceName) throws IOException, URISyntaxException {
     try {
       Tileset tileset = XmlUtilities.read(Tileset.class, resourceName);
+      if (tileset == null) {
+        throw new TmxException("Failed to load tileset: " + resourceName);
+      }
       tileset.finish(resourceName);
       return tileset;
     } catch (JAXBException e) {
