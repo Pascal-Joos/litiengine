@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 /**
@@ -687,16 +688,13 @@ public final class PhysicsEngine implements IUpdateable {
         continue;
       }
 
-      java.util.List<java.awt.geom.Rectangle2D> boxes = this.collisionBoxes.get(type);
-      if (boxes == null) {
-        continue;
-      }
-
-      boxes.clear();
-      boxes.addAll(
-          this.collisionEntities.get(type).stream()
-              .map(ICollisionEntity::getCollisionBox)
-              .collect(java.util.stream.Collectors.toList()));
+      this.collisionBoxes.get(type).clear();
+      this.collisionBoxes
+          .get(type)
+          .addAll(
+              this.collisionEntities.get(type).stream()
+                  .map(ICollisionEntity::getCollisionBox)
+                  .collect(Collectors.toList()));
     }
   }
 
