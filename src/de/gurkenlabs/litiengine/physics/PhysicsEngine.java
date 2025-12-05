@@ -76,23 +76,13 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        final java.util.List<de.gurkenlabs.litiengine.entities.ICollisionEntity> list =
-            this.collisionEntities.get(entity.getCollisionType());
-        if (list == null) {
-          return;
-        }
-
-        list.add(entity);
+        this.collisionEntities.get(entity.getCollisionType()).add(entity);
         break;
       default:
         return;
     }
 
-    final java.util.List<de.gurkenlabs.litiengine.entities.ICollisionEntity> anyList =
-        this.collisionEntities.get(Collision.ANY);
-    if (anyList != null) {
-      anyList.add(entity);
-    }
+    this.collisionEntities.get(Collision.ANY).add(entity);
   }
 
   /**
@@ -109,13 +99,7 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        final java.util.List<de.gurkenlabs.litiengine.entities.ICollisionEntity> list =
-            this.collisionEntities.get(entity.getCollisionType());
-        if (list == null) {
-          return;
-        }
-
-        list.remove(entity);
+        this.collisionEntities.get(entity.getCollisionType()).remove(entity);
         break;
       default:
         return;
