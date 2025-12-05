@@ -315,10 +315,8 @@ public class Animation implements IUpdateable, ILaunchable {
   @Override
   public void update() {
     // do nothing if the animation is not playing or the current keyframe is not finished
-    final KeyFrame currentKeyFrame = this.getCurrentKeyFrame();
     if (!this.isPlaying()
-        || currentKeyFrame == null
-        || Game.time().since(this.lastFrameUpdate) < currentKeyFrame.getDuration()) {
+        || Game.time().since(this.lastFrameUpdate) < this.getCurrentKeyFrame().getDuration()) {
       return;
     }
 
