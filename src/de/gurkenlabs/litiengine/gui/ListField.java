@@ -275,24 +275,39 @@ public class ListField extends GuiComponent {
             && this.getContent()[column + this.getHorizontalLowerBound()][
                     row + this.getVerticalLowerBound()]
                 != null) {
-          if (this.getContent()[column + this.getHorizontalLowerBound()][
-                  row + this.getVerticalLowerBound()]
-              instanceof Image) {
-            this.getListEntry(column, row)
-                .setImage(
+          if (row + this.getVerticalLowerBound()
+                  < this.getContent()[column + this.getHorizontalLowerBound()].length
+              && this.getContent()[column + this.getHorizontalLowerBound()][
+                      row + this.getVerticalLowerBound()]
+                  != null) {
+            ImageComponent entry = this.getListEntry(column, row);
+            if (entry != null) {
+              if (this.getContent()[column + this.getHorizontalLowerBound()][
+                      row + this.getVerticalLowerBound()]
+                  instanceof Image) {
+                entry.setImage(
                     (Image)
                         this.getContent()[column + this.getHorizontalLowerBound()][
                             row + this.getVerticalLowerBound()]);
-          } else {
-            this.getListEntry(column, row)
-                .setText(
+              } else {
+                entry.setText(
                     this
                         .getContent()[column + this.getHorizontalLowerBound()][
                         row + this.getVerticalLowerBound()]
                         .toString());
+              }
+            }
+          } else {
+            ImageComponent entry = this.getListEntry(column, row);
+            if (entry != null) {
+              entry.setText("");
+            }
           }
         } else {
-          this.getListEntry(column, row).setText("");
+          ImageComponent entry = this.getListEntry(column, row);
+          if (entry != null) {
+            entry.setText("");
+          }
         }
       }
     }
