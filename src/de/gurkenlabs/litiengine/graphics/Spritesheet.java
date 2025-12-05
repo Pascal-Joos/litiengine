@@ -20,7 +20,7 @@ public final class Spritesheet implements Comparable<Spritesheet> {
 
   private final List<Integer> emptySprites = new CopyOnWriteArrayList<>();
 
-  private final BufferedImage image;
+  @Nullable private final BufferedImage image;
   private final String name;
   private final ImageFormat imageFormat;
 
@@ -41,7 +41,7 @@ public final class Spritesheet implements Comparable<Spritesheet> {
    * @param spriteHeight the height in pixels of each sprite in the spritesheet.
    */
   public Spritesheet(
-      final BufferedImage image,
+      @Nullable final BufferedImage image,
       @Nullable final String path,
       final int spriteWidth,
       final int spriteHeight) {
