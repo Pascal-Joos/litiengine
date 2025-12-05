@@ -41,7 +41,6 @@ public final class Input {
    * @see GamepadManager#current()
    * @see GamepadManager#get(int)
    */
-  @Nullable
   public static GamepadManager gamepads() {
     if (!Game.config().input().isGamepadSupport()) {
       log.log(
@@ -57,7 +56,6 @@ public final class Input {
    *
    * @return The keyboard input device.
    */
-  @Nullable
   public static IKeyboard keyboard() {
     return keyboard;
   }
@@ -67,7 +65,6 @@ public final class Input {
    *
    * @return The mouse input device.
    */
-  @Nullable
   public static IMouse mouse() {
     return mouse;
   }
