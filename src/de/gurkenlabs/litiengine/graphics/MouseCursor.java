@@ -28,7 +28,7 @@ public final class MouseCursor implements IRenderable {
 
   private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
   private static final Cursor BLANK_CURSOR;
-  @Nullable private static final Image DEBUG_CURSOR_IMAGE;
+  private static final Image DEBUG_CURSOR_IMAGE;
 
   @Nullable private Image image;
   @Nullable private AffineTransform transform;
@@ -43,17 +43,14 @@ public final class MouseCursor implements IRenderable {
         Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 
     final BufferedImage debugCursorImg = Imaging.getCompatibleImage(16, 16);
-    if (debugCursorImg != null) {
-      Graphics2D g = debugCursorImg.createGraphics();
-      g.setColor(Color.RED);
-      g.drawLine(0, 0, 16, 16);
-      g.drawLine(0, 0, 16, 0);
-      g.drawLine(0, 0, 0, 16);
-      g.dispose();
-      DEBUG_CURSOR_IMAGE = debugCursorImg;
-    } else {
-      DEBUG_CURSOR_IMAGE = cursorImg;
-    }
+    Graphics2D g = debugCursorImg.createGraphics();
+    g.setColor(Color.RED);
+    g.drawLine(0, 0, 16, 16);
+    g.drawLine(0, 0, 16, 0);
+    g.drawLine(0, 0, 0, 16);
+    g.dispose();
+
+    DEBUG_CURSOR_IMAGE = debugCursorImg;
   }
 
   /** Initializes a new instance of the {@code MouseCursor} class. */
@@ -71,7 +68,7 @@ public final class MouseCursor implements IRenderable {
       ImageRenderer.renderTransformed(g, this.getImage(), locationWithOffset, this.getTransform());
     }
 
-    if (Game.config().debug().isRenderDebugMouse() && DEBUG_CURSOR_IMAGE != null) {
+    if (Game.config().debug().isRenderDebugMouse()) {
       ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, Input.mouse().getLocation());
     }
   }
