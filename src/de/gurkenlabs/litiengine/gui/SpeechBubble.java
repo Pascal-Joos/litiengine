@@ -164,10 +164,8 @@ public class SpeechBubble implements IUpdateable, IRenderable {
                 + this.getAppearance().getPadding()
                 + 1);
 
-    final Point2D center =
-        this.entityCenter != null ? this.entityCenter : this.getEntity().getCenter();
-    final float startX = (float) (center.getX() - deltaX);
-    final float startY = (float) (center.getY() - deltaY);
+    final float startX = (float) (entityCenter.getX() - deltaX);
+    final float startY = (float) (entityCenter.getY() - deltaY);
     ImageRenderer.render(g, this.bubble, new Point2D.Double(startX, startY));
 
     final AttributedString styledText = new AttributedString(this.currentText);
