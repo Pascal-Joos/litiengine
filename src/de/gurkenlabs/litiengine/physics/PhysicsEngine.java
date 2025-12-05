@@ -105,7 +105,11 @@ public final class PhysicsEngine implements IUpdateable {
         return;
     }
 
-    this.collisionEntities.get(Collision.ANY).remove(entity);
+    final java.util.List<de.gurkenlabs.litiengine.entities.ICollisionEntity> anyList =
+        this.collisionEntities.get(Collision.ANY);
+    if (anyList != null) {
+      anyList.remove(entity);
+    }
   }
 
   /**
