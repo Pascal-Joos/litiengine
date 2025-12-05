@@ -201,7 +201,8 @@ public class ResourceBundle implements Serializable {
       if (distinctList.stream()
           .anyMatch(
               x ->
-                  x.getName().equals(sprite.getName()) && x.getImage().equals(sprite.getImage()))) {
+                  java.util.Objects.equals(x.getName(), sprite.getName())
+                      && java.util.Objects.equals(x.getImage(), sprite.getImage()))) {
         continue;
       }
 
