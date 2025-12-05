@@ -12,17 +12,17 @@ import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
 
 public class SpriteParticle extends Particle {
-  private final AnimationController animation;
+  private AnimationController animation;
   private boolean animateSprite;
   private boolean loopSprite;
   @Nullable private BufferedImage currentImage;
-  private final Spritesheet spritesheet;
+  private Spritesheet spritesheet;
 
   public SpriteParticle(final Spritesheet spritesheet) {
     super(0, 0);
     this.spritesheet = spritesheet;
     if (spritesheet == null) {
-      throw new IllegalArgumentException("spritesheet must not be null");
+      return;
     }
     this.setWidth(spritesheet.getSpriteWidth());
     this.setHeight(spritesheet.getSpriteHeight());
@@ -77,8 +77,6 @@ public class SpriteParticle extends Particle {
 
   public void setLoopSprite(boolean loopSprite) {
     this.loopSprite = loopSprite;
-    if (this.animation.getDefault() != null) {
-      this.animation.getDefault().setLooping(loopSprite);
-    }
+    this.animation.getDefault().setLooping(loopSprite);
   }
 }
