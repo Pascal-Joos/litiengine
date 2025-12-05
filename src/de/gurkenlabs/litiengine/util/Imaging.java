@@ -373,6 +373,10 @@ public final class Imaging {
     }
 
     final BufferedImage dimg = getCompatibleImage(w, h);
+    if (dimg == null) {
+      return img;
+    }
+
     final Graphics2D g = dimg.createGraphics();
     g.drawImage(img, 0, 0, w, h, w, 0, 0, h, null);
     g.dispose();
@@ -393,6 +397,10 @@ public final class Imaging {
     }
 
     final BufferedImage dimg = getCompatibleImage(w, h);
+    if (dimg == null) {
+      return img;
+    }
+
     final Graphics2D g = dimg.createGraphics();
     g.drawImage(img, 0, 0 + h, w, -h, null);
     g.dispose();
