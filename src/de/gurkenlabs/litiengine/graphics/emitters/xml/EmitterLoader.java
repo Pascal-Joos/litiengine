@@ -31,14 +31,11 @@ public class EmitterLoader {
 
   @Nullable
   public static EmitterData load(@Nullable URL emitterXml) {
-    if (emitterXml == null) {
-      return null;
-    }
-
     final String name = emitterXml.getFile();
     if (loadedEmitters.containsKey(name)) {
       return loadedEmitters.get(name);
     }
+
     EmitterData loaded;
     try {
       loaded = XmlUtilities.read(EmitterData.class, emitterXml);
@@ -47,15 +44,10 @@ public class EmitterLoader {
       return null;
     }
 
-    if (loaded == null) {
-      log.log(Level.SEVERE, String.format("Failed to load emitter data for %s", emitterXml));
-      return null;
-    }
-
     return load(loaded);
   }
 
-  public static EmitterData load(EmitterData emitterData) {
+  public static EmitterData load(@Nullable EmitterData emitterData) {
     if (loadedEmitters.containsKey(emitterData.getName())) {
       return loadedEmitters.get(emitterData.getName());
     }
