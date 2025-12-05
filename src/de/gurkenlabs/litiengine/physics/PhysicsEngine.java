@@ -889,17 +889,23 @@ public final class PhysicsEngine implements IUpdateable {
       ICollisionEntity collider, @Nullable Intersection... intersections) {
     // aggregate the involved entities of all intersections
     ICollisionEntity[] involvedEntities = null;
-    for (Intersection inter : intersections) {
-      if (inter == null) {
-        continue;
-      }
+    if (intersections != null) {
+      for (Intersection inter : intersections) {
+        if (inter == null) {
+          continue;
+        }
 
-      if (involvedEntities == null) {
-        involvedEntities = inter.involvedEntities;
-        continue;
-      }
+        if (involvedEntities == null) {
+          involvedEntities = inter.involvedEntities;
+          continue;
+        }
 
-      involvedEntities = ArrayUtilities.distinct(involvedEntities, inter.involvedEntities);
+        involvedEntities = ArrayUtilities.distinct(involvedEntities, inter.involvedEntities);
+      }
+    }
+
+    if (involvedEntities == null) {
+      involvedEntities = new ICollisionEntity[0];
     }
 
     // 1. fire collision event on the collider with all the involved entities
@@ -919,7 +925,7 @@ public final class PhysicsEngine implements IUpdateable {
    */
   @SuppressWarnings("serial")
   private class Intersection extends Rectangle2D.Double {
-    private final transient ICollisionEntity[] involvedEntities;
+    final transient ICollisionEntity[] involvedEntities;
 
     public Intersection(Rectangle2D rect, ICollisionEntity... entities) {
       super(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
