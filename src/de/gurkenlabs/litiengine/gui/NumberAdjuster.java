@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 
 public class NumberAdjuster extends TextFieldComponent {
   public static final FontIcon ARROW_DOWN = new FontIcon(ICON_FONT, "\uE84A");
@@ -15,7 +14,7 @@ public class NumberAdjuster extends TextFieldComponent {
   private BigDecimal step;
   private BigDecimal lowerBound;
   private BigDecimal upperBound;
-  @Nullable private BigDecimal currentValue;
+  private BigDecimal currentValue;
   private final List<Consumer<BigDecimal>> valueChangeConsumers;
 
   public NumberAdjuster(
@@ -31,6 +30,7 @@ public class NumberAdjuster extends TextFieldComponent {
     this.valueChangeConsumers = new CopyOnWriteArrayList<>();
     this.lowerBound = BigDecimal.valueOf(lowerBound);
     this.upperBound = BigDecimal.valueOf(upperBound);
+    this.currentValue = BigDecimal.valueOf(lowerBound);
     this.setCurrentValue(BigDecimal.valueOf(startValue));
     this.step = BigDecimal.valueOf(stepSize);
     this.setFormat(DOUBLE_FORMAT);
