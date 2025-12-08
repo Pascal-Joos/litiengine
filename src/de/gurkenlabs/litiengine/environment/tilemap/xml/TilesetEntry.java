@@ -82,7 +82,12 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
     if (this.animation == null) {
       return this.getBasicImage();
     }
-    return this.tileset.getTile(this.animation.getCurrentFrame().getTileId()).getBasicImage();
+    final de.gurkenlabs.litiengine.environment.tilemap.ITilesetEntry currentTile =
+        this.tileset.getTile(this.animation.getCurrentFrame().getTileId());
+    if (currentTile == null) {
+      return null;
+    }
+    return currentTile.getBasicImage();
   }
 
   @Nullable
