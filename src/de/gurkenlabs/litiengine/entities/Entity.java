@@ -308,7 +308,10 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
       return;
     }
 
-    this.actions.get(actionName).perform();
+    EntityAction action = this.actions.get(actionName);
+    if (action != null) {
+      action.perform();
+    }
   }
 
   @Nullable
