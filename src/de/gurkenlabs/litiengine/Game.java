@@ -267,6 +267,9 @@ public final class Game {
    * @see GameWindow#cursor()
    */
   public static GameWindow window() {
+    if (gameWindow == null) {
+      gameWindow = new GameWindow();
+    }
     return gameWindow;
   }
 
