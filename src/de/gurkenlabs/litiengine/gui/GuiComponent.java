@@ -262,7 +262,7 @@ public abstract class GuiComponent
    * @return the name
    */
   public String getName() {
-    return this.name;
+    return this.name != null ? this.name : "";
   }
 
   /**
