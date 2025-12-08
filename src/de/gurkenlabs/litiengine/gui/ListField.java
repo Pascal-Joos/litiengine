@@ -39,8 +39,8 @@ public class ListField extends GuiComponent {
   private boolean selectEntireColumn = false;
   private boolean selectEntireRow = false;
 
-  @Nullable private VerticalSlider verticalSlider;
-  @Nullable private HorizontalSlider horizontalSlider;
+  private VerticalSlider verticalSlider = new VerticalSlider(0, 0, 0, 0, 0, 0, 0);
+  private HorizontalSlider horizontalSlider = new HorizontalSlider(0, 0, 0, 0, 0, 0, 0);
   private boolean sliderInside = false;
 
   /**
