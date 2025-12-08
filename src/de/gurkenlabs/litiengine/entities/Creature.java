@@ -35,9 +35,8 @@ public class Creature extends CombatEntity implements IMobileEntity {
   @TmxProperty(name = MapObjectProperty.MOVEMENT_TURNONMOVE)
   private boolean turnOnMove;
 
-  @Nullable
   @TmxProperty(name = MapObjectProperty.MOVEMENT_VELOCITY)
-  private Attribute<Float> velocity;
+  private Attribute<Float> velocity = new Attribute<>(0f);
 
   @Nullable
   @TmxProperty(name = MapObjectProperty.SPRITESHEETNAME)
