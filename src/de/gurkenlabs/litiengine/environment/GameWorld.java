@@ -241,6 +241,9 @@ public final class GameWorld implements IUpdateable {
    * @see Environment
    */
   public Environment environment() {
+    if (this.environment == null) {
+      throw new IllegalStateException("No active Environment is set in the GameWorld.");
+    }
     return this.environment;
   }
 
