@@ -499,7 +499,11 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
 
   @Override
   public Environment getEnvironment() {
-    return this.environment;
+    if (this.environment != null) {
+      return this.environment;
+    }
+
+    return Game.world().environment();
   }
 
   @Override
