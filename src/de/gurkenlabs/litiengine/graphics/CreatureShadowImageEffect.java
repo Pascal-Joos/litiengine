@@ -9,31 +9,13 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
 public class CreatureShadowImageEffect extends ImageEffect {
-  private static final Color DEFAULT_SHADOW_COLOR = new Color(124, 164, 174, 120);
-
   private final Creature creature;
   private final Color shadowColor;
+  private float offsetX;
+  private float offsetY;
 
-  private float offsetX = 0;
-  private float offsetY = 0;
-
-  /**
-   * Initializes a new instance of the {@code CreatureShadowImageEffect}.
-   *
-   * @param creature The creature to which this affect will be applied to.
-   */
-  public CreatureShadowImageEffect(final Creature creature) {
-    this(creature, DEFAULT_SHADOW_COLOR);
-  }
-
-  /**
-   * Initializes a new instance of the {@code CreatureShadowImageEffect}.
-   *
-   * @param creature The creature to which this affect will be applied to.
-   * @param shadowColor The color of the shadow.
-   */
   public CreatureShadowImageEffect(final Creature creature, final Color shadowColor) {
-    super(0, "shadow");
+    super("creatureShadow");
     this.creature = creature;
     this.shadowColor = shadowColor;
   }
@@ -68,6 +50,10 @@ public class CreatureShadowImageEffect extends ImageEffect {
 
     final BufferedImage buffer =
         Imaging.getCompatibleImage(image.getWidth() * 2 + 2, image.getHeight() * 2);
+    if (buffer == null) {
+      return image;
+    }
+
     final Graphics2D graphics = buffer.createGraphics();
     float x = image.getWidth() / 2.0f;
     float y = image.getHeight() / 2.0f;
