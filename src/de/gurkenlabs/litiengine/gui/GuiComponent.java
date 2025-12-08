@@ -225,6 +225,10 @@ public abstract class GuiComponent
    * @return the GuiComponent's font
    */
   public Font getFont() {
+    if (this.font == null) {
+      this.font = new Font(Font.DIALOG, Font.PLAIN, 12);
+    }
+
     return this.font;
   }
 
