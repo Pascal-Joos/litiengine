@@ -26,8 +26,8 @@ public class SoundSource extends Entity {
   private int range;
 
   private boolean loop;
-  private Sound sound;
-  private SFXPlayback playback;
+  @Nullable private Sound sound;
+  @Nullable private SFXPlayback playback;
 
   /** An empty constructor that just calls the super constructor of {@link Entity}. */
   public SoundSource() {
