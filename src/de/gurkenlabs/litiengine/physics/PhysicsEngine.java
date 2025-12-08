@@ -76,13 +76,22 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        this.collisionEntities.get(entity.getCollisionType()).add(entity);
+        List<ICollisionEntity> entitiesByType =
+            this.collisionEntities.get(entity.getCollisionType());
+        if (entitiesByType == null) {
+          return;
+        }
+
+        entitiesByType.add(entity);
         break;
       default:
         return;
     }
 
-    this.collisionEntities.get(Collision.ANY).add(entity);
+    List<ICollisionEntity> anyEntities = this.collisionEntities.get(Collision.ANY);
+    if (anyEntities != null) {
+      anyEntities.add(entity);
+    }
   }
 
   /**
@@ -99,13 +108,22 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        this.collisionEntities.get(entity.getCollisionType()).remove(entity);
+        List<ICollisionEntity> entitiesByType =
+            this.collisionEntities.get(entity.getCollisionType());
+        if (entitiesByType == null) {
+          return;
+        }
+
+        entitiesByType.remove(entity);
         break;
       default:
         return;
     }
 
-    this.collisionEntities.get(Collision.ANY).remove(entity);
+    List<ICollisionEntity> anyEntities = this.collisionEntities.get(Collision.ANY);
+    if (anyEntities != null) {
+      anyEntities.remove(entity);
+    }
   }
 
   /**

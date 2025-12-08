@@ -280,7 +280,12 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
       return null;
     }
 
-    return this.allTiles.get(id);
+    List<TilesetEntry> tiles = this.allTiles;
+    if (tiles == null) {
+      return null;
+    }
+
+    return tiles.get(id);
   }
 
   @Override
