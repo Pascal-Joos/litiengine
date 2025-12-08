@@ -50,8 +50,11 @@ public final class EntityControllers {
         this.controllers.keySet().stream().filter(x -> clss.isAssignableFrom(clss)).findFirst();
     if (typeKey.isPresent()) {
       IEntityController controller = this.controllers.get(typeKey.get());
-      controller.detach();
-      this.controllers.remove(typeKey.get());
+      if (controller != null) {
+        controller.detach();
+        this.controllers.remove(typeKey.get());
+        this.animationController = null;
+      }
       this.animationController = null;
     }
   }
