@@ -5,6 +5,7 @@ import de.gurkenlabs.litiengine.environment.tilemap.ITerrain;
 import de.gurkenlabs.litiengine.environment.tilemap.ITileAnimation;
 import de.gurkenlabs.litiengine.environment.tilemap.ITileset;
 import de.gurkenlabs.litiengine.environment.tilemap.ITilesetEntry;
+import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.resources.Resources;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import java.awt.image.BufferedImage;
@@ -90,9 +91,11 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
     if (this.image != null) {
       return Resources.images().get(this.image.getAbsoluteSourcePath());
     }
-    return this.tileset
-        .getSpritesheet()
-        .getSprite(this.getId(), this.tileset.getMargin(), this.tileset.getSpacing());
+    final Spritesheet spritesheet = this.tileset.getSpritesheet();
+    if (spritesheet == null) {
+      return null;
+    }
+    return spritesheet.getSprite(this.getId(), this.tileset.getMargin(), this.tileset.getSpacing());
   }
 
   @Override
