@@ -207,6 +207,9 @@ public class AnimationController implements IAnimationController {
     BufferedImage sprite =
         current.getSpritesheet().getSprite(current.getCurrentKeyFrame().getSpriteIndex());
     for (final ImageEffect effect : this.getImageEffects()) {
+      if (sprite == null) {
+        break;
+      }
       sprite = effect.apply(sprite);
     }
 
