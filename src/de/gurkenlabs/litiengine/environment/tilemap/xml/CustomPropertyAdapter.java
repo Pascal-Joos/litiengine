@@ -73,7 +73,7 @@ public class CustomPropertyAdapter
 
     @SuppressWarnings("unused")
     private void beforeMarshal(Marshaller m) throws URISyntaxException {
-      if (this.type.equals(PropertyType.STRING)) {
+      if (this.type != null && this.type.equals(PropertyType.STRING)) {
         this.type = null;
       }
       if (this.location != null) {
@@ -139,23 +139,17 @@ public class CustomPropertyAdapter
     }
     List<Property> list = new ArrayList<>(v.size());
     for (Map.Entry<String, ICustomProperty> entry : v.entrySet()) {
-      ICustomProperty property = entry.getValue();
-      String value = property.getAsString();
-      if (value == null || value.isEmpty()) {
-        continue;
-      }
-
-      Property saved = new Property(entry.getKey(), property.getType());
-      if (value.contains("\n")) {
-        saved.contents = value;
+      ICustomProperty prop = entry.getValue();
+      Property property = new Property(entry.getKey(), prop.getType());
+      if (prop.getAsFile() != null) {
+        property.location = prop.getAsFile();
       } else {
-        saved.value = value;
+        property.value = prop.getAsString();
       }
-      saved.location = property.getAsFile();
-      list.add(saved);
+      list.add(property);
     }
-
-    list.sort(null);
-    return new PropertyList(list);
+    PropertyList propertyList = new PropertyList();
+    propertyList.properties = list;
+    return propertyList;
   }
 }
