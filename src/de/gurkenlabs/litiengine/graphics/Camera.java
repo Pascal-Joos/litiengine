@@ -224,7 +224,7 @@ public class Camera implements ICamera {
       }
     }
 
-    if (this.panTime > 0) {
+    if (this.panTime > 0 && this.targetFocus != null) {
       if (--this.panTime <= 0) {
         this.setFocus(this.targetFocus);
         this.targetFocus = null;
