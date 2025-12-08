@@ -93,14 +93,14 @@ public class AnimationController implements IAnimationController {
   }
 
   public static Animation flipAnimation(Animation anim, String newSpriteName) {
-    final BufferedImage flippedImage = Imaging.flipSpritesHorizontally(anim.getSpritesheet());
+    final Spritesheet sprite = anim.getSpritesheet();
+    if (sprite == null) {
+      return anim;
+    }
+    final BufferedImage flippedImage = Imaging.flipSpritesHorizontally(sprite);
     Spritesheet flippedSpritesheet =
         Resources.spritesheets()
-            .load(
-                flippedImage,
-                newSpriteName,
-                anim.getSpritesheet().getSpriteWidth(),
-                anim.getSpritesheet().getSpriteHeight());
+            .load(flippedImage, newSpriteName, sprite.getSpriteWidth(), sprite.getSpriteHeight());
     return new Animation(flippedSpritesheet, anim.isLooping(), anim.getKeyFrameDurations());
   }
 
