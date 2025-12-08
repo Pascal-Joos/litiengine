@@ -42,7 +42,8 @@ public final class MouseCursor implements IRenderable {
     BLANK_CURSOR =
         Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 
-    final BufferedImage debugCursorImg = Imaging.getCompatibleImage(16, 16);
+    // Create a guaranteed non-null debug cursor image
+    final BufferedImage debugCursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = debugCursorImg.createGraphics();
     g.setColor(Color.RED);
     g.drawLine(0, 0, 16, 16);
