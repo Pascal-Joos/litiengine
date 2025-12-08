@@ -1,6 +1,5 @@
 package de.gurkenlabs.litiengine.environment.tilemap.xml;
 
-import com.uber.nullaway.annotations.Initializer;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.io.Codec;
 import java.io.ByteArrayInputStream;
@@ -56,17 +55,17 @@ public class TileData {
     }
   }
 
-  @XmlAttribute private String encoding;
+  @XmlAttribute private String encoding = Encoding.CSV;
 
   @Nullable @XmlAttribute private String compression;
 
   @XmlMixed
   @XmlElementRef(type = TileChunk.class, name = "chunk")
-  private List<Object> rawValue;
+  private List<Object> rawValue = new CopyOnWriteArrayList<>();
 
   @Nullable @XmlTransient private String value;
 
-  @XmlTransient private List<TileChunk> chunks;
+  @XmlTransient private List<TileChunk> chunks = new CopyOnWriteArrayList<>();
 
   @Nullable @XmlTransient private List<Tile> tiles;
 
@@ -144,7 +143,6 @@ public class TileData {
     this.compression = compression;
   }
 
-  @Initializer
   public void setValue(@Nullable String value) {
     this.value = value;
     if (this.rawValue == null) {
