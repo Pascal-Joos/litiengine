@@ -61,6 +61,7 @@ public class SoundSource extends Entity {
    * @param y The y coordinate
    */
   public SoundSource(double x, double y) {
+    this();
     this.setX(x);
     this.setY(y);
   }
@@ -127,6 +128,7 @@ public class SoundSource extends Entity {
    *
    * @return the sound instance used for playback.
    */
+  @Nullable
   public Sound getSound() {
     return sound;
   }
@@ -136,6 +138,7 @@ public class SoundSource extends Entity {
    *
    * @return the playback instance.
    */
+  @Nullable
   public SFXPlayback getPlayback() {
     return this.playback;
   }
@@ -143,11 +146,11 @@ public class SoundSource extends Entity {
   /**
    * The name of the currently set sound.
    *
-   * @return A String containing the sound name.
+   * @return A String containing the sound name, or {@code null} if no sound is set.
    */
   @Nullable
   public String getSoundName() {
-    return this.sound.getName();
+    return this.sound == null ? null : this.sound.getName();
   }
 
   /**
@@ -206,6 +209,10 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#pausePlayback()
    */
   public void pause() {
+    if (this.getPlayback() == null) {
+      return;
+    }
+
     this.getPlayback().pausePlayback();
   }
 
@@ -215,6 +222,10 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#resumePlayback()
    */
   public void resume() {
+    if (this.getPlayback() == null) {
+      return;
+    }
+
     this.getPlayback().resumePlayback();
   }
 
@@ -224,6 +235,10 @@ public class SoundSource extends Entity {
    * @see SFXPlayback#cancel()
    */
   public void stop() {
+    if (this.getPlayback() == null) {
+      return;
+    }
+
     this.getPlayback().cancel();
   }
 }
