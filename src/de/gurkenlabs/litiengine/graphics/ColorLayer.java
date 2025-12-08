@@ -16,11 +16,11 @@ public abstract class ColorLayer implements IRenderable {
   private final Environment environment;
   @Nullable private final BufferedImage layer;
 
-  @Nullable private Color color;
+  private Color color;
 
   protected ColorLayer(Environment env, @Nullable final Color color) {
     this.environment = env;
-    this.color = color;
+    this.color = color != null ? color : Color.BLACK;
 
     Dimension size = env.getMap().getSizeInPixels();
     this.layer = Imaging.getCompatibleImage(size.width, size.height);
