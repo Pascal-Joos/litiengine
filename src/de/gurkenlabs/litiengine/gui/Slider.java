@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public abstract class Slider extends GuiComponent {
   private ImageComponent button1;
   private ImageComponent button2;
-  @Nullable private ImageComponent sliderComponent;
+  private ImageComponent sliderComponent;
 
   @Nullable private Spritesheet buttonSprite;
   @Nullable private Spritesheet sliderSprite;
@@ -35,11 +35,16 @@ public abstract class Slider extends GuiComponent {
     this.minValue = minValue;
     this.maxValue = maxValue;
     this.stepSize = stepSize;
+
+    // Initialize components with default placeholders to satisfy NullAway and ensure non-null
+    // fields.
+    this.button1 = new ImageComponent(x, y, 0, 0);
+    this.button2 = new ImageComponent(x, y, 0, 0);
+    this.sliderComponent = new ImageComponent(x, y, 0, 0);
+
     this.onChange(
         e -> {
-          if (this.sliderComponent != null) {
-            this.sliderComponent.setLocation(this.getRelativeSliderPosition());
-          }
+          this.sliderComponent.setLocation(this.getRelativeSliderPosition());
         });
   }
 
