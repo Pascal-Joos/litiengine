@@ -466,13 +466,38 @@ public final class Environment implements IRenderable {
       if (miscByType != null) {
         miscByType.clear();
       }
-      this.renderListeners.get(renderType).clear();
-      this.renderables.get(renderType).clear();
+      Collection<EnvironmentRenderedListener> listeners = this.renderListeners.get(renderType);
+      if (listeners != null) {
+        listeners.clear();
+      }
+      Collection<IRenderable> renderablesForType = this.renderables.get(renderType);
+      if (renderablesForType != null) {
+        renderablesForType.clear();
+      }
     }
 
     dispose(this.allEntities.values());
     dispose(this.triggers);
     this.emitters.clear();
+    this.colliders.clear();
+    this.props.clear();
+    this.creatures.clear();
+    this.staticShadows.clear();
+    this.combatEntities.clear();
+    this.mobileEntities.clear();
+    this.lightSources.clear();
+    this.spawnPoints.clear();
+    this.soundSources.clear();
+    this.mapAreas.clear();
+    this.triggers.clear();
+
+    this.ambientLight = null;
+    this.staticShadowLayer = null;
+    this.mapAreas.clear();
+    this.triggers.clear();
+
+    this.ambientLight = null;
+    this.staticShadowLayer = null;
     this.colliders.clear();
     this.props.clear();
     this.creatures.clear();
