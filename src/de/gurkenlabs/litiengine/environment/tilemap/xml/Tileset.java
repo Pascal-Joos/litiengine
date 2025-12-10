@@ -223,11 +223,7 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
       return terrains;
     }
 
-    TilesetEntry tile = this.allTiles != null ? this.allTiles.get(tileId) : null;
-    if (tile == null) {
-      return terrains;
-    }
-
+    TilesetEntry tile = this.allTiles.get(tileId);
     int[] tileTerrains = tile.getTerrainIds();
     for (int i = 0; i < 4; i++) {
       if (tileTerrains[i] < 0 || tileTerrains[i] >= this.getTerrainTypes().size()) {
@@ -276,7 +272,7 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
       return null;
     }
 
-    return this.allTiles != null ? this.allTiles.get(id) : null;
+    return this.allTiles.get(id);
   }
 
   @Override
