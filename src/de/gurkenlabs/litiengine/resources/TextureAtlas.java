@@ -87,7 +87,7 @@ public class TextureAtlas {
     }
 
     return this.getSprites().stream()
-        .filter(x -> x.getName() != null && x.getName().equals(name))
+        .filter(x -> x.getName().equals(name))
         .findFirst()
         .orElse(null);
   }
