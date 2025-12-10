@@ -8,6 +8,7 @@ import de.gurkenlabs.litiengine.entities.IMobileEntity;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.MathUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -576,7 +577,9 @@ public final class PhysicsEngine implements IUpdateable {
    * @see GeometricUtilities#project(Point2D, double, double)
    */
   public boolean move(final IMobileEntity entity, final double angle, final double distance) {
-    final Point2D newPosition = GeometricUtilities.project(entity.getLocation(), angle, distance);
+    final Point2D newPosition =
+        GeometricUtilities.project(
+            Nullability.castToNonnull(entity.getLocation()), angle, distance);
     return this.move(entity, newPosition);
   }
 
@@ -631,7 +634,9 @@ public final class PhysicsEngine implements IUpdateable {
   public boolean move(final IMobileEntity entity, Point2D target) {
     if (entity.turnOnMove()) {
       entity.setAngle(
-          (float) GeometricUtilities.calcRotationAngleInDegrees(entity.getLocation(), target));
+          (float)
+              GeometricUtilities.calcRotationAngleInDegrees(
+                  Nullability.castToNonnull(entity.getLocation()), target));
     }
 
     // don't set new location if it is outside the boundaries of the map
@@ -672,7 +677,9 @@ public final class PhysicsEngine implements IUpdateable {
    * @see #resolveCollisionForNewPosition
    */
   public boolean move(final IMobileEntity entity, final Point2D target, final float distance) {
-    final Point2D newPosition = GeometricUtilities.project(entity.getLocation(), target, distance);
+    final Point2D newPosition =
+        GeometricUtilities.project(
+            Nullability.castToNonnull(entity.getLocation()), target, distance);
     return this.move(entity, newPosition);
   }
 

@@ -10,6 +10,7 @@ import de.gurkenlabs.litiengine.environment.GameWorld;
 import de.gurkenlabs.litiengine.graphics.animation.IAnimationController;
 import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
 import de.gurkenlabs.litiengine.graphics.emitters.Emitter;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -460,7 +461,9 @@ public final class RenderEngine {
           ImageRenderer.renderScaled(
               g,
               img,
-              Game.world().camera().getViewportLocation(entity.getLocation()),
+              Game.world()
+                  .camera()
+                  .getViewportLocation(Nullability.castToNonnull(entity.getLocation())),
               ratioX,
               ratioY);
         } else {

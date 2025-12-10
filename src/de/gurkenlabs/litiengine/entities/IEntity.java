@@ -135,6 +135,7 @@ public interface IEntity {
 
   double getHeight();
 
+  @Nullable
   Point2D getLocation();
 
   int getMapId();
