@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -633,37 +634,36 @@ public class ListField extends GuiComponent {
 
     this.onChange(
         s -> {
-          if (this.getVerticalSlider() != null) {
+          if (this.getVerticalSlider() != null
+              && this.getVerticalSlider().getSliderComponent() != null) {
             this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
-            this.getVerticalSlider()
-                .getSliderComponent()
+            Nullability.castToNonnull(this.getVerticalSlider().getSliderComponent())
                 .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
           }
-          if (this.getHorizontalSlider() != null) {
+          if (this.getHorizontalSlider() != null
+              && this.getHorizontalSlider().getSliderComponent() != null) {
             this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
-            this.getHorizontalSlider()
-                .getSliderComponent()
+            Nullability.castToNonnull(this.getHorizontalSlider().getSliderComponent())
                 .setLocation(this.getHorizontalSlider().getRelativeSliderPosition());
           }
         });
-    if (this.getVerticalSlider() != null) {
-      this.getVerticalSlider()
+    if (this.getVerticalSlider() != null && this.getVerticalSlider().getSliderComponent() != null) {
+      Nullability.castToNonnull(this.getVerticalSlider().getSliderComponent())
           .onChange(
               sliderValue -> {
                 this.setVerticalLowerBound(sliderValue.intValue());
-                this.getVerticalSlider()
-                    .getSliderComponent()
+                Nullability.castToNonnull(this.getVerticalSlider().getSliderComponent())
                     .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
                 this.refresh();
               });
     }
-    if (this.getHorizontalSlider() != null) {
-      this.getHorizontalSlider()
+    if (this.getHorizontalSlider() != null
+        && this.getHorizontalSlider().getSliderComponent() != null) {
+      Nullability.castToNonnull(this.getHorizontalSlider().getSliderComponent())
           .onChange(
               sliderValue -> {
                 this.setHorizontalLowerBound(sliderValue.intValue());
-                this.getHorizontalSlider()
-                    .getSliderComponent()
+                Nullability.castToNonnull(this.getHorizontalSlider().getSliderComponent())
                     .setLocation(this.getHorizontalSlider().getRelativeSliderPosition());
                 this.refresh();
               });
