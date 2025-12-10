@@ -8,7 +8,6 @@ import de.gurkenlabs.litiengine.entities.IMobileEntity;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.MathUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -100,8 +99,7 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
-        Nullability.castToNonnull(this.collisionEntities.get(entity.getCollisionType()))
-            .remove(entity);
+        this.collisionEntities.get(entity.getCollisionType()).remove(entity);
         break;
       default:
         return;
