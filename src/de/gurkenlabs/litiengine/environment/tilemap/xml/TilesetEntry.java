@@ -1,6 +1,5 @@
 package de.gurkenlabs.litiengine.environment.tilemap.xml;
 
-import com.uber.nullaway.annotations.Initializer;
 import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.ITerrain;
 import de.gurkenlabs.litiengine.environment.tilemap.ITileAnimation;
@@ -21,9 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntry {
-  @SuppressWarnings("NullAway.Init")
-  @XmlTransient
-  private Tileset tileset;
+  @XmlTransient private Tileset tileset;
 
   @Nullable private transient ITerrain[] terrains;
 
@@ -153,7 +150,6 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
         || this.type != null;
   }
 
-  @Initializer
   @SuppressWarnings("unused")
   private void afterUnmarshal(Unmarshaller u, Object parent) {
     this.tileset = (Tileset) parent;
