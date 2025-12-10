@@ -41,6 +41,7 @@ public final class Input {
    * @see GamepadManager#current()
    * @see GamepadManager#get(int)
    */
+  @Nullable
   public static GamepadManager gamepads() {
     if (!Game.config().input().isGamepadSupport()) {
       log.log(
