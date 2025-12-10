@@ -8,7 +8,6 @@ import de.gurkenlabs.litiengine.entities.IMobileEntity;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.MathUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -904,8 +903,7 @@ public final class PhysicsEngine implements IUpdateable {
     }
 
     // 1. fire collision event on the collider with all the involved entities
-    CollisionEvent event =
-        new CollisionEvent(collider, Nullability.castToNonnull(involvedEntities));
+    CollisionEvent event = new CollisionEvent(collider, involvedEntities);
     collider.fireCollisionEvent(event);
 
     // 2. fire collision event on the involved entities with the collider entity
