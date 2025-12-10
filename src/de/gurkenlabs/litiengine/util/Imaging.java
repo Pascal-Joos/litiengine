@@ -3,6 +3,7 @@ package de.gurkenlabs.litiengine.util;
 import de.gurkenlabs.litiengine.entities.Rotation;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -297,7 +298,7 @@ public final class Imaging {
 
   @Nullable
   public static BufferedImage flipSpritesHorizontally(final Spritesheet sprite) {
-    return flipSprites(sprite, Imaging::horizontalFlip);
+    return flipSprites(Nullability.castToNonnull(sprite), Imaging::horizontalFlip);
   }
 
   @Nullable
