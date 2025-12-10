@@ -72,9 +72,6 @@ public class CustomPropertyAdapter
 
     @SuppressWarnings("unused")
     private void beforeMarshal(Marshaller m) throws URISyntaxException {
-      if (this.type == null) {
-        this.type = PropertyType.STRING;
-      }
       if (this.type.equals(PropertyType.STRING)) {
         this.type = null;
       }
@@ -116,9 +113,6 @@ public class CustomPropertyAdapter
 
   @Override
   public Map<String, ICustomProperty> unmarshal(PropertyList v) {
-    if (v.properties == null) {
-      return new HashMap<>();
-    }
     Map<String, ICustomProperty> map =
         new HashMap<>(v.properties.size()); // use hashtable to reject null keys/values
     for (Property property : v.properties) {
