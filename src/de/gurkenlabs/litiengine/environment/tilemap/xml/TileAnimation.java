@@ -17,6 +17,7 @@ public class TileAnimation implements ITileAnimation {
 
   private transient int totalDuration;
 
+  @Nullable
   @Override
   public List<ITileAnimationFrame> getFrames() {
     return this.frames;
@@ -28,11 +29,12 @@ public class TileAnimation implements ITileAnimation {
       return this.totalDuration;
     }
 
-    if (this.getFrames().isEmpty()) {
+    List<ITileAnimationFrame> frames = this.getFrames();
+    if (frames == null || frames.isEmpty()) {
       return 0;
     }
 
-    for (ITileAnimationFrame frame : this.getFrames()) {
+    for (ITileAnimationFrame frame : frames) {
       if (frame != null) {
         this.totalDuration += frame.getDuration();
       }
@@ -44,7 +46,11 @@ public class TileAnimation implements ITileAnimation {
   @Override
   public ITileAnimationFrame getCurrentFrame() {
     long time = Game.time().sinceEnvironmentLoad() % this.getTotalDuration();
-    for (ITileAnimationFrame frame : this.getFrames()) {
+    List<ITileAnimationFrame> frames = this.getFrames();
+    if (frames == null) {
+      throw new AssertionError();
+    }
+    for (ITileAnimationFrame frame : frames) {
       time -= frame.getDuration();
       if (time <= 0) {
         return frame;
