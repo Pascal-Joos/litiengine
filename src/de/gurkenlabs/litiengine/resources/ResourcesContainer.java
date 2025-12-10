@@ -2,6 +2,7 @@ package de.gurkenlabs.litiengine.resources;
 
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.GameListener;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -192,7 +193,7 @@ public abstract class ResourcesContainer<T> {
 
   @Nullable
   public T get(URL resourceName) {
-    return this.get(resourceName, false);
+    return this.get(Nullability.castToNonnull(resourceName), false);
   }
 
   /**
