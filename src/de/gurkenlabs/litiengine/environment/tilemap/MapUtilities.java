@@ -269,7 +269,7 @@ public final class MapUtilities {
       return mapObject.getPolygon().getAbsolutePoints(mapObject.getLocation());
     }
 
-    if (mapObject.isPolyline()) {
+    if (mapObject.isPolyline() && mapObject.getPolyline() != null) {
       return mapObject.getPolyline().getAbsolutePoints(mapObject.getLocation());
     }
 
