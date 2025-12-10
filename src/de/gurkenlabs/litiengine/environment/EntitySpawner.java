@@ -3,7 +3,6 @@ package de.gurkenlabs.litiengine.environment;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.entities.IEntity;
 import de.gurkenlabs.litiengine.entities.Spawnpoint;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -197,8 +196,7 @@ public abstract class EntitySpawner<T extends IEntity> implements IEntitySpawner
   }
 
   private void spawn(@Nullable final Spawnpoint spawnpoint, final int amount) {
-    if (Nullability.castToNonnull(spawnpoint).getEnvironment() == null
-        || !Nullability.castToNonnull(spawnpoint).getEnvironment().isLoaded()) {
+    if (spawnpoint.getEnvironment() == null || !spawnpoint.getEnvironment().isLoaded()) {
       return;
     }
     for (int i = 0; i < amount; i++) {
