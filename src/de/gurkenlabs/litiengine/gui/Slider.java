@@ -69,7 +69,6 @@ public abstract class Slider extends GuiComponent {
 
   public abstract Point2D getRelativeSliderPosition();
 
-  @Nullable
   public ImageComponent getSliderComponent() {
     return this.sliderComponent;
   }

@@ -1,7 +1,6 @@
 package de.gurkenlabs.litiengine.gui;
 
 import de.gurkenlabs.litiengine.input.Input;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -89,7 +88,6 @@ public class VerticalSlider extends Slider {
             this.getSliderSpritesheet(),
             "",
             null));
-    Nullability.castToNonnull(this.getSliderComponent())
-        .setSpriteSheet(this.getSliderSpritesheet());
+    this.getSliderComponent().setSpriteSheet(this.getSliderSpritesheet());
   }
 }
