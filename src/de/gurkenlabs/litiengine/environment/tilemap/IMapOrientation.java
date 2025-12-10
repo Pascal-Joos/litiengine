@@ -5,7 +5,6 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import javax.annotation.Nullable;
 
 public interface IMapOrientation {
   /**
@@ -93,7 +92,6 @@ public interface IMapOrientation {
    * @param map The {@code IMap} that the tile is in
    * @return The bounding box of the tile
    */
-  @Nullable
   public Rectangle2D getBounds(Point tile, IMap map);
 
   /**
