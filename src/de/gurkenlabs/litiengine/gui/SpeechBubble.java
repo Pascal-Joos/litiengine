@@ -82,9 +82,7 @@ public class SpeechBubble implements IUpdateable, IRenderable {
 
     this.lastTextDisplay = Game.time().now();
     this.createBubbleImage();
-    if (entity.getEnvironment() != null) {
-      entity.getEnvironment().add(this, RenderType.UI);
-    }
+    entity.getEnvironment().add(this, RenderType.UI);
     Game.loop().attach(this);
     activeSpeechBubbles.put(entity, this);
   }

@@ -1,5 +1,6 @@
 package de.gurkenlabs.litiengine.entities;
 
+import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.entities.behavior.IBehaviorController;
 import de.gurkenlabs.litiengine.environment.Environment;
 import de.gurkenlabs.litiengine.environment.tilemap.ICustomPropertyProvider;
@@ -416,7 +417,7 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
   @Override
   public void removeTag(String tag) {
     this.getTags().remove(tag);
-    if (this.getEnvironment() == null) {
+    if (Game.world().environment() == null) {
       return;
     }
     this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
@@ -496,7 +497,6 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
     return sb.toString();
   }
 
-  @Nullable
   @Override
   public Environment getEnvironment() {
     return this.environment;
