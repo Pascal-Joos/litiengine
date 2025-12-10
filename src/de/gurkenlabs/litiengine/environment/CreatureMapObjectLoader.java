@@ -8,7 +8,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.IMapObject;
 import de.gurkenlabs.litiengine.environment.tilemap.MapObjectProperty;
 import de.gurkenlabs.litiengine.environment.tilemap.MapObjectType;
 import de.gurkenlabs.litiengine.graphics.animation.EntityAnimationController;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +83,7 @@ public class CreatureMapObjectLoader extends MapObjectLoader {
     // if so: create an instance of the custom class instead of the default Creature class
     for (Class<? extends Creature> customCreature : customCreatureType) {
       for (String prefix : EntityAnimationController.getDefaultSpritePrefixes(customCreature)) {
-        if (prefix != null && Nullability.castToNonnull(spriteSheet).equalsIgnoreCase(prefix)) {
+        if (prefix != null && spriteSheet.equalsIgnoreCase(prefix)) {
           Creature created = createCustomCreature(customCreature, spriteSheet);
           if (created != null) {
             return created;
