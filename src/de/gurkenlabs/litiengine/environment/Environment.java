@@ -43,7 +43,6 @@ import de.gurkenlabs.litiengine.physics.IMovementController;
 import de.gurkenlabs.litiengine.resources.Resources;
 import de.gurkenlabs.litiengine.util.TimeUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -259,7 +258,7 @@ public final class Environment implements IRenderable {
    * @param listener The listener to add.
    */
   public void onRendered(RenderType renderType, EnvironmentRenderedListener listener) {
-    Nullability.castToNonnull(this.renderListeners.get(renderType)).add(listener);
+    this.renderListeners.get(renderType).add(listener);
   }
 
   /**
