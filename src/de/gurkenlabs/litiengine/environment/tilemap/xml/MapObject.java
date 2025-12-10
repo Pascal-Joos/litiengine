@@ -6,7 +6,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectText;
 import de.gurkenlabs.litiengine.environment.tilemap.IPolyShape;
 import de.gurkenlabs.litiengine.environment.tilemap.ITilesetEntry;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -274,10 +273,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   @Override
   @XmlTransient
   public void setX(float x) {
-    if (this.isInfiniteMap()
-        && this.getLayer() != null
-        && this.getLayer().getMap() != null
-        && this.getLayer().getMap() instanceof TmxMap) {
+    if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
       this.x = x + map.getChunkOffsetX() * map.getTileWidth();
       return;
@@ -289,10 +285,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   @Override
   @XmlTransient
   public void setY(float y) {
-    if (this.isInfiniteMap()
-        && this.getLayer() != null
-        && this.getLayer().getMap() != null
-        && this.getLayer().getMap() instanceof TmxMap) {
+    if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
       this.y = y + map.getChunkOffsetY() * map.getTileHeight();
       return;
@@ -333,7 +326,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   public float getX() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
-      return this.x - Nullability.castToNonnull(map).getChunkOffsetX() * map.getTileWidth();
+      return this.x - map.getChunkOffsetX() * map.getTileWidth();
     }
 
     return this.x == null ? 0 : this.x;
@@ -343,9 +336,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   public float getY() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
-      return this.y
-          - Nullability.castToNonnull(map).getChunkOffsetY()
-              * Nullability.castToNonnull(map).getTileHeight();
+      return this.y - map.getChunkOffsetY() * map.getTileHeight();
     }
 
     return this.y == null ? 0 : this.y;
@@ -422,7 +413,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   @Override
   void finish(@Nullable URL location) throws TmxException {
     super.finish(location);
-    if (this.gid != null && this.getLayer() != null && this.getLayer().getMap() != null) {
+    if (this.gid != null) {
       this.tile = this.getLayer().getMap().getTilesetEntry(this.gid);
     }
   }
