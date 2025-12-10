@@ -49,7 +49,6 @@ public interface IMapObject extends ICustomPropertyProvider, Resource {
   @Nullable
   public IPolyShape getPolyline();
 
-  @Nullable
   public IPolyShape getPolygon();
 
   @Nullable
