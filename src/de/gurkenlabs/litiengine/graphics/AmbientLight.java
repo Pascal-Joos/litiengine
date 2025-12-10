@@ -89,10 +89,6 @@ public class AmbientLight extends ColorLayer {
   }
 
   private void renderLightSource(final Graphics2D g, final LightSource light, Rectangle2D section) {
-    if (this.getEnvironment().getMap() == null) {
-      return;
-    }
-
     final double mapWidth = this.getEnvironment().getMap().getSizeInPixels().width;
     final double mapHeight = this.getEnvironment().getMap().getSizeInPixels().height;
     double longerDimension = mapWidth < mapHeight ? mapHeight : mapWidth;
