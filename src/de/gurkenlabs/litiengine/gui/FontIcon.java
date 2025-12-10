@@ -35,7 +35,6 @@ public class FontIcon {
    *
    * @return the font
    */
-  @Nullable
   public Font getFont() {
     return this.font;
   }
@@ -69,13 +68,10 @@ public class FontIcon {
     final Color oldColor = g.getColor();
     final Font oldFont = g.getFont();
     g.setColor(color);
-    final Font font = this.getFont();
-    if (font != null) {
-      if (bold) {
-        g.setFont(font.deriveFont(Font.BOLD, fontSize));
-      } else {
-        g.setFont(font.deriveFont(fontSize));
-      }
+    if (bold) {
+      g.setFont(this.getFont().deriveFont(Font.BOLD, fontSize));
+    } else {
+      g.setFont(this.getFont().deriveFont(fontSize));
     }
     TextRenderer.render(g, this.getText(), x, y);
     g.setColor(oldColor);
