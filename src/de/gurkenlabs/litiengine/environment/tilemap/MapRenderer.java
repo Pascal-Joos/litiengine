@@ -164,11 +164,7 @@ public class MapRenderer {
     if (image != null) {
       Point p = map.getOrientation().getLocation(x, y, map);
       p.y -= image.getHeight();
-      ITilesetEntry entry = tile.getTilesetEntry();
-      if (entry == null) {
-        return;
-      }
-      ITileOffset offset = entry.getTileset().getTileOffset();
+      ITileOffset offset = tile.getTilesetEntry().getTileset().getTileOffset();
       if (offset != null) {
         p.x += offset.getX();
         p.y += offset.getY();

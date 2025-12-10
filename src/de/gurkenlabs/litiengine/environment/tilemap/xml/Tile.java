@@ -124,9 +124,6 @@ public class Tile extends CustomPropertyProvider implements ITile {
     if (this.tilesetEntry == null) { // happens if the tile is empty
       return null;
     }
-    if (this.getTilesetEntry() == null) {
-      return null;
-    }
     BufferedImage base = this.getTilesetEntry().getImage();
     if (!this.isFlipped()) {
       return base;
@@ -163,7 +160,6 @@ public class Tile extends CustomPropertyProvider implements ITile {
     return this.tileCoordinate;
   }
 
-  @Nullable
   @Override
   public ITilesetEntry getTilesetEntry() {
     return this.tilesetEntry;
