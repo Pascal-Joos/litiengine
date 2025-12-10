@@ -218,34 +218,31 @@ public class DropdownListField extends GuiComponent {
   }
 
   private void prepareInput() {
-    IKeyboard keyboard = Input.keyboard();
-    if (keyboard == null) {
-      return;
-    }
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_UP,
+            e -> {
+              if (this.isSuspended()
+                  || !this.isVisible()
+                  || !this.isArrowKeyNavigation()
+                  || !this.getChosenElementComponent().isHovered()) {
+                return;
+              }
+              this.getContentList().setSelection(0, this.getSelectedIndex() - 1);
+            });
 
-    keyboard.onKeyTyped(
-        KeyEvent.VK_UP,
-        e -> {
-          if (this.isSuspended()
-              || !this.isVisible()
-              || !this.isArrowKeyNavigation()
-              || !this.getChosenElementComponent().isHovered()) {
-            return;
-          }
-          this.getContentList().setSelection(0, this.getSelectedIndex() - 1);
-        });
-
-    keyboard.onKeyTyped(
-        KeyEvent.VK_DOWN,
-        e -> {
-          if (this.isSuspended()
-              || !this.isVisible()
-              || !this.isArrowKeyNavigation()
-              || !this.getChosenElementComponent().isHovered()) {
-            return;
-          }
-          this.getContentList().setSelection(0, this.getSelectedIndex() + 1);
-        });
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_DOWN,
+            e -> {
+              if (this.isSuspended()
+                  || !this.isVisible()
+                  || !this.isArrowKeyNavigation()
+                  || !this.getChosenElementComponent().isHovered()) {
+                return;
+              }
+              this.getContentList().setSelection(0, this.getSelectedIndex() + 1);
+            });
 
     this.onMouseWheelScrolled(
         e -> {

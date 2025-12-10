@@ -52,9 +52,7 @@ public class PlatformingMovementController<T extends IMobileEntity>
     this.getDownKeys().clear();
     this.jump = new ArrayList<>();
     this.addJumpKey(jump);
-    if (Input.keyboard() != null) {
-      Input.keyboard().onKeyPressed(this::handlePressedKey);
-    }
+    Input.keyboard().onKeyPressed(this::handlePressedKey);
   }
 
   @Override
