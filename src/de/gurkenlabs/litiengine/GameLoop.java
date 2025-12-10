@@ -128,12 +128,10 @@ public final class GameLoop extends UpdateLoop implements IGameLoop {
     ((Keyboard) Input.keyboard()).update();
     ((Mouse) Input.mouse()).update();
 
-    if (!Game.config().input().isGamepadSupport()) {
-      return;
-    }
-
-    for (IUpdateable gamepad : Input.gamepads().getAll()) {
-      gamepad.update();
+    if (Game.config().input().isGamepadSupport()) {
+      for (IUpdateable gamepad : Input.gamepads().getAll()) {
+        gamepad.update();
+      }
     }
   }
 
