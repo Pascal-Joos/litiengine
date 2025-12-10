@@ -65,7 +65,6 @@ public final class Input {
    *
    * @return The mouse input device.
    */
-  @Nullable
   public static IMouse mouse() {
     return mouse;
   }

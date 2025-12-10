@@ -35,10 +35,7 @@ public class TextFieldComponent extends ImageComponent {
     this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
     this.setText(text);
     this.flickerDelay = 100;
-    final IKeyboard keyboard = Input.keyboard();
-    if (keyboard != null) {
-      keyboard.onKeyTyped(this::handleTypedKey);
-    }
+    Input.keyboard().onKeyTyped(this::handleTypedKey);
     this.onClicked(
         e -> {
           if (!this.isSelected()) {
@@ -46,15 +43,13 @@ public class TextFieldComponent extends ImageComponent {
           }
         });
 
-    final IMouse mouse = Input.mouse();
-    if (mouse != null) {
-      mouse.onClicked(
-          e -> {
-            if (!this.getBoundingBox().contains(mouse.getLocation())) {
-              this.setSelected(false);
-            }
-          });
-    }
+    Input.mouse()
+        .onClicked(
+            e -> {
+              if (!this.getBoundingBox().contains(Input.mouse().getLocation())) {
+                this.setSelected(false);
+              }
+            });
 
     this.setTextAlign(Align.LEFT);
   }

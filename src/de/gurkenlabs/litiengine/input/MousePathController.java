@@ -28,14 +28,9 @@ public class MousePathController extends MovementController<IMobileEntity> {
       return;
     }
 
-    IMouse mouse = Input.mouse();
-    if (mouse == null) {
-      return;
-    }
-
-    this.navigating = mouse.isRightButtonPressed();
+    this.navigating = Input.mouse().isRightButtonPressed();
     if (this.navigating) {
-      this.navigator.navigate(mouse.getMapLocation());
+      this.navigator.navigate(Input.mouse().getMapLocation());
     }
   }
 }
