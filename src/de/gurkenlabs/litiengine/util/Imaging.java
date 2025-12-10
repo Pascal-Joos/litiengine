@@ -457,6 +457,9 @@ public final class Imaging {
   public static BufferedImage scale(final BufferedImage image, final int max) {
     Dimension2D newDimension =
         GeometricUtilities.scaleWithRatio(image.getWidth(), image.getHeight(), max);
+    if (newDimension == null) {
+      return null;
+    }
     return scale(image, (int) newDimension.getWidth(), (int) newDimension.getHeight());
   }
 
