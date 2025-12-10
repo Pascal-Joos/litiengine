@@ -68,6 +68,7 @@ public final class XmlUtilities {
     }
   }
 
+  @Nullable
   public static <T> JAXBContext getContext(Class<T> cls) {
     try {
       final JAXBContext jaxbContext;
