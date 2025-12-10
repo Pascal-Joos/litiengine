@@ -98,11 +98,14 @@ public abstract class MapObjectLoader implements IMapObjectLoader {
   }
 
   protected boolean isMatchingType(IMapObject mapObject) {
-    if (!mapObject.getType().equalsIgnoreCase(this.getMapObjectType())) {
+    if (mapObject == null
+        || mapObject.getType() == null
+        || mapObject.getType().isEmpty()
+        || !mapObject.getType().equalsIgnoreCase(this.getMapObjectType())) {
       log.log(
           Level.SEVERE,
           "Cannot load a mapobject of the type [{0}] with a loader of type [{1}].",
-          new Object[] {mapObject.getType(), this.getClass()});
+          new Object[] {mapObject != null ? mapObject.getType() : null, this.getClass()});
       return false;
     }
 
