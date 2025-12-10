@@ -176,6 +176,10 @@ public class AStarGrid implements IRenderable {
       return;
     }
 
+    if (Game.world().environment() == null) {
+      return;
+    }
+
     // by default we calculate a penalty for props that cannot be destroyed
     int penalty = 0;
     for (Prop prop : Game.world().environment().getProps()) {

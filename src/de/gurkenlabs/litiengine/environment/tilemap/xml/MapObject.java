@@ -86,7 +86,9 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   public MapObject(MapObject original) {
     super(original);
     this.setName(original.getName());
-    this.setId(Game.world().environment().getNextMapId());
+    if (Game.world().environment() != null) {
+      this.setId(Game.world().environment().getNextMapId());
+    }
     this.polyline =
         (original.getPolyline() != null && !original.getPolyline().getPoints().isEmpty())
             ? new PolyShape(original.getPolyline())

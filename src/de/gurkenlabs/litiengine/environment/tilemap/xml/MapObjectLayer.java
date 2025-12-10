@@ -43,6 +43,9 @@ public class MapObjectLayer extends Layer implements IMapObjectLayer {
    */
   public MapObjectLayer(MapObjectLayer original) {
     super(original);
+    if (Game.world().environment() == null) {
+      return;
+    }
     int mapId = Game.world().environment().getNextMapId();
     for (IMapObject obj : original.getMapObjects()) {
       this.addMapObject(new MapObject((MapObject) obj, mapId));

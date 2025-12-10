@@ -89,6 +89,10 @@ public class Blueprint extends MapObject {
   }
 
   public List<IMapObject> build(float x, float y) {
+    if (Game.world().environment() == null) {
+      return new ArrayList<>();
+    }
+
     List<IMapObject> builtObjects = new ArrayList<>();
 
     int baseId = Game.world().environment().getNextMapId();

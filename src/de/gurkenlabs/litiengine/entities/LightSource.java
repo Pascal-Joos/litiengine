@@ -338,12 +338,15 @@ public class LightSource extends Entity implements IRenderable {
    * @param center the center
    */
   private void renderShadows(final Graphics2D g) {
+    if (Game.world().environment() == null) {
+      return;
+    }
+
     if (!Game.world().environment().getCombatEntities().stream()
         .anyMatch(isInRange(this.getCenter(), SHADOW_GRADIENT_SIZE))) {
       return;
     }
 
-    // we'll use a radial gradient
     final Paint gradientPaint =
         new RadialGradientPaint(
             Game.world().camera().getViewportDimensionCenter(this),
@@ -351,11 +354,9 @@ public class LightSource extends Entity implements IRenderable {
             SHADOW_GRADIENT_FRACTIONS,
             SHADOW_GRADIENT_COLORS);
 
-    // old Paint object for resetting it later
     final Paint oldPaint = g.getPaint();
     g.setPaint(gradientPaint);
 
-    // for each entity
     for (final ICombatEntity mob : Game.world().environment().getCombatEntities()) {
       if (mob.isDead() || !isInRange(this.getCenter(), SHADOW_GRADIENT_SIZE).test(mob)) {
         continue;
@@ -363,12 +364,10 @@ public class LightSource extends Entity implements IRenderable {
 
       final Shape obstructedVision =
           getObstructedVisionArea(mob, Game.world().camera().getViewportDimensionCenter(this));
-      // fill the polygon with the gradient paint
 
       ShapeRenderer.render(g, obstructedVision);
     }
 
-    // reset to old Paint object
     g.setPaint(oldPaint);
   }
 
