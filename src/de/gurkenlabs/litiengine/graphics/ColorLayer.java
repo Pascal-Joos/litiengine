@@ -33,11 +33,16 @@ public abstract class ColorLayer implements IRenderable {
     ImageRenderer.render(g, this.layer, -viewport.getX(), -viewport.getY());
   }
 
+  @Nullable
   public Color getColor() {
     return this.color;
   }
 
   public void setAlpha(int ambientAlpha) {
+    if (this.getColor() == null) {
+      return;
+    }
+
     this.setColor(
         new Color(
             this.getColor().getRed(),
