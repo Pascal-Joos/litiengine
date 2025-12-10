@@ -6,7 +6,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectText;
 import de.gurkenlabs.litiengine.environment.tilemap.IPolyShape;
 import de.gurkenlabs.litiengine.environment.tilemap.ITilesetEntry;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -337,7 +336,7 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   public float getY() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
-      return Nullability.castToNonnull(this.y) - map.getChunkOffsetY() * map.getTileHeight();
+      return this.y - map.getChunkOffsetY() * map.getTileHeight();
     }
 
     return this.y == null ? 0 : this.y;
