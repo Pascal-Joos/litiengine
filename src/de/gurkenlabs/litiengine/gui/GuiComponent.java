@@ -696,9 +696,11 @@ public abstract class GuiComponent
   public void prepare() {
     this.suspended = false;
     this.visible = true;
-    Input.mouse().addMouseListener(this);
-    Input.mouse().onWheelMoved(this);
-    Input.mouse().addMouseMotionListener(this);
+    if (Input.mouse() != null) {
+      Input.mouse().addMouseListener(this);
+      Input.mouse().onWheelMoved(this);
+      Input.mouse().addMouseMotionListener(this);
+    }
     for (final GuiComponent component : this.getComponents()) {
       component.prepare();
     }
@@ -1112,9 +1114,11 @@ public abstract class GuiComponent
    * removes mouse listeners.).
    */
   public void suspend() {
-    Input.mouse().removeMouseListener(this);
-    Input.mouse().removeMouseWheelListener(this);
-    Input.mouse().removeMouseMotionListener(this);
+    if (Input.mouse() != null) {
+      Input.mouse().removeMouseListener(this);
+      Input.mouse().removeMouseWheelListener(this);
+      Input.mouse().removeMouseMotionListener(this);
+    }
     this.suspended = true;
     this.visible = false;
     for (final GuiComponent childComp : this.getComponents()) {

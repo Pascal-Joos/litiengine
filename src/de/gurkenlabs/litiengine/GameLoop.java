@@ -2,7 +2,6 @@ package de.gurkenlabs.litiengine;
 
 import de.gurkenlabs.litiengine.graphics.RenderComponent;
 import de.gurkenlabs.litiengine.input.Input;
-import de.gurkenlabs.litiengine.input.Keyboard;
 import de.gurkenlabs.litiengine.input.Mouse;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,8 +124,10 @@ public final class GameLoop extends UpdateLoop implements IGameLoop {
   private void updateInvariableEngineComponents() {
     Game.audio().update();
 
-    ((Keyboard) Input.keyboard()).update();
-    ((Mouse) Input.mouse()).update();
+    IMouse mouse = Input.mouse();
+    if (mouse != null) {
+      ((Mouse) mouse).update();
+    }
 
     if (Game.config().input().isGamepadSupport()) {
       for (IUpdateable gamepad : Input.gamepads().getAll()) {
