@@ -2,6 +2,7 @@ package de.gurkenlabs.litiengine.graphics.emitters.xml;
 
 import de.gurkenlabs.litiengine.resources.Resources;
 import de.gurkenlabs.litiengine.util.io.XmlUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +49,7 @@ public class EmitterLoader {
   }
 
   public static EmitterData load(@Nullable EmitterData emitterData) {
-    if (loadedEmitters.containsKey(emitterData.getName())) {
+    if (loadedEmitters.containsKey(Nullability.castToNonnull(emitterData).getName())) {
       return loadedEmitters.get(emitterData.getName());
     }
 
