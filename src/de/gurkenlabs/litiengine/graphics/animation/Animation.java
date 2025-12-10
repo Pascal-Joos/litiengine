@@ -166,7 +166,6 @@ public class Animation implements IUpdateable, ILaunchable {
     return this.name;
   }
 
-  @Nullable
   public Spritesheet getSpritesheet() {
     // in case the previously sprite sheet was unloaded (removed from the loaded sprite sheets),
     // try to find an updated one by the name of the previously used sprite
