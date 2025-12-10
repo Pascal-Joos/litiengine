@@ -327,11 +327,19 @@ public class Camera implements ICamera {
   }
 
   protected double getViewportWidth() {
-    return Game.window().getResolution().getWidth() / this.getRenderScale();
+    Dimension resolution = Game.window().getResolution();
+    if (resolution == null) {
+      return 0;
+    }
+    return resolution.getWidth() / this.getRenderScale();
   }
 
   protected double getViewportHeight() {
-    return Game.window().getResolution().getHeight() / this.getRenderScale();
+    Dimension resolution = Game.window().getResolution();
+    if (resolution == null) {
+      return 0;
+    }
+    return resolution.getHeight() / this.getRenderScale();
   }
 
   /**

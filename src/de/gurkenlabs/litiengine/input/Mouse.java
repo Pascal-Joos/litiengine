@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.IUpdateable;
 import de.gurkenlabs.litiengine.environment.tilemap.MapUtilities;
 import de.gurkenlabs.litiengine.util.MathUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.Robot;
@@ -430,9 +431,13 @@ public final class Mouse
       diffY = e.getY() - this.lastLocation.getY();
       this.lastLocation = new Point(e.getX(), e.getY());
     } else {
+      final Dimension resolution = Game.window().getResolution();
+      if (resolution == null) {
+        return;
+      }
       // get diff relative from grabbed position
-      final double screenCenterX = Game.window().getResolution().getWidth() * 0.5;
-      final double screenCenterY = Game.window().getResolution().getHeight() * 0.5;
+      final double screenCenterX = resolution.getWidth() * 0.5;
+      final double screenCenterY = resolution.getHeight() * 0.5;
       final Point screenLocation = Game.window().getLocationOnScreen();
       final int grabX = (int) (screenLocation.x + screenCenterX);
       final int grabY = (int) (screenLocation.y + screenCenterY);
@@ -445,11 +450,18 @@ public final class Mouse
       diffY = e.getYOnScreen() - (double) grabY;
     }
 
+    final Dimension resolution = Game.window().getResolution();
+    if (resolution == null) {
+      return;
+    }
+
     // set new mouse location
     double newX = this.getLocation().getX() + diffX * this.sensitivity;
     double newY = this.getLocation().getY() + diffY * this.sensitivity;
-    newX = MathUtilities.clamp(newX, 0, Game.window().getResolution().getWidth());
-    newY = MathUtilities.clamp(newY, 0, Game.window().getResolution().getHeight());
+    newX =
+        MathUtilities.clamp(
+            newX, 0, Nullability.castToNonnull(Game.window().getResolution()).getWidth());
+    newY = MathUtilities.clamp(newY, 0, resolution.getHeight());
 
     this.location = new Point2D.Double(newX, newY);
   }
