@@ -25,7 +25,6 @@ public interface IMap extends ILayerList, Comparable<IMap> {
    *
    * @return the orientation
    */
-  @Nullable
   public IMapOrientation getOrientation();
 
   @Nullable

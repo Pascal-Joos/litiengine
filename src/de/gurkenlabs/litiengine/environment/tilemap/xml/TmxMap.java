@@ -54,7 +54,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @XmlAttribute private String orientation;
 
-  @Nullable @XmlTransient private IMapOrientation mapOrientation;
+  @XmlTransient private IMapOrientation mapOrientation;
 
   @XmlAttribute private RenderOrder renderorder;
 
@@ -147,7 +147,6 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
     return this.nextLayerId;
   }
 
-  @Nullable
   @Override
   public IMapOrientation getOrientation() {
     if (this.mapOrientation == null) {
@@ -175,8 +174,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @Override
   public Dimension getSizeInPixels() {
-    IMapOrientation orientation = this.getOrientation();
-    return orientation.getSize(this);
+    return this.getOrientation().getSize(this);
   }
 
   @XmlTransient
@@ -505,11 +503,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @SuppressWarnings("unused")
   private void beforeMarshal(Marshaller m) {
-    if (this.mapOrientation == null) {
-      this.orientation = null;
-    } else {
-      this.orientation = this.mapOrientation.getName();
-    }
+    this.orientation = this.mapOrientation.getName();
   }
 
   private void layerAdded(ILayer layer) {
