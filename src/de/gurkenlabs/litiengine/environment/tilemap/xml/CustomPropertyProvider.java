@@ -2,7 +2,6 @@ package de.gurkenlabs.litiengine.environment.tilemap.xml;
 
 import de.gurkenlabs.litiengine.environment.tilemap.ICustomProperty;
 import de.gurkenlabs.litiengine.environment.tilemap.ICustomPropertyProvider;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
@@ -212,7 +211,7 @@ public class CustomPropertyProvider implements ICustomPropertyProvider {
 
   @Override
   public <T extends Enum<T>> T getEnumValue(String propertyName, Class<T> enumType) {
-    return this.getEnumValue(propertyName, enumType, Nullability.castToNonnull(null));
+    return this.getEnumValue(propertyName, enumType, null);
   }
 
   @Override
