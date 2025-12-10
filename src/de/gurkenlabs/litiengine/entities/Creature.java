@@ -93,7 +93,7 @@ public class Creature extends CombatEntity implements IMobileEntity {
   public float[] getTweenValues(TweenType tweenType) {
     switch (tweenType) {
       case VELOCITY:
-        return new float[] {this.getVelocity() == null ? 0f : this.getVelocity().get()};
+        return new float[] {this.getVelocity().get()};
       default:
         return super.getTweenValues(tweenType);
     }
@@ -103,10 +103,7 @@ public class Creature extends CombatEntity implements IMobileEntity {
   public void setTweenValues(TweenType tweenType, float[] newValues) {
     switch (tweenType) {
       case VELOCITY:
-        Attribute<Float> velocity = this.getVelocity();
-        if (velocity != null) {
-          velocity.setBaseValue(newValues[0]);
-        }
+        this.getVelocity().setBaseValue(newValues[0]);
         break;
       default:
         super.setTweenValues(tweenType, newValues);
@@ -154,11 +151,10 @@ public class Creature extends CombatEntity implements IMobileEntity {
     // ensure that entities don't travel too far in case of lag
     return Math.min(Game.loop().getDeltaTime(), GameLoop.TICK_DELTATIME_LAG)
         * 0.001F
-        * this.getVelocity().getOrDefaultValue()
+        * this.getVelocity().get()
         * Game.loop().getTimeScale();
   }
 
-  @Nullable
   @Override
   public Attribute<Float> getVelocity() {
     return this.velocity;
@@ -228,10 +224,7 @@ public class Creature extends CombatEntity implements IMobileEntity {
 
   @Override
   public void setVelocity(float velocity) {
-    Attribute<Float> velocityAttr = this.getVelocity();
-    if (velocityAttr != null) {
-      velocityAttr.setBaseValue(velocity);
-    }
+    this.getVelocity().setBaseValue(velocity);
   }
 
   @Override
