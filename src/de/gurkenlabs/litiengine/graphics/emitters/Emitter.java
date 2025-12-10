@@ -371,8 +371,8 @@ public class Emitter extends Entity implements IUpdateable, ITimeToLive, IRender
         break;
       case TEXT:
         String text;
-        if (this.data().getTexts().isEmpty()) {
-          text = EmitterData.DEFAULT_TEXT;
+        if (this.data().getTexts() == null || this.data().getTexts().isEmpty()) {
+          return null;
         } else {
           text = Game.random().choose(this.data().getTexts());
         }
