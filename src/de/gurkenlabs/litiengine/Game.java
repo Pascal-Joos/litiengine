@@ -30,7 +30,6 @@ import de.gurkenlabs.litiengine.sound.SoundPlayback;
 import de.gurkenlabs.litiengine.tweening.TweenEngine;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.io.XmlUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.event.KeyEvent;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URL;
@@ -84,7 +83,7 @@ public final class Game {
   @Nullable private static GameInfo gameInfo = new GameInfo();
   private static final TweenEngine tweenEngine = new TweenEngine();
 
-  @Nullable private static GameLoop gameLoop;
+  private static GameLoop gameLoop;
   @Nullable private static ScreenManager screenManager;
   @Nullable private static GameWindow gameWindow;
 
@@ -345,7 +344,6 @@ public final class Game {
    * @see ILoop#attach(IUpdateable)
    * @see ILoop#detach(IUpdateable)
    */
-  @Nullable
   public static IGameLoop loop() {
     return gameLoop;
   }
@@ -511,11 +509,9 @@ public final class Game {
    *
    * @param uncaughtExceptionHandler The handler to be used for uncaught exceptions.
    */
-  public static synchronized void setUncaughtExceptionHandler(
+  public static void setUncaughtExceptionHandler(
       UncaughtExceptionHandler uncaughtExceptionHandler) {
-    if (gameLoop != null) {
-      Nullability.castToNonnull(gameLoop).setUncaughtExceptionHandler(uncaughtExceptionHandler);
-    }
+    gameLoop.setUncaughtExceptionHandler(uncaughtExceptionHandler);
     Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
   }
 
@@ -542,11 +538,7 @@ public final class Game {
           "The game cannot be started without being first initialized. Call Game.init(...) before Game.start().");
     }
 
-    if (gameLoop == null) {
-      throw new IllegalStateException("Game loop has not been initialized");
-    }
-
-    Nullability.castToNonnull(gameLoop).start();
+    gameLoop.start();
     tweenEngine.start();
     soundEngine.start();
 
@@ -628,9 +620,7 @@ public final class Game {
     initialized = false;
 
     config().save();
-    if (gameLoop != null) {
-      gameLoop.terminate();
-    }
+    gameLoop.terminate();
     tweenEngine.terminate();
     soundEngine.terminate();
 
