@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 public class CustomProperty implements ICustomProperty {
 
   private String type;
-  @Nullable private String value;
+  private String value;
   @Nullable private URL location;
 
   /**
@@ -114,7 +114,6 @@ public class CustomProperty implements ICustomProperty {
     this.location = null;
   }
 
-  @Nullable
   @Override
   public String getAsString() {
     return this.value;
@@ -122,9 +121,8 @@ public class CustomProperty implements ICustomProperty {
 
   @Override
   public char getAsChar() {
-    return Objects.requireNonNull(this.value)
-        .charAt(0); // TODO Is this enough? Should it check if it's the right length and throw an
-    // exception
+    return this.value.charAt(
+        0); // TODO Is this enough? Should it check if it's the right length and throw an exception
     // if it's not?
   }
 
