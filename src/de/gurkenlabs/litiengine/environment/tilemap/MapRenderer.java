@@ -125,8 +125,7 @@ public class MapRenderer {
     // TODO: possibly implement the same render order that Tiled uses for staggered maps: undo the
     // staggering, and then render it right-down
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
-    final RenderOrder renderOrder = map.getRenderOrder();
-    if (renderOrder != null && renderOrder.btt) {
+    if (map.getRenderOrder().btt) {
       for (int y = map.getHeight() - 1; y >= 0; y--) {
         drawRow(g, layer, y, map, viewport);
       }
@@ -144,8 +143,7 @@ public class MapRenderer {
 
   private static void drawRow(
       Graphics2D g, ITileLayer layer, int y, IMap map, Rectangle2D viewport) {
-    final RenderOrder renderOrder = map.getRenderOrder();
-    if (renderOrder != null && renderOrder.rtl) {
+    if (map.getRenderOrder().rtl) {
       for (int x = map.getWidth() - 1; x >= 0; x--) {
         drawTile(g, layer, x, y, map, viewport);
       }
