@@ -3,6 +3,7 @@ package de.gurkenlabs.litiengine.graphics.emitters.particles;
 import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.graphics.animation.AnimationController;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -12,7 +13,7 @@ import java.awt.image.BufferedImage;
 import javax.annotation.Nullable;
 
 public class SpriteParticle extends Particle {
-  private AnimationController animation;
+  @Nullable private AnimationController animation;
   private boolean animateSprite;
   private boolean loopSprite;
   @Nullable private BufferedImage currentImage;
@@ -31,6 +32,9 @@ public class SpriteParticle extends Particle {
 
   @Override
   public void render(final Graphics2D g, final Point2D emitterOrigin) {
+    if (animation == null) {
+      return;
+    }
     final Point2D renderLocation = getRenderLocation(emitterOrigin);
     if (isAnimatingSprite()) {
       currentImage = animation.getCurrentImage();
@@ -48,7 +52,10 @@ public class SpriteParticle extends Particle {
   @Override
   public void update(Point2D emitterOrigin, float updateRatio) {
     super.update(emitterOrigin, updateRatio);
-    this.animation.update();
+    if (this.animation == null) {
+      return;
+    }
+    Nullability.castToNonnull(this.animation);
   }
 
   @Override
@@ -77,6 +84,9 @@ public class SpriteParticle extends Particle {
 
   public void setLoopSprite(boolean loopSprite) {
     this.loopSprite = loopSprite;
+    if (this.animation == null) {
+      return;
+    }
     this.animation.getDefault().setLooping(loopSprite);
   }
 }
