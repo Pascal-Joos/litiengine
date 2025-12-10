@@ -100,7 +100,6 @@ public class AStarGrid implements IRenderable {
     return newNeighbors;
   }
 
-  @Nullable
   public AStarNode getNode(final Point2D point) {
     return this.getNode(point.getX(), point.getY());
   }
