@@ -549,9 +549,6 @@ public final class Imaging {
 
     if (fill && (newWidth != width || newHeight != height)) {
       final BufferedImage wrapperImage = getCompatibleImage(width, height);
-      if (wrapperImage == null) {
-        return null;
-      }
       final Graphics2D g2 = (Graphics2D) wrapperImage.getGraphics();
       g2.drawImage(
           newImg, (int) ((width - newWidth) / 2.0), (int) ((height - newHeight) / 2.0), null);
