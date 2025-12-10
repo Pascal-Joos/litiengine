@@ -104,6 +104,9 @@ public class TextFieldComponent extends ImageComponent {
   @Override
   public void render(final Graphics2D g) {
     super.render(g);
+    if (this.getFont() == null) {
+      this.setFont(new JLabel().getFont());
+    }
     g.setFont(this.getFont());
     final FontMetrics fm = g.getFontMetrics();
 
