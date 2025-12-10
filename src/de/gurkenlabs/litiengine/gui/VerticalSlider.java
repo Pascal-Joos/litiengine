@@ -1,6 +1,7 @@
 package de.gurkenlabs.litiengine.gui;
 
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -64,8 +65,8 @@ public class VerticalSlider extends Slider {
     this.setButton1(
         new ImageComponent(
             this.getX(), this.getY(), this.getWidth(), this.getWidth(), ARROW_UP.getText()));
-    this.getButton1().setFont(ARROW_UP.getFont());
-    this.getButton1().setSpriteSheet(this.getButtonSpritesheet());
+    Nullability.castToNonnull(this.getButton1()).setFont(ARROW_UP.getFont());
+    Nullability.castToNonnull(this.getButton1()).setSpriteSheet(this.getButtonSpritesheet());
     this.setButton2(
         new ImageComponent(
             this.getX(),
@@ -73,7 +74,7 @@ public class VerticalSlider extends Slider {
             this.getWidth(),
             this.getWidth(),
             ARROW_DOWN.getText()));
-    this.getButton2().setFont(ARROW_DOWN.getFont());
+    Nullability.castToNonnull(this.getButton2()).setFont(ARROW_DOWN.getFont());
     this.getButton2().setSpriteSheet(this.getButtonSpritesheet());
 
     final double sliderHeight = (this.getHeight() - this.getWidth() * 2) * 1 / 6.0;

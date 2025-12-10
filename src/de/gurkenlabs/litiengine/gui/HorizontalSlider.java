@@ -46,7 +46,10 @@ public class HorizontalSlider extends Slider {
             this.getButtonSpritesheet(),
             ARROW_LEFT.getText(),
             null));
-    this.getButton1().setFont(ARROW_LEFT.getFont());
+    final ImageComponent button1 = this.getButton1();
+    if (button1 != null) {
+      button1.setFont(ARROW_LEFT.getFont());
+    }
     this.setButton2(
         new ImageComponent(
             this.getX() + this.getWidth() - this.getHeight(),
@@ -56,7 +59,10 @@ public class HorizontalSlider extends Slider {
             this.getButtonSpritesheet(),
             ARROW_RIGHT.getText(),
             null));
-    this.getButton2().setFont(ARROW_RIGHT.getFont());
+    final ImageComponent button2 = this.getButton2();
+    if (button2 != null) {
+      button2.setFont(ARROW_RIGHT.getFont());
+    }
 
     final double sliderWidth = this.getHeight() * 2;
     this.minSliderX = this.getX() + this.getHeight();
