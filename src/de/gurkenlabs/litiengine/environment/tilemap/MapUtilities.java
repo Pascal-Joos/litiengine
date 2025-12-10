@@ -57,6 +57,14 @@ public final class MapUtilities {
   }
 
   public static Rectangle2D getTileBoundingBox(final IMap map, final Rectangle2D box) {
+    if (map == null) {
+      return new Rectangle2D.Double();
+    }
+
+    if (map.getOrientation() == null) {
+      return new Rectangle2D.Double();
+    }
+
     final int minX = (int) MathUtilities.clamp(box.getX(), 0, map.getSizeInPixels().width - 1);
     final int minY = (int) MathUtilities.clamp(box.getY(), 0, map.getSizeInPixels().height - 1);
     final int maxX = (int) MathUtilities.clamp(box.getMaxX(), 0, map.getSizeInPixels().width - 1);
@@ -124,7 +132,7 @@ public final class MapUtilities {
    * @return The x / y tile coordinate for the given mapLocation.
    */
   public static Point getTile(IMap map, final Point2D mapLocation) {
-    if (map == null) {
+    if (map == null || map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
       return new Point(-1, -1);
     }
     return map.getOrientation().getTile(mapLocation, map);
@@ -152,6 +160,12 @@ public final class MapUtilities {
 
   public static List<ITile> getTilesByPixelLocation(final IMap map, final Point2D location) {
     final List<ITile> tilesAtLocation = new ArrayList<>();
+    if (map == null) {
+      return tilesAtLocation;
+    }
+    if (map.getOrientation() == null) {
+      return tilesAtLocation;
+    }
     if (map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
       return tilesAtLocation;
     }
@@ -179,6 +193,10 @@ public final class MapUtilities {
   @Nullable
   public static ITile getTopMostTile(final IMap map, final Point2D location) {
     if (map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
+      return null;
+    }
+
+    if (map.getOrientation() == null) {
       return null;
     }
 
@@ -299,6 +317,10 @@ public final class MapUtilities {
       return new Rectangle2D.Double();
     }
 
+    if (map.getOrientation() == null) {
+      return new Rectangle2D.Double();
+    }
+
     return map.getOrientation().getEnclosingTileBounds(mapLocation, map);
   }
 
@@ -316,6 +338,10 @@ public final class MapUtilities {
 
   public static Rectangle2D getTileBoundingBox(@Nullable final IMap map, final Point tile) {
     if (map == null) {
+      return new Rectangle2D.Double();
+    }
+
+    if (map.getOrientation() == null) {
       return new Rectangle2D.Double();
     }
 
