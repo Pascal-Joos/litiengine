@@ -15,7 +15,6 @@ public interface ILayerList extends ICustomPropertyProvider {
    *
    * @return a List of ILayers
    */
-  @Nullable
   public List<ILayer> getRenderLayers();
 
   /**

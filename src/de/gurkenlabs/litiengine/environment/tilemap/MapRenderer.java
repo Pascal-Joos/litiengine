@@ -87,13 +87,7 @@ public class MapRenderer {
       @Nullable Environment env,
       RenderType[] renderTypes,
       float opacity) {
-    if (layers == null) {
-      return;
-    }
     final List<ILayer> renderLayers = layers.getRenderLayers();
-    if (renderLayers == null) {
-      return;
-    }
     for (final ILayer layer : renderLayers) {
       if (layer == null || !shouldBeRendered(g, map, layer, renderTypes)) {
         continue;
