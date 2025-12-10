@@ -1,6 +1,7 @@
 package de.gurkenlabs.litiengine.sound;
 
 import de.gurkenlabs.litiengine.resources.Resources;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Iterator;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -50,7 +51,8 @@ public class IntroTrack implements Track {
   public IntroTrack(Sound intro, Sound loop) {
     Objects.requireNonNull(intro);
     Objects.requireNonNull(loop);
-    if (!intro.getFormat().matches(loop.getFormat())) {
+    if (!Nullability.castToNonnull(intro.getFormat())
+        .matches(Nullability.castToNonnull(loop.getFormat()))) {
       throw new IllegalArgumentException(intro.getFormat() + " does not match " + loop.getFormat());
     }
     this.intro = intro;
