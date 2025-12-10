@@ -29,7 +29,10 @@ public class KeyboardEntityController<T extends IMobileEntity> extends MovementC
     this.down.add(down);
     this.left.add(left);
     this.right.add(right);
-    Input.keyboard().onKeyPressed(this::handlePressedKey);
+    final IKeyboard keyboard = Input.keyboard();
+    if (keyboard != null) {
+      keyboard.onKeyPressed(this::handlePressedKey);
+    }
   }
 
   public void handlePressedKey(final KeyEvent keyCode) {
