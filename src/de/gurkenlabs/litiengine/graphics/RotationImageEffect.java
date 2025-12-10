@@ -1,7 +1,6 @@
 package de.gurkenlabs.litiengine.graphics;
 
 import de.gurkenlabs.litiengine.util.Imaging;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -30,7 +29,7 @@ public class RotationImageEffect extends ImageEffect {
 
     final int size = Math.max(image.getWidth(), image.getHeight()) * 2;
     final BufferedImage img = Imaging.getCompatibleImage(size, size);
-    final Graphics2D g = Nullability.castToNonnull(img).createGraphics();
+    final Graphics2D g = img.createGraphics();
     ImageRenderer.renderRotated(g, image, new Point2D.Double(0, 0), this.getAngle());
     g.dispose();
 
