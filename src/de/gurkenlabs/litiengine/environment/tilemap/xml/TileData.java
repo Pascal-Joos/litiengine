@@ -56,7 +56,7 @@ public class TileData {
     }
   }
 
-  @Nullable @XmlAttribute private String encoding;
+  @XmlAttribute private String encoding;
 
   @Nullable @XmlAttribute private String compression;
 
@@ -66,7 +66,7 @@ public class TileData {
 
   @Nullable @XmlTransient private String value;
 
-  @Nullable @XmlTransient private List<TileChunk> chunks;
+  @XmlTransient private List<TileChunk> chunks;
 
   @Nullable @XmlTransient private List<Tile> tiles;
 
@@ -119,7 +119,6 @@ public class TileData {
     this.height = height;
   }
 
-  @Nullable
   @XmlTransient
   public String getEncoding() {
     return this.encoding;
@@ -424,10 +423,6 @@ public class TileData {
     int maxChunkWidth = 0;
     int maxChunkHeight = 0;
 
-    if (!this.isInfinite()) {
-      return;
-    }
-
     for (TileChunk chunk : this.chunks) {
       if (chunk.getX() < minX) {
         minX = chunk.getX();
@@ -459,21 +454,15 @@ public class TileData {
     // first fill a two-dimensional array with all the information of the chunks
     Tile[][] tileArr = new Tile[this.getHeight()][this.getWidth()];
 
-    if (this.getEncoding() == null || this.getEncoding().isEmpty()) {
-      throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
-    } else if (this.getEncoding().equals(Encoding.BASE64)) {
-      if (this.isInfinite()) {
-        for (TileChunk chunk : this.chunks) {
-          List<Tile> chunkTiles = parseBase64Data(chunk.getValue(), this.compression);
-          this.addTiles(tileArr, chunk, chunkTiles);
-        }
+    if (this.getEncoding().equals(Encoding.BASE64)) {
+      for (TileChunk chunk : this.chunks) {
+        List<Tile> chunkTiles = parseBase64Data(chunk.getValue(), this.compression);
+        this.addTiles(tileArr, chunk, chunkTiles);
       }
     } else if (this.getEncoding().equals(Encoding.CSV)) {
-      if (this.isInfinite()) {
-        for (TileChunk chunk : this.chunks) {
-          List<Tile> chunkTiles = parseCsvData(chunk.getValue());
-          this.addTiles(tileArr, chunk, chunkTiles);
-        }
+      for (TileChunk chunk : this.chunks) {
+        List<Tile> chunkTiles = parseCsvData(chunk.getValue());
+        this.addTiles(tileArr, chunk, chunkTiles);
       }
     } else {
       throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
@@ -507,9 +496,7 @@ public class TileData {
 
   private List<Tile> parseData() throws InvalidTileLayerException {
     List<Tile> tmpTiles;
-    if (this.getEncoding() == null || this.getEncoding().isEmpty()) {
-      throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
-    } else if (this.getEncoding().equals(Encoding.BASE64)) {
+    if (this.getEncoding().equals(Encoding.BASE64)) {
       tmpTiles = parseBase64Data(this.value, this.compression);
     } else if (this.getEncoding().equals(Encoding.CSV)) {
       tmpTiles = parseCsvData(this.value);
