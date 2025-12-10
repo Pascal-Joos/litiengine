@@ -6,7 +6,6 @@ import de.gurkenlabs.litiengine.abilities.Ability;
 import de.gurkenlabs.litiengine.entities.EntityDistanceComparator;
 import de.gurkenlabs.litiengine.entities.ICombatEntity;
 import de.gurkenlabs.litiengine.entities.RelativeEntityComparator;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Shape;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +42,7 @@ public abstract class Effect implements IUpdateable {
     this.ability = ability;
     this.targetPriorityComparator = new EntityDistanceComparator(this.getAbility().getExecutor());
 
-    this.duration = Nullability.castToNonnull(ability.getAttributes().duration().get());
+    this.duration = ability.getAttributes().duration().get();
     if (targets == null || targets.length == 0) {
       this.effectTargets = new EffectTarget[] {EffectTarget.NONE};
     } else {

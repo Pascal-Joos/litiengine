@@ -1,6 +1,5 @@
 package de.gurkenlabs.litiengine.attributes;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +73,6 @@ public class Attribute<T extends Number> {
    *
    * @return The raw base value of this attribute.
    */
-  @Nullable
   public T getBase() {
     return this.baseValue;
   }
@@ -134,11 +132,10 @@ public class Attribute<T extends Number> {
    * @param baseValue the base value
    * @return the t
    */
-  @Nullable
   protected T applyModifiers(final T baseValue) {
     T currentValue = baseValue;
     for (final AttributeModifier<T> modifier : this.getModifiers()) {
-      currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
+      currentValue = modifier.modify(currentValue);
     }
 
     return currentValue;
