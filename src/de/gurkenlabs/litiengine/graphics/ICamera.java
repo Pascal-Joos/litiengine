@@ -5,7 +5,6 @@ import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.IUpdateable;
 import de.gurkenlabs.litiengine.Valign;
 import de.gurkenlabs.litiengine.entities.IEntity;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.EventListener;
@@ -110,11 +109,9 @@ public interface ICamera extends IUpdateable {
    * @param entity the entity
    * @return the screen location
    */
-  Point2D getViewportLocation(IEntity entity) {
+  default Point2D getViewportLocation(IEntity entity) {
     Point2D entityLocation = entity.getLocation();
-    return getViewportLocation(
-        Nullability.castToNonnull(entityLocation).getX(),
-        Nullability.castToNonnull(entityLocation).getY());
+    return getViewportLocation(entityLocation.getX(), entityLocation.getY());
   }
 
   /**
