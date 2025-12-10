@@ -11,6 +11,7 @@ import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.resources.Resources;
 import de.gurkenlabs.litiengine.util.io.FileUtilities;
 import de.gurkenlabs.litiengine.util.io.XmlUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -280,7 +281,7 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
     ITilesetEntry entry = tile.getTilesetEntry();
     return entry == null
         ? this.containsTile(tile.getGridId())
-        : this.containsTile(tile.getTilesetEntry());
+        : this.containsTile(Nullability.castToNonnull(tile.getTilesetEntry()));
   }
 
   @Override
