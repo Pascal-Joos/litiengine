@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -155,6 +156,7 @@ public class ListField extends GuiComponent {
     return this.horizontalLowerBound;
   }
 
+  @Nullable
   public HorizontalSlider getHorizontalSlider() {
     return this.horizontalSlider;
   }
@@ -605,14 +607,14 @@ public class ListField extends GuiComponent {
                   - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()));
         }
         if (this.isSliderInside() && this.getHorizontalSlider() != null) {
+          HorizontalSlider horizontalSlider = this.getHorizontalSlider();
           entryComponent.setY(
               this.getY()
-                  + ((rowHeight
-                          - (this.getHorizontalSlider().getHeight() / this.getNumberOfShownRows()))
+                  + ((rowHeight - (horizontalSlider.getHeight() / this.getNumberOfShownRows()))
                       * row));
           entryComponent.setHeight(
               entryComponent.getHeight()
-                  - (this.getHorizontalSlider().getHeight() / this.getNumberOfShownRows()));
+                  - (horizontalSlider.getHeight() / this.getNumberOfShownRows()));
         }
         entryComponent.setTextAlign(Align.LEFT);
         this.getListEntry(column).add(entryComponent);
@@ -695,7 +697,8 @@ public class ListField extends GuiComponent {
                 this.nbOfColumns - this.getNumberOfShownColumns(),
                 1);
       }
-      this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
+      Nullability.castToNonnull(this.getHorizontalSlider())
+          .setCurrentValue(this.getHorizontalLowerBound());
       this.getComponents().add(this.getHorizontalSlider());
     }
 
