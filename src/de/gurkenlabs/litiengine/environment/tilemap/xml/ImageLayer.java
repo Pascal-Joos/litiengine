@@ -2,6 +2,7 @@ package de.gurkenlabs.litiengine.environment.tilemap.xml;
 
 import de.gurkenlabs.litiengine.environment.tilemap.IImageLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.IMapImage;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.net.URL;
 import javax.annotation.Nullable;
@@ -33,7 +34,8 @@ public class ImageLayer extends Layer implements IImageLayer {
   public int getOffsetX() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getMap();
-      return super.getOffsetX() - map.getChunkOffsetX() * map.getTileWidth();
+      return Nullability.castToNonnull(
+          super.getOffsetX() - map.getChunkOffsetX() * map.getTileWidth());
     }
 
     return super.getOffsetX();
@@ -43,7 +45,8 @@ public class ImageLayer extends Layer implements IImageLayer {
   public int getOffsetY() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getMap();
-      return super.getOffsetX() - map.getChunkOffsetY() * map.getTileHeight();
+      return Nullability.castToNonnull(
+          super.getOffsetX() - map.getChunkOffsetY() * map.getTileHeight());
     }
 
     return super.getOffsetY();

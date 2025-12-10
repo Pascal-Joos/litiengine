@@ -153,6 +153,7 @@ public abstract class Layer extends CustomPropertyProvider implements ILayer {
     return this.width;
   }
 
+  @Nullable
   @Override
   public IMap getMap() {
     return this.parentMap;
