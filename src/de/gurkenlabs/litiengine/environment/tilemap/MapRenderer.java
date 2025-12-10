@@ -7,7 +7,6 @@ import de.gurkenlabs.litiengine.graphics.ImageRenderer;
 import de.gurkenlabs.litiengine.graphics.RenderType;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.resources.Resources;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
@@ -207,9 +206,7 @@ public class MapRenderer {
     Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
     BufferedImage img;
     if (sprite == null) {
-      img =
-          Resources.images()
-              .get(Nullability.castToNonnull(layer.getImage().getAbsoluteSourcePath()));
+      img = Resources.images().get(layer.getImage().getAbsoluteSourcePath());
     } else {
       img = sprite.getImage();
     }
