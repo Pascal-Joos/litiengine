@@ -3,7 +3,6 @@ package de.gurkenlabs.litiengine.gui;
 import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.input.Input;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -64,7 +63,6 @@ public class TextFieldComponent extends ImageComponent {
     return this.maxLength;
   }
 
-  @Nullable
   @Override
   public String getText() {
     return this.fullText;
@@ -80,7 +78,7 @@ public class TextFieldComponent extends ImageComponent {
         this.handleBackSpace();
         break;
       case KeyEvent.VK_SPACE:
-        if (!Nullability.castToNonnull(this.getText()).equals("")) {
+        if (!this.getText().equals("")) {
           this.setText(this.getText() + " ");
         }
         break;
@@ -139,32 +137,27 @@ public class TextFieldComponent extends ImageComponent {
   }
 
   private void handleBackSpace() {
-    String text = this.getText();
-    if (text != null && Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
-      while (text.length() >= 1 && text.charAt(text.length() - 1) == ' ') {
-        text = text.substring(0, text.length() - 1);
+    if (Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
+      while (this.getText().length() >= 1
+          && this.getText().charAt(this.getText().length() - 1) == ' ') {
+        this.setText(this.getText().substring(0, this.getText().length() - 1));
       }
 
-      while (text.length() >= 1 && text.charAt(text.length() - 1) != ' ') {
-        text = text.substring(0, text.length() - 1);
+      while (this.getText().length() >= 1
+          && this.getText().charAt(this.getText().length() - 1) != ' ') {
+        this.setText(this.getText().substring(0, this.getText().length() - 1));
       }
-      this.setText(text);
-    } else if (text != null && text.length() >= 1) {
-      this.setText(text.substring(0, text.length() - 1));
+    } else if (this.getText().length() >= 1) {
+      this.setText(this.getText().substring(0, this.getText().length() - 1));
     }
 
-    text = this.getText();
-    if (this.isKnownNumericFormat() && (text == null || text.isEmpty())) {
+    if (this.isKnownNumericFormat() && (this.getText() == null || this.getText().isEmpty())) {
       this.setText("0");
-      text = this.getText();
     }
   }
 
   private void handleNormalTyping(KeyEvent event) {
-    final String currentText = this.getText();
-    if (this.getMaxLength() > 0
-        && currentText != null
-        && currentText.length() >= this.getMaxLength()) {
+    if (this.getMaxLength() > 0 && this.getText().length() >= this.getMaxLength()) {
       return;
     }
 
@@ -176,17 +169,17 @@ public class TextFieldComponent extends ImageComponent {
     // regex check to ensure certain formats
     if (this.getFormat() != null && !this.getFormat().isEmpty()) {
       final Pattern pat = Pattern.compile(this.getFormat());
-      final Matcher mat = pat.matcher((currentText == null ? "" : currentText) + text);
+      final Matcher mat = pat.matcher(this.getText() + text);
       if (!mat.matches()) {
         return;
       }
     }
 
-    if (this.isKnownNumericFormat() && "0".equals(currentText == null ? "" : currentText)) {
+    if (this.isKnownNumericFormat() && this.getText().equals("0")) {
       this.setText("");
     }
 
-    this.setText((currentText == null ? "" : currentText) + text);
+    this.setText(this.getText() + text);
   }
 
   private boolean isKnownNumericFormat() {
