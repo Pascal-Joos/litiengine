@@ -156,10 +156,6 @@ public class SpeechBubble implements IUpdateable, IRenderable {
       return;
     }
 
-    if (this.entityCenter == null) {
-      return;
-    }
-
     final float deltaX = (float) (this.textBoxWidth / 2.0 + this.getAppearance().getPadding());
     final float deltaY =
         (float)
@@ -168,8 +164,8 @@ public class SpeechBubble implements IUpdateable, IRenderable {
                 + this.getAppearance().getPadding()
                 + 1);
 
-    final float startX = (float) (this.entityCenter.getX() - deltaX);
-    final float startY = (float) (this.entityCenter.getY() - deltaY);
+    final float startX = (float) (entityCenter.getX() - deltaX);
+    final float startY = (float) (entityCenter.getY() - deltaY);
     ImageRenderer.render(g, this.bubble, new Point2D.Double(startX, startY));
 
     final AttributedString styledText = new AttributedString(this.currentText);
@@ -258,14 +254,7 @@ public class SpeechBubble implements IUpdateable, IRenderable {
   }
 
   private void createBubbleImage() {
-    if (this.currentText == null) {
-      return;
-    }
-
     final BufferedImage img = Imaging.getCompatibleImage(500, 500);
-    if (img == null) {
-      return;
-    }
     final Graphics2D g = img.createGraphics();
     g.setFont(this.getFont());
     final float stringWidth = g.getFontMetrics().stringWidth(this.currentText);
