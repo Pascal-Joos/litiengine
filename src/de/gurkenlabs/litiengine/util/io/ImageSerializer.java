@@ -38,9 +38,6 @@ public final class ImageSerializer {
 
       final BufferedImage compatibleImg =
           Imaging.getCompatibleImage(img.getWidth(), img.getHeight());
-      if (compatibleImg == null) {
-        return null;
-      }
       compatibleImg.createGraphics().drawImage(img, 0, 0, null);
       compatibleImg.createGraphics().dispose();
 
