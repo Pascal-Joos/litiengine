@@ -2137,12 +2137,10 @@ public final class Environment implements IRenderable {
       this.render(g, RenderType.OVERLAY);
 
       long ambientStart = System.nanoTime();
-      final AmbientLight ambientLight = this.getAmbientLight();
       if (Game.config().graphics().getGraphicQuality().ordinal() >= Quality.MEDIUM.ordinal()
-          && ambientLight != null
-          && ambientLight.getColor() != null
-          && ambientLight.getColor().getAlpha() != 0) {
-        ambientLight.render(g);
+          && this.getAmbientLight() != null
+          && this.getAmbientLight().getColor().getAlpha() != 0) {
+        this.getAmbientLight().render(g);
       }
 
       final double ambientTime = TimeUtilities.nanoToMs(System.nanoTime() - ambientStart);
