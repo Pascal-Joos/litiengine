@@ -203,6 +203,9 @@ public class MapRenderer {
 
   protected static void renderImageLayer(
       Graphics2D g, IImageLayer layer, final IMap map, Rectangle2D viewport, float opacity) {
+    if (layer.getImage() == null) {
+      return;
+    }
     Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
     BufferedImage img;
     if (sprite == null) {

@@ -11,13 +11,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class ImageLayer extends Layer implements IImageLayer {
 
-  @XmlElement private MapImage image;
+  @Nullable @XmlElement private MapImage image;
 
   @Nullable
   @XmlAttribute
   @XmlJavaTypeAdapter(ColorAdapter.class)
   private Color trans;
 
+  @Nullable
   @Override
   public IMapImage getImage() {
     return this.image;
@@ -56,6 +57,8 @@ public class ImageLayer extends Layer implements IImageLayer {
   @Override
   void finish(@Nullable URL location) throws TmxException {
     super.finish(location);
-    this.image.finish(location);
+    if (this.image != null) {
+      this.image.finish(location);
+    }
   }
 }
