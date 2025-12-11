@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the shown method, the only assignment to `img` is:
+
+    final BufferedImage img = Imaging.getCompatibleImage(size, size);
+
+There is no subsequent reassignment, so whether `img` can be null depends entirely on the contract and implementation of `Imaging.getCompatibleImage(int, int)`.
+
+From the perspective of this method:
+
+- `image` is explicitly null-checked at the top; if it is null, the method returns early and never reaches the `img` assignment.
+- `size` is computed as `Math.max(image.getWidth(), image.getHeight()) * 2`. Both width and height of a non-null `BufferedImage` are non-negative, so `size` is >= 0. In almost all typical image libraries, a request for a "compatible image" with non-negative dimensions will either:
+  - return a valid `BufferedImage`, or
+  - throw an exception (e.g., if the size is 0 or too large), rather than return null.
+
+In standard Java SE APIs, factory methods that create images (such as `new BufferedImage(...)` or `GraphicsConfiguration.createCompatibleImage(...)`) do not return null; they either succeed or throw. If `Imaging.getCompatibleImage` is a thin wrapper around such APIs (which its name strongly suggests), then its contract almost certainly is to return a non-null `BufferedImage` or throw an exception on failure.
+
+There is no evidence in this snippet of any code path that would deliberately assign `null` to `img`, nor any null-check implying the author expected null. So under typical and reasonable assumptions about `Imaging.getCompatibleImage`, `img` is not nullable here. If `Imaging.getCompatibleImage` did sometimes return null, that would be a design out of line with common Java image APIs and would also be undocumented in this snippet.
+
+Given normal Java conventions and typical implementations of such methods, `img` cannot be null at the line:
+
+    final Graphics2D g = img.createGraphics();
+
+If `Imaging.getCompatibleImage` fails, it should throw, not return null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

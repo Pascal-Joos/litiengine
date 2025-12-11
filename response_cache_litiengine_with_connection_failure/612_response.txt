@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int getTotalDuration() {
+    if (this.totalDuration > 0) {
+      return this.totalDuration;
+    }
+
+    List<ITileAnimationFrame> frames = this.getFrames();
+    if (frames == null || frames.isEmpty()) {
+      return 0;
+    }
+
+    for (ITileAnimationFrame frame : frames) {
+      if (frame != null) {
+        this.totalDuration += frame.getDuration();
+      }
+    }
+
+    return this.totalDuration;
+  }
+  ```
+    ]]>
+  </code>
+</response>

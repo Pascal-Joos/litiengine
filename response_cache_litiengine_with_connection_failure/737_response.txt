@@ -1,0 +1,70 @@
+<response>
+  <reason><![CDATA[
+We are asked about the possible nullability of the result of `entity2.getLocation()` as used in:
+
+```java
+final double distance2 =
+    Nullability.castToNonnull(entity2.getLocation())
+        .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+```
+
+Here, `entity2` is the second argument to `EntityDistanceComparator.compare`:
+
+```java
+@Override
+public int compare(final IEntity entity1, final IEntity entity2) {
+  if (this.getRelativeEntity() == null) {
+    return 0;
+  }
+
+  final double distance1 =
+      Nullability.castToNonnull(entity1.getLocation())
+          .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+  final double distance2 =
+      Nullability.castToNonnull(entity2.getLocation())
+          .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+  ...
+}
+```
+
+The static type of `entity2` is `IEntity`:
+
+```java
+class de.gurkenlabs.litiengine.entities.IEntity {
+  Point2D getLocation()
+}
+```
+
+We are **not** given the implementation of `IEntity.getLocation()` or of all its possible implementors. The rest of the provided call chain shows many uses of `entity.getLocation()` (physics, rendering, camera), but none of these defines or constrains the return value of `IEntity.getLocation()` itself. The only concrete `getLocation` implementation we see is for `EntityEmitter`:
+
+```java
+class de.gurkenlabs.litiengine.graphics.emitters.EntityEmitter {
+  @Override
+  public Point2D getLocation() {
+    if (this.getEntity() == null) {
+      return null;
+    }
+    return this.hasDynamicLocation() ? this.getEntity().getLocation() : super.getLocation();
+  }
+}
+```
+
+However:
+
+1. `EntityEmitter` is not shown to implement `IEntity`, and from naming/packaging it appears to be an `Emitter`, not an `IEntity`. The relevant comparator (`EntityDistanceComparator`) works on `IEntity`, not `Emitter`. So `entity2` here is not proven to be an `EntityEmitter`.
+
+2. Even if some `IEntity` implementations might *never* return null, we have no code guaranteeing that for **all** implementations passed as `entity2`. The method contract on `IEntity.getLocation()` is unknown: no annotations, no invariant, and no implementation provided.
+
+3. The call site itself does *not* guard against null: instead it calls `Nullability.castToNonnull(entity2.getLocation())`. That helper is explicitly designed to throw if it receives null, not to prevent null from occurring. A thrown exception is *not* a "non-null return"; it simply means the code does not handle a null return gracefully.
+
+Given the analysis rules:
+- We must not assume behavior of methods whose full declarations/implementations are not provided.
+- We cannot safely assert that `IEntity.getLocation()` never returns null without seeing its implementation or a clear contract.
+- Exception paths (such as `castToNonnull` throwing) do not change the fact that `getLocation()` itself could have returned null.
+
+Therefore, with the information provided, it is entirely possible that for some `IEntity` implementation passed as `entity2`, `entity2.getLocation()` returns null at this call site, which would then cause `castToNonnull` to throw.
+
+Because of this, the only sound answer is that the result of `entity2.getLocation()` **can** be null at this specific call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

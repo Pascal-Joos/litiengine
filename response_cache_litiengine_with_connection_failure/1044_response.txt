@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public Tween begin(final Tweenable target, final TweenType type, final int duration) {
+    Tween tween = this.getTween(target, type);
+    if (tween == null) {
+      tween = new Tween(target, type, duration).ease(TweenFunction.QUAD_INOUT);
+      Nullability.castToNonnull(this.getTweens().get(target)).put(type, tween);
+    } else {
+      tween.setDuration(duration);
+    }
+    tween.begin();
+    return tween;
+}
+  ```
+    ]]>
+  </code>
+</response>

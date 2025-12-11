@@ -1,0 +1,35 @@
+<response>
+    <reason><![CDATA[
+The parameter `value` of `valueInRange` is used immediately via `value.doubleValue()`. If `value` were ever null at runtime, this would cause a `NullPointerException`.
+
+From the provided call chain, `valueInRange` is only called in two places:
+
+1. `modifyBaseValue`:
+```java
+this.setBaseValue(this.valueInRange(modifier.modify(this.getBase())));
+```
+Here `value` is the result of `modifier.modify(this.getBase())`. We are not given the implementation of `AttributeModifier.modify`, so we cannot determine whether it might return null.
+
+2. `get`:
+```java
+final T current = this.applyModifiers(this.getBase());
+return this.valueInRange(current);
+```
+Here `value` is the result of `applyModifiers(this.getBase())`. We are not given the implementation of `applyModifiers`, so we also cannot determine whether it might return null.
+
+Downstream usages such as:
+```java
+this.getHitPoints().get() <= 0
+(float) this.getHitPoints().get()
+this.get().floatValue() / this.getMax().floatValue();
+```
+all assume `get()` returns a non-null value, but this only tells us that in *practice* those specific call sites expect non-null; it does not prove that `modifier.modify` or `applyModifiers` can never produce null. The class itself contains no defensive null check on `value` in `valueInRange`, which would cause a crash if null were ever passed, but that again only indicates intent, not a guarantee, without seeing the implementations of the methods that produce the argument.
+
+To conclusively determine whether `value` can be null, we need to inspect whether `AttributeModifier.modify` and `RangeAttribute.applyModifiers` can return null.
+    ]]></reason>
+    <success>false</success>
+    <methods>
+      <method>de.gurkenlabs.litiengine.attributes.AttributeModifier.modify</method>
+      <method>de.gurkenlabs.litiengine.attributes.RangeAttribute.applyModifiers</method>
+    </methods>
+  </response>

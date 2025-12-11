@@ -1,0 +1,32 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Initializer
+  @Override
+  void finish( URL location) throws TmxException {
+    super.finish(location);
+    this.tileList = new CopyOnWriteArrayList<>(this.getData());
+    this.tiles = new Tile[this.getHeight()][this.getWidth()];
+    for (int i = 0; i < this.getData().size(); i++) {
+      final int x = i % this.getWidth();
+      final int y = i / this.getWidth();
+
+      final Tile tile = this.getData().get(i);
+      tile.setTileCoordinate(new Point(x, y));
+      this.tileList.add(tile);
+      this.tiles[y][x] = tile;
+    }
+    if (this.getMap() != null) {
+      for (Tile tile : getData()) {
+        ITilesetEntry entry = this.getMap().getTilesetEntry(tile.getGridId());
+        if (entry != null) {
+          tile.setTilesetEntry(entry);
+        }
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

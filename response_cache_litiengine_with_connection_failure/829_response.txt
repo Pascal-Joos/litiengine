@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setLowerBound(final BigDecimal lowerBound) {
+    this.lowerBound = lowerBound;
+    if (Nullability.castToNonnull(this.getCurrentValue()).compareTo(this.getLowerBound()) < 0) {
+      this.setCurrentValue(this.getLowerBound());
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

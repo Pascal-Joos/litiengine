@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void attach() {
+    final IGameLoop loop = Game.loop();
+    if (loop != null) {
+      loop.attach(this);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

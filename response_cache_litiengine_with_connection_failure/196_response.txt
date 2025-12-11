@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public boolean collides(
+      final Line2D line, Collision collision,  ICollisionEntity entity) {
+    return this.collides(
+        entity,
+        collision,
+        e -> GeometricUtilities.getIntersectionPoint(line, Nullability.castToNonnull(e.getCollisionBox())) != null);
+}
+  ```
+    ]]>
+  </code>
+</response>

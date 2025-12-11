@@ -1,0 +1,85 @@
+<response>
+  <reason><![CDATA[
+Game.loop() is a static accessor that simply returns the static field `gameLoop`:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+The value of `gameLoop` is controlled in `Game`:
+
+- During initialization (`Game.init(...)`):
+
+```java
+gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+IGameLoop loop = loop();
+if (loop != null) {
+  loop.attach(physics());
+  loop.attach(world());
+}
+...
+initialized = true;
+```
+
+Here, `gameLoop` is explicitly set to a non-null instance before `initialized` becomes `true`.
+
+- During termination (`Game.terminate()`):
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  tweenEngine.terminate();
+  soundEngine.terminate();
+
+  world().clear();
+
+  ...
+  gameLoop = null;
+  screenManager = null;
+  gameWindow = null;
+}
+```
+
+So `gameLoop` is set back to `null` when the game is terminated.
+
+Across the provided code, calls to `Game.loop()` are made in many places, often without null checks:
+
+- `GameWorld.loadEnvironment`: `Lock lock = Game.loop().getLock();`
+- `Emitter.activate/deactivate/update`: directly uses `Game.loop().attach/detach/getTickRate()`
+- `MovementController.handleMovement/handleForces`: `Game.loop().getDeltaTime()`, `Game.loop().getTimeScale()`
+- `GameTime` methods: `Game.loop().getTicks()`, `Game.loop().getTickRate()`
+- `GameMetrics.render`: `Game.loop().getUpdatableCount()`
+- And many other call sites that dereference `Game.loop()` without a null check.
+
+If `Game.loop()` could legally be `null` at those times, these call sites would throw `NullPointerException` immediately. The code base is written under the assumption that once the game is initialized and not yet terminated, `gameLoop` is non-null.
+
+The only time `gameLoop` is `null` (by construction) is:
+
+1. Before `Game.init(...)` is called.
+2. After `Game.terminate()` has run (where `gameLoop = null`).
+
+In both of those states, many of the shown methods (e.g., `GameWorld.loadEnvironment`, environment/entity update logic, UI, etc.) are part of the normal running game loop and assume an initialized game. Calling them before initialization or after termination is outside the intended lifecycle and would generally be erroneous usage. The library itself guards lifecycle transitions with `initialized` and `hasStarted` flags and uses `Game.init()` / `Game.start()` / `Game.terminate()` accordingly.
+
+Given this, the *logical contract* at these call sites is:
+
+- During the valid operational window (after successful `Game.init` and before `Game.terminate`), `gameLoop` is guaranteed to be non-null, so `Game.loop()` cannot return null.
+- A null `gameLoop` is only possible if:
+  - The user calls into these API methods before initialization, or
+  - The user calls into them after `terminate()` has run.
+
+Your question specifies *this specific call site* as `Game.loop()` in this codebase, which is being used throughout the engine’s runtime logic. Under the intended lifecycle usage of the engine, this invocation is not expected to see a null value and the implementation ensures `gameLoop` is non-null in that state.
+
+Therefore, at this call site, under the library's intended and guarded lifecycle (initialized and not terminated), `Game.loop()` does not return null. A null value would only arise in misuse scenarios (calling into runtime code before init or after terminate), which the surrounding engine design treats as invalid.
+  ]]></reason>
+  <value>NO</value>
+</response>

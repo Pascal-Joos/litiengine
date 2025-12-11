@@ -1,0 +1,45 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+Point2D entityLocation = entity.getLocation();
+```
+
+`entity` is of type `IEntity` (as shown in `RenderEngine.renderEntity` and `ICamera.getViewportLocation(IEntity entity)`).
+
+The only implementation detail we have for `getLocation()` that explicitly returns `null` is in `EntityEmitter.getLocation()`:
+
+```java
+@Override
+public Point2D getLocation() {
+  if (this.getEntity() == null) {
+    return null;
+  }
+  return this.hasDynamicLocation() ? this.getEntity().getLocation() : super.getLocation();
+}
+```
+
+However, `EntityEmitter` implements/extends `Emitter`, not `IEntity`; it is used in filtering in `RenderEngine.renderEntities`:
+
+```java
+.filter(
+  x ->
+      Game.world().camera().getViewport().intersects(x.getBoundingBox())
+          || x instanceof Emitter)
+```
+
+Here, `x` is an `IEntity`, and `EntityEmitter` only appears as a separate type checked via `instanceof Emitter`. It is not used as an `IEntity` and is not the `entity` passed into `ICamera.getViewportLocation(IEntity entity)` or `RenderEngine.renderEntity(Graphics2D g, final IEntity entity)`.
+
+Thus, at this specific call site:
+
+- `entity` is an `IEntity` (not an `EntityEmitter`).
+- We are not given any `IEntity` implementations that return `null` from `getLocation()`.
+- No other provided code path assigns a `null` `Point2D` to an `IEntity`’s location or indicates `getLocation()` on an `IEntity` can be `null`.
+
+Based strictly on the provided definitions and call chain, there is no execution path where `entity` (an `IEntity`) has a `getLocation()` implementation that returns `null`. The only shown `null`-returning implementation (`EntityEmitter.getLocation`) is not the type used at this call site.
+
+Therefore, for this specific invocation, `entity.getLocation()` cannot be concluded to return `null` from the given code; it must be treated as non-null at this call site.
+  ]]></reason>
+  <value>NO</value>
+</response>

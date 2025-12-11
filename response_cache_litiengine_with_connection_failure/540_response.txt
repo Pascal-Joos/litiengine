@@ -1,0 +1,26 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no null check on `layer` or `layer.getImage()` before the call:
+
+    Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
+
+Thus, whether `layer.getImage()` can be null depends entirely on the contract and implementation of `IImageLayer` (and any concrete classes used at runtime):
+
+- If `IImageLayer#getImage()` is specified (by interface contract, documentation, or invariants in the calling code) to always return a non-null image for any layer passed to `renderImageLayer`, then `layer.getImage()` cannot be null in this context.
+- If there is no such guarantee, then `layer.getImage()` may legitimately return null for some image layers (e.g., uninitialized layers, placeholder layers, error states), in which case the expression can be null and would cause a `NullPointerException` when `.getSource()` is accessed.
+- The rest of the method does not enforce any non-nullness preconditions (no assertions, no earlier checks), so we cannot infer non-nullness from intra-method control flow.
+
+Because we do not have:
+- The definition/contract of `IImageLayer#getImage()`
+- Any guarantees about how `renderImageLayer` is called (e.g., whether callers filter out layers without images)
+
+we cannot conclusively state that `layer.getImage()` can or cannot be null. It is therefore not safe to assume non-nullness based solely on this snippet.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the interface or class definition of IImageLayer, especially the contract (Javadoc or annotations) for getImage().]]></request>
+        <request><![CDATA[Provide any calling code or higher-level invariants that describe which layers are passed to renderImageLayer (e.g., are only image-backed layers passed, and are they guaranteed to have non-null images?).]]></request>
+    </requests>
+</response>
+```

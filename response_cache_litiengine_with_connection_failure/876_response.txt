@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void handleTypedKey(final KeyEvent event) {
+    if (this.isSuspended() || !this.isSelected() || !this.isVisible() || !this.isEnabled()) {
+      return;
+    }
+
+    switch (event.getKeyCode()) {
+      case KeyEvent.VK_BACK_SPACE:
+        this.handleBackSpace();
+        break;
+      case KeyEvent.VK_SPACE:
+        if (!Nullability.castToNonnull(this.getText()).equals("")) {
+          this.setText(this.getText() + " ");
+        }
+        break;
+      case KeyEvent.VK_ENTER:
+        this.toggleSelection();
+        this.changeConfirmedConsumers.forEach(c -> c.accept(this.getText()));
+
+        log.log(
+            Level.INFO,
+            "{0} typed into TextField with ComponentID {1}",
+            new Object[] {this.getText(), this.getComponentId()});
+        break;
+      default:
+        this.handleNormalTyping(event);
+        break;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

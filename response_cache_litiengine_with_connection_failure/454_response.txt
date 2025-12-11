@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void hide() {
+    if (Game.world().environment() != null) {
+      Game.world().environment().removeRenderable(this);
+    }
+    Game.loop().detach(this);
+    if (activeSpeechBubbles.get(this.getEntity()) != null
+        && activeSpeechBubbles.remove(this.getEntity()).equals(this)) {
+      activeSpeechBubbles.remove(this.getEntity());
+    }
+
+    for (SpeechBubbleListener listener : this.listeners) {
+      listener.hidden();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

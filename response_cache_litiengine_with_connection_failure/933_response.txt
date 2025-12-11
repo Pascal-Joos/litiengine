@@ -1,0 +1,22 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no information about how `Input.keyboard()` is implemented, initialized, or what its contract is.
+
+Key observations:
+- `Input.keyboard()` is a static method call on some `Input` class. Nothing in this snippet shows how `Input` is initialized or whether `keyboard()` is guaranteed to return a non-null value.
+- There are no preceding null checks on `Input.keyboard()` in this method or in nearby code that would indicate it can sometimes be null or is always non-null.
+- There is no visible assertion, annotation (e.g., `@NotNull`), or documentation excerpt in the snippet that establishes a non-null contract.
+- The fact that `Input.keyboard()` is called twice does not by itself imply non-null; it could potentially return null on any call unless the class contract explicitly forbids it.
+
+Because the nullability depends entirely on the implementation and contract of `Input.keyboard()` (which is not shown), we cannot soundly conclude that it either can or cannot be null based solely on this method.
+
+Therefore, the nullability of `Input.keyboard()` in this context cannot be determined from the given information.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/abstract class) of the Input class, specifically the keyboard() method.]]></request>
+        <request><![CDATA[Provide any relevant documentation, annotations (@NotNull/@Nullable), or framework/library references that define the contract of Input.keyboard().]]></request>
+    </requests>
+</response>
+```

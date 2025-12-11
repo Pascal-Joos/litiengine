@@ -1,0 +1,68 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void prepareInput() {
+      IKeyboard keyboard = Input.keyboard();
+      if (keyboard == null) {
+        return;
+      }
+      keyboard
+          .onKeyTyped(
+              KeyEvent.VK_UP,
+              e -> {
+                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                  return;
+                }
+                this.setSelection(this.getHorizontalLowerBound(), this.selectionRow - 1);
+              });
+
+      keyboard
+          .onKeyTyped(
+              KeyEvent.VK_DOWN,
+              e -> {
+                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                  return;
+                }
+                this.setSelection(this.getHorizontalLowerBound(), this.selectionRow + 1);
+              });
+
+      keyboard
+          .onKeyTyped(
+              KeyEvent.VK_LEFT,
+              e -> {
+                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                  return;
+                }
+                this.setSelection(this.getHorizontalLowerBound() - 1, this.selectionRow);
+              });
+
+      keyboard
+          .onKeyTyped(
+              KeyEvent.VK_RIGHT,
+              e -> {
+                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                  return;
+                }
+                this.setSelection(this.getHorizontalLowerBound() + 1, this.selectionRow);
+              });
+
+      this.onMouseWheelScrolled(
+          e -> {
+            if (this.isSuspended() || !this.isVisible()) {
+              return;
+            }
+            if (this.isHovered()) {
+              if (e.getEvent().getWheelRotation() < 0) {
+                this.slideUp();
+              } else {
+                this.slideDown();
+              }
+              return;
+            }
+          });
+  }
+  ```
+    ]]>
+  </code>
+</response>

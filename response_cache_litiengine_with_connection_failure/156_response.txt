@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private T valueInRange(final T value) {
+      if (Nullability.castToNonnull(value).doubleValue() < this.minBaseValue.doubleValue()) {
+        return this.minBaseValue;
+      } else if (value.doubleValue() > Nullability.castToNonnull(this.getMax()).doubleValue()) {
+        return Nullability.castToNonnull(this.getMax());
+      }
+  
+      return value;
+  }
+  ```
+    ]]>
+  </code>
+</response>

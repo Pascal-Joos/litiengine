@@ -1,0 +1,35 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the value of the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+There is no initialization or assignment to `mouse` shown anywhere in the provided code. The value of the static field `mouse` is therefore unconstrained by the given snippet, and it can legitimately be `null`.
+
+This is corroborated by existing null checks in the codebase itself, e.g.:
+
+```java
+if (Input.mouse() != null) {
+  Input.mouse().addMouseListener(this);
+  ...
+}
+```
+
+and:
+
+```java
+if (this.isVisible() && Input.mouse() != null && Input.mouse().getLocation() != null) {
+  ...
+}
+```
+
+These checks show that the authors expect `Input.mouse()` to sometimes be `null`.
+
+Since we have no guarantee from the provided code that `mouse` is non-null at all times (no constructor, initializer, or setter shown that always assigns a non-null value before use), `Input.mouse()` **can** return `null` at the call sites shown (and thus at `Input.mouse()` in general).
+  ]]></reason>
+  <value>YES</value>
+</response>

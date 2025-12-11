@@ -1,0 +1,29 @@
+<response>
+  <reason><![CDATA[
+The method `getFont()` in `de.gurkenlabs.litiengine.gui.FontIcon` simply returns the field `this.font`:
+
+```java
+public Font getFont() {
+  return this.font;
+}
+```
+
+At the call site in `FontIcon.render`:
+
+```java
+final Font font = this.getFont();
+if (font != null) {
+  if (bold) {
+    g.setFont(font.deriveFont(Font.BOLD, fontSize));
+  } else {
+    g.setFont(font.deriveFont(fontSize));
+  }
+}
+```
+
+the code *explicitly* checks `if (font != null)` before using it, which shows the authors consider `this.font` potentially nullable. There is no constructor or setter shown that guarantees `this.font` is always initialized to a non-null value before `render` is called. Since the field initialization and all assignments to `this.font` are not provided, we cannot prove that `this.font` is never null.
+
+Because `this.font` is a field that can be null by default and there is no visible guarantee in the provided code that it is always assigned a non-null value before `render`/`getFont` are used, the invocation `this.getFont()` at this call site can evaluate to null.
+  ]]></reason>
+  <value>YES</value>
+</response>

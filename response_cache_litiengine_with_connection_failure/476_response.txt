@@ -1,0 +1,44 @@
+<response>
+  <reason><![CDATA[
+At the shown call sites (e.g., in `DebugRenderer.drawTileBoundingBox`, `MapRenderer.drawTile`, and several `MapUtilities` methods), `map.getOrientation()` is invoked directly on an `IMap` reference, but nowhere in the provided code is there any guarantee or check that `getOrientation()` is non‑null in those specific usages.
+
+In fact, `MapUtilities.getTileBoundingBox(final IMap map, final Point2D mapLocation)` explicitly contains:
+
+```java
+if (map == null) {
+  return new Rectangle2D.Double();
+}
+
+if (map.getOrientation() == null) {
+  return new Rectangle2D.Double();
+}
+```
+
+This shows that, from the library author’s own perspective, `map.getOrientation()` can legitimately be `null` for a given `IMap`. That same `IMap` type is what is used at all the other call sites:
+
+- `DebugRenderer.drawTileBoundingBox`:
+  ```java
+  final Rectangle2D playerTile =
+      map.getOrientation().getEnclosingTileShape(location, map).getBounds2D();
+  final Point tileLocation = map.getOrientation().getTile(location, map);
+  ```
+  Here no null-check is performed before dereferencing `map.getOrientation()`.
+
+- `MapRenderer.drawTile`:
+  ```java
+  Point p = map.getOrientation().getLocation(x, y, map);
+  ```
+  Again, there is no null-check around `map.getOrientation()`.
+
+- Other `MapUtilities` methods use `map.getOrientation()` both with and without null checks, confirming that the interface allows a nullable orientation and the caller is responsible for handling that.
+
+Because:
+1. `IMap` is an interface with no implementation details shown for `getOrientation()`, so we cannot infer any invariant that it always returns non‑null.
+2. The existing codebase itself treats `map.getOrientation()` as potentially null in at least one method.
+3. The same `IMap` and its `getOrientation()` are used without protective checks at the provided call sites.
+
+it follows that, at those specific call sites (`map.getOrientation()`), the result can be null, which would lead to a `NullPointerException` on the subsequent method calls if that happens at runtime.
+
+Therefore, `map.getOrientation()` can return null at these call sites.]]></reason>
+  <value>YES</value>
+</response>

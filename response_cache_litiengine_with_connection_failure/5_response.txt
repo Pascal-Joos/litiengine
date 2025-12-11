@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected void updateAnimationController() {
+      if (!Game.hasStarted()) {
+        return;
+      }
+      IEntityAnimationController<?> controller = this.createAnimationController();
+      this.getControllers().addController(controller);
+      if (Game.world().environment() != null && Game.world().environment().isLoaded()) {
+        Game.loop().attach(controller);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

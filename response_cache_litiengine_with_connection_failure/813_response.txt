@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void clearDrawingSpace() {
+      BufferedImage drawingSpace = this.getDrawingSpace();
+      if (drawingSpace == null) {
+        return;
+      }
+      Graphics2D g = (Graphics2D) drawingSpace.getGraphics();
+      g.setComposite(AlphaComposite.Clear);
+      g.fillRect(0, 0, (int) this.getWidth(), (int) this.getHeight());
+  }
+  ```
+    ]]>
+  </code>
+</response>

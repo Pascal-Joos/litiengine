@@ -1,0 +1,44 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+returns the value of the static field `mouse`. There is no initialization or assignment of this field shown anywhere in the provided code.
+
+At the specific call sites (all are `Input.mouse()`), the code itself demonstrates that `Input.mouse()` can be `null`:
+
+- In `GuiComponent.prepare()`:
+  ```java
+  if (Input.mouse() != null) {
+      Input.mouse().addMouseListener(this);
+      ...
+  }
+  ```
+  This `null` check would be unnecessary if `Input.mouse()` could never be `null`.
+
+- In `TextFieldComponent`:
+  ```java
+  final IMouse mouse = Input.mouse();
+  if (mouse != null) {
+    mouse.onClicked(...);
+  }
+  ```
+  Again, this guarded use shows that the library authors expect `Input.mouse()` may be `null`.
+
+Other locations (e.g., `FreeFlightCamera.handleFreeFlightCamera`, `HorizontalSlider.setValueRelativeToMousePosition`, `VerticalSlider.setValueRelativeToMousePosition`, `DebugRenderer.renderMapDebugInfo`, etc.) dereference `Input.mouse()` without checks, which means they *assume* `mouse` is non-null at runtime in those contexts, but that is an assumption about engine initialization order, not a guarantee from the `mouse()` method itself.
+
+Since:
+- The `mouse()` method simply returns a field.
+- No assignment to that field is shown.
+- Multiple call sites explicitly check for `null`.
+
+It is entirely possible at those call sites (and therefore in general at `Input.mouse()`) for the returned value to be `null`. Without a shown invariant such as static initialization or a setter that always assigns a non-null implementation before any of these calls, we must treat `mouse` as potentially `null`.
+
+Therefore, `Input.mouse()` **can** return `null` at the provided call site(s).]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean collides(ICollisionEntity entity, Collision collision) {
+      return this.collides(Nullability.castToNonnull(entity.getCollisionBox()), collision, entity);
+  }
+  ```
+    ]]>
+  </code>
+</response>

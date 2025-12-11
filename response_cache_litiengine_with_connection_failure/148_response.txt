@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+protected Effect(final Ability ability, final EffectTarget... targets) {
+    this.appliedListeners = ConcurrentHashMap.newKeySet();
+    this.ceasedListeners = ConcurrentHashMap.newKeySet();
+    this.appliances = new ArrayList<>();
+    this.followUpEffects = new CopyOnWriteArrayList<>();
+
+    this.ability = ability;
+    this.targetPriorityComparator = new EntityDistanceComparator(this.getAbility().getExecutor());
+
+    this.duration = Nullability.castToNonnull(ability.getAttributes().duration().get());
+    if (targets == null || targets.length == 0) {
+      this.effectTargets = new EffectTarget[] {EffectTarget.NONE};
+    } else {
+      this.effectTargets = targets;
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

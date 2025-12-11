@@ -1,0 +1,62 @@
+<response>
+  <reason><![CDATA[
+Game.loop() simply returns the static field gameLoop:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided `Game` class:
+
+- `gameLoop` is assigned in `Game.init(...)`:
+  ```java
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  IGameLoop loop = loop();
+  if (loop != null) {
+    loop.attach(physics());
+    loop.attach(world());
+  }
+  ```
+  So after a successful `init`, `gameLoop` is non‑null.
+
+- `gameLoop` is explicitly set to `null` in `Game.terminate()`:
+  ```java
+  gameLoop = null;
+  ```
+
+There is no other assignment to `gameLoop`. Hence, at any point in time, `Game.loop()` returns either:
+- a non‑null `GameLoop` instance (after `init` and before `terminate`), or
+- `null` (before `init` or after `terminate`).
+
+The question, however, is **at this specific call site** – which is just `Game.loop()` used throughout the code you provided (e.g., in `GameWorld.loadEnvironment`, `GameTime`, `Emitter`, `MovementController`, etc.). These usages are *not* all guarded by `Game.hasStarted()` or other checks, and many are called from regular gameplay code that can run:
+- before `Game.init()` has been called, or
+- after `Game.terminate()` has executed (e.g., shutdown hooks, late callbacks), or
+- from any client code that calls these APIs out of lifecycle order.
+
+From the class itself there is no invariant or guard that forbids such misordered usage; `loop()` does not throw if `gameLoop` is null, and `gameLoop` is explicitly set to null in `terminate()`. Therefore, **it is possible at this call site that `Game.loop()` returns null** (e.g., if the caller invokes it before `init` or after `terminate`).
+
+Existing code even acknowledges this by checking for null in several places:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.attach(this);
+}
+```
+
+and
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop == null) {
+  return;
+}
+```
+
+These checks are only necessary because `Game.loop()` can be null.
+
+Thus, considering the lifecycle of `gameLoop` and the absence of a stronger guarantee at the call site, the return value can be null.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setAlpha(int ambientAlpha) {
+    if (this.getColor() == null) {
+      return;
+    }
+
+    this.setColor(
+        new Color(
+            this.getColor().getRed(),
+            this.getColor().getGreen(),
+            this.getColor().getBlue(),
+            MathUtilities.clamp(ambientAlpha, 0, 255)));
+    this.updateSection(this.environment.getMap().getBounds());
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,30 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no explicit guarantee that `Input.mouse()` is non-null:
+
+- The call site is:
+  ```java
+  if (Game.config().debug().showTilesMetric()) {
+      drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
+  }
+  ```
+  There are no null checks on `Input`, `Input.mouse()`, or `Input.mouse().getMapLocation()`.
+
+- Whether `Input.mouse()` can be null depends entirely on:
+  - How `Input` is initialized (static vs. instance).
+  - The implementation and contract of `Input.mouse()`.
+  - Whether the input system is guaranteed to be initialized before `renderMapDebugInfo` can run.
+  - Whether `Input.mouse()` returns some singleton Mouse object or `null` if e.g. no mouse is present, the input system is disabled, headless mode is used, or initialization failed.
+
+None of those details are present in the snippet. There is no prior call in this method that could establish a non-null invariant for `Input.mouse()`, and no obvious framework or language rule that would prevent `Input.mouse()` from being null.
+
+Therefore, based only on the given code, we cannot soundly conclude either “always null-safe” or “can definitely be null.” The answer depends on external contracts/implementation not shown here.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or documented contract) of Input.mouse().]]></request>
+        <request><![CDATA[Indicate how and when the input system (including the mouse object) is initialized relative to calls to renderMapDebugInfo.]]></request>
+    </requests>
+</response>
+```

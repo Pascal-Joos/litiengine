@@ -1,0 +1,22 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no information about how `Input.keyboard()` is implemented, initialized, or what its contract is (e.g., whether it is guaranteed to return a non-null singleton, or if it can return null when input is unavailable or uninitialized).
+
+To determine nullability, we would need to know:
+
+- The implementation of the `Input` class (or interface) and its `keyboard()` method.
+- Any initialization or lifecycle guarantees (e.g., framework documentation or code) that ensure the keyboard subsystem is always present and non-null before `prepareInput()` is called.
+- Whether any code paths exist where the input system is shut down, disposed, or not yet created at the time `prepareInput()` is invoked.
+
+Because none of this is shown, we cannot safely infer that `Input.keyboard()` is never null, nor can we definitively say that it *can* be null. Both are logically possible depending purely on unseen code and contracts.
+
+Thus, with the given snippet and no additional guarantees or documentation, the nullability of `Input.keyboard()` cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface definition) of the Input class, especially the keyboard() method.]]></request>
+        <request><![CDATA[Provide any framework or project documentation stating whether Input.keyboard() is guaranteed to be non-null and when it is initialized relative to prepareInput().]]></request>
+    </requests>
+</response>
+```

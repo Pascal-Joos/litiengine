@@ -1,0 +1,119 @@
+<response>
+  <reason><![CDATA[
+Game.loop() is a static accessor:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+So the nullability of Game.loop() is exactly the nullability of the static field `gameLoop`.
+
+From the provided `Game` class:
+
+- In `init`:
+
+```java
+public static synchronized void init(String... args) {
+  if (initialized) {
+    ...
+    return;
+  }
+
+  ...
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  IGameLoop loop = loop();
+  if (loop != null) {
+    loop.attach(physics());
+    loop.attach(world());
+  }
+  ...
+  initialized = true;
+}
+```
+
+Here `gameLoop` is explicitly set to a new `GameLoop(...)` before `initialized` is set to true. So after a successful `init` call, `gameLoop` is non‑null.
+
+- In `start`:
+
+```java
+public static synchronized void start() {
+  if (!initialized) {
+    throw new IllegalStateException(
+        "The game cannot be started without being first initialized. Call Game.init(...) before Game.start().");
+  }
+
+  gameLoop.start();
+  ...
+  hasStarted = true;
+}
+```
+
+`start` assumes `gameLoop` is non‑null (calls `start()` on it). This is consistent with the guarantee from `init`.
+
+- In `terminate`:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  ...
+  gameLoop = null;
+  ...
+}
+```
+
+`gameLoop` is explicitly set to `null` at the end of `terminate`.
+
+There is no other assignment to `gameLoop` in the snippets besides `init` (assign non‑null) and `terminate` (assign null).
+
+Therefore:
+
+- Before `Game.init(...)` has been successfully called, `gameLoop` can still be its default value (null).
+- After `Game.terminate()` has run, `gameLoop` is explicitly null.
+- Between `init` and `terminate`, including while the game is running, `gameLoop` is non‑null.
+
+The various call sites you provided (e.g. `GameWorld.loadEnvironment`, `Emitter.activate/deactivate`, `MovementController.handleMovement`, `GameTime.now/since`, GUI/event listeners, etc.) do not enforce that `Game.init()` has already been called and that `Game.terminate()` has not yet run. Many of these calls are on UI events or entity constructors that can, in principle, be invoked at times when:
+
+- the game has not yet been initialized, or
+- the game has been terminated (e.g., shutdown hook), or
+- some external code is still calling into the API after termination.
+
+In particular, the library itself is aware that `loop()` can be null, as evidenced by multiple defensive checks:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.attach(this);
+}
+```
+
+and
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  this.lastScreenChange = loop.getTicks();
+}
+```
+
+If the authors considered `Game.loop()` to be non‑null at all times, these null checks would be unnecessary.
+
+Given that:
+
+- `Game.loop()` literally returns `gameLoop`,
+- `gameLoop` is explicitly set to `null` in `terminate`, and
+- there’s no global guarantee in the code you supplied that prevents any of the shown call sites from executing after `terminate` or before `init`,
+
+it is possible for `Game.loop()` to return null at this call site in some program execution states (notably, pre‑init and post‑terminate). Thus the method can, in general, return null at this specific invocation.
+  ]]></reason>
+  <value>YES</value>
+</response>

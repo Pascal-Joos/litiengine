@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Animation(
+       final Spritesheet spritesheet,
+      final boolean loop,
+      final boolean randomizeStart,
+      final int... keyFrameDurations) {
+    this(Nullability.castToNonnull(spritesheet).getName(), Nullability.castToNonnull(spritesheet), loop, randomizeStart, keyFrameDurations);
+  }
+  ```
+    ]]>
+  </code>
+</response>

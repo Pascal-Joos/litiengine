@@ -1,0 +1,23 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no explicit guarantee that `Input.keyboard()` is non-null:
+
+- `Input.keyboard()` is a static method call. Its implementation and any initialization logic are not shown.
+- There are no prior calls in this constructor that would initialize `Input` or its keyboard subsystem, nor any null checks around `Input.keyboard()`.
+- Java does not enforce non-null returns at the language level; any such guarantee would have to come from:
+  - The implementation of `Input.keyboard()` (e.g., it always returns a singleton instance).
+  - Framework/library documentation or contracts stating it never returns null.
+  - Annotations like `@NotNull`/`@NonNull` that are not visible here and are not enforced at runtime.
+
+Because none of that information is included, a static analysis confined to this snippet cannot *prove* that `Input.keyboard()` is non-null. Conversely, we also cannot definitively say it *can* be null without seeing that it is conditionally assigned or documented as nullable.
+
+Therefore, based solely on the given code, whether `Input.keyboard()` can be null is indeterminate; it depends on the unseen implementation and contract of `Input.keyboard()`.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the implementation (or interface) of Input.keyboard().]]></request>
+        <request><![CDATA[Provide any documentation or annotations (e.g., @NonNull/@Nullable) associated with Input.keyboard().]]></request>
+    </requests>
+</response>
+```

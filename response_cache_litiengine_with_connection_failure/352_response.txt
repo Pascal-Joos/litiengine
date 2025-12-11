@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void addAmbientLight() {
+      if (this.getMap() == null) {
+        return;
+      }
+
+      final Color ambientColor =
+          this.getMap().getColorValue(MapProperty.AMBIENTCOLOR, AmbientLight.DEFAULT_COLOR);
+      this.ambientLight = new AmbientLight(this, ambientColor);
+  }
+  ```
+    ]]>
+  </code>
+</response>

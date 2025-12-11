@@ -1,0 +1,32 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void drawTile(
+        Graphics2D g, ITileLayer layer, int x, int y, IMap map, Rectangle2D viewport) {
+      ITile tile = layer.getTile(x, y);
+      if (tile == null) {
+        return;
+      }
+      BufferedImage image = tile.getImage();
+      if (image != null) {
+        Point p = map.getOrientation().getLocation(x, y, map);
+        p.y -= image.getHeight();
+        ITilesetEntry entry = tile.getTilesetEntry();
+        if (entry == null) {
+          return;
+        }
+        ITileOffset offset = entry.getTileset().getTileOffset();
+        if (offset != null) {
+          p.x += offset.getX();
+          p.y += offset.getY();
+        }
+        if (viewport.intersects(p.x, p.y, image.getWidth(), image.getHeight())) {
+          ImageRenderer.render(g, image, p.x - viewport.getX(), p.y - viewport.getY());
+        }
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

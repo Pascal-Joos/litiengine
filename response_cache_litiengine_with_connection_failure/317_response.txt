@@ -1,0 +1,42 @@
+<response>
+  <reason><![CDATA[
+The only available information about the method is its signature:
+
+```java
+IMovementController movement()
+```
+
+and the call site:
+
+```java
+IMovementController mvmtControl = entity.movement();
+if (mvmtControl != null) {
+  GravityForce force = new GravityForce(entity, this.getGravity(), Direction.DOWN);
+  force.setIdentifier(GRAVITY_IDENTIFIER);
+  entity.movement().apply(force);
+  this.gravityForces.put(entity.getMapId(), force);
+}
+```
+
+From this, we can see that the code explicitly checks for `mvmtControl != null` before using the controller. This indicates that the author of this code considers `movement()` potentially nullable. However, this *usage pattern* alone does not prove that `movement()` actually can return null; it only shows the caller being defensive.
+
+To determine if `movement()` can in fact return null at this call site, we need to inspect the implementation of `movement()` in the concrete class(es) that implement `IMobileEntity` and/or any default implementation in the interface (if present). Since those implementations are not provided, we cannot soundly conclude whether a null value is actually possible here.
+
+In line with your constraints:
+- We must not assume behavior of methods whose full declarations/bodies are not provided.
+- The return value of `movement()` is exactly what we must analyze, but we lack its implementation.
+
+Therefore, more method declarations/implementations are required to make a confident decision.
+
+Specifically, we need:
+- The full declaration (including body or default implementation) of `movement()` in `IMobileEntity` (if it has one), and
+- The declarations/bodies of `movement()` in all concrete entity classes that can be passed as `IMobileEntity entity` into `Environment.addGravityForce` / `Environment.load` (i.e., the implementing classes of `IMobileEntity` used in this environment).
+
+Without at least the actual implementation(s) of `movement()`, we cannot determine whether `entity.movement()` can return null at this call site.
+]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.entities.IMobileEntity#movement</method>
+    <method>All concrete implementations of IMobileEntity#movement that can appear in Environment.mobileEntities</method>
+  </methods>
+</response>

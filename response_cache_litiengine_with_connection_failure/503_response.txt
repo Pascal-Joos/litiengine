@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Map<String, ICustomProperty> unmarshal(PropertyList v) {
+    Map<String, ICustomProperty> map =
+        new HashMap<>(v == null || v.properties == null ? 0 : v.properties.size()); // use hashtable to reject null keys/values
+    if (v == null || v.properties == null) {
+      return map;
+    }
+    for (Property property : v.properties) {
+      CustomProperty prop =
+          new CustomProperty(
+              property.type, property.value != null ? property.value : property.contents);
+      if (property.location != null) {
+        prop.setValue(property.location);
+      }
+      map.put(property.name, prop);
+    }
+    return map;
+  }
+  ```
+    ]]>
+  </code>
+</response>

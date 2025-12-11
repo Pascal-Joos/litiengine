@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void remove(final Tweenable target, final TweenType type) {
+    final Tween tween = this.getTween(target, type);
+    if (tween != null) {
+      Nullability.castToNonnull(this.getTweens().get(target)).remove(type);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

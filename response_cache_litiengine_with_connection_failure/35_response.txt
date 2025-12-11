@@ -1,0 +1,53 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void initializeWindowEventListeners(Window window) {
+
+      window.addWindowStateListener(
+          e -> {
+            final IGameLoop loop = Game.loop();
+            if (loop == null) {
+              return;
+            }
+
+            if (e.getNewState() == Frame.ICONIFIED) {
+              loop.setTickRate(ICONIFIED_MAX_FPS);
+            } else {
+              loop.setTickRate(Game.config().client().getMaxFps());
+            }
+          });
+
+      window.addWindowFocusListener(
+          new WindowFocusListener() {
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+              if (Game.config().graphics().reduceFramesWhenNotFocused()) {
+                final IGameLoop loop = Game.loop();
+                if (loop != null) {
+                  loop.setTickRate(NONE_FOCUS_MAX_FPS);
+                }
+              }
+            }
+
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+              final IGameLoop loop = Game.loop();
+              if (loop != null) {
+                loop.setTickRate(Game.config().client().getMaxFps());
+              }
+            }
+          });
+
+      window.addWindowListener(
+          new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent event) {
+              Game.exit();
+            }
+          });
+  }
+  ```
+    ]]>
+  </code>
+</response>

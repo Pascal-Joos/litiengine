@@ -1,0 +1,73 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` simply returns the static field `keyboard`:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+From the provided code, there is no information about where or how the static field `keyboard` is initialized or assigned. None of the shown methods in the call chain write to `Input.keyboard` or otherwise guarantee it is non-null before use.
+
+At multiple call sites, the code explicitly performs null checks before using `Input.keyboard()`:
+
+- `TextFieldComponent` constructor:
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyTyped(this::handleTypedKey);
+  }
+  ```
+- `TextFieldComponent.handleBackSpace()`:
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null && keyboard.isPressed(KeyEvent.VK_SHIFT)) {
+    ...
+  }
+  ```
+- `GameLoop.updateInvariableEngineComponents()`:
+  ```java
+  if (Input.keyboard() != null) {
+    ((Keyboard) Input.keyboard()).update();
+  }
+  ```
+- `KeyboardEntityController` constructor:
+  ```java
+  final IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+    keyboard.onKeyPressed(this::handlePressedKey);
+  }
+  ```
+- `PlatformingMovementController` constructor:
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyPressed(this::handlePressedKey);
+  }
+  ```
+- `Game.init(...)`:
+  ```java
+  IKeyboard keyboard = keyboard();
+  if (keyboard != null) {
+    keyboard.onKeyTyped(...);
+  }
+  ```
+
+These repeated null checks strongly indicate that the authors consider `Input.keyboard()` potentially null at runtime.
+
+Some other places (e.g., `ListField.prepareInput()` and `DropdownListField.prepareInput()`) call:
+
+```java
+Input.keyboard().onKeyTyped(...)
+```
+
+without a null check, but this only shows that those call sites *assume* a non-null keyboard in some execution contexts (e.g., after some initialization). It does **not** prove that `keyboard` is always non-null; rather, the existence of many guarded usages shows that `null` is a realistic possibility.
+
+Since:
+- The field `keyboard`'s initialization is not shown, and
+- The API is clearly designed to handle a null `keyboard` in several spots,
+
+we must conclude that at the call site `Input.keyboard()` (such as in `ListField.prepareInput()` or `DropdownListField.prepareInput()`), the returned value **can** be null. There is no guarantee in the provided code that `keyboard` is initialized before those calls occur.
+
+Therefore, `Input.keyboard()` can return null at this specific call site.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,49 @@
+<response>
+    <reason><![CDATA[
+The `add(URL resourceName, T resource)` method is called from `Maps$MapGenerator.close()` as:
+
+```java
+URL resource = Resources.getLocation(map.getName() + "." + TmxMap.FILE_EXTENSION);
+this.map.finish(resource);
+Maps.this.add(resource, this.map);
+```
+
+The URL value `resource` comes from `Resources.getLocation(String name)`:
+
+```java
+public static URL getLocation(String name) {
+  URL fromClass = ClassLoader.getSystemResource(name);
+  if (fromClass != null) {
+    return fromClass;
+  }
+  try {
+    return new URL(name);
+  } catch (MalformedURLException e) {
+    try {
+      return (new File(name)).toURI().toURL();
+    } catch (MalformedURLException e1) {
+      return null;
+    }
+  }
+}
+```
+
+In this method:
+- If `ClassLoader.getSystemResource(name)` returns null,
+- And `new URL(name)` throws `MalformedURLException`,
+- And `(new File(name)).toURI().toURL()` also throws `MalformedURLException`,
+
+then `getLocation` returns `null`.
+
+There is no null check on `resource` before passing it to `Maps.this.add(resource, this.map)`. Therefore, `add(URL resourceName, T resource)` can be invoked with `resourceName == null`.
+
+Inside `add`, the first statement is:
+
+```java
+this.add(resourceName.toString(), resource);
+```
+
+If `resourceName` is null, this will throw a `NullPointerException`, but the question is about whether `null` can reach the parameter, not whether the code is safe. Based purely on usage and the implementation of `getLocation`, `resourceName` can indeed be null.
+    ]]></reason>
+    <value>YES</value>
+</response>

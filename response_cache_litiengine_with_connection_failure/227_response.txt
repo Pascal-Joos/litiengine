@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void setVelocity(float velocity) {
+    Attribute<Float> velocityAttr = this.getVelocity();
+    if (velocityAttr != null) {
+      velocityAttr.setBaseValue(velocity);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

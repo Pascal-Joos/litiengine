@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(final Graphics2D g, final Point2D emitterOrigin) {
+    if (animation == null) {
+      return;
+    }
+    final Point2D renderLocation = getRenderLocation(emitterOrigin);
+    if (isAnimatingSprite()) {
+      currentImage = animation.getCurrentImage();
+    }
+    Composite oldComp = g.getComposite();
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getOpacity()));
+    if (getAngle() != 0) {
+      ImageRenderer.renderRotated(g, currentImage, renderLocation, getAngle());
+    } else {
+      ImageRenderer.render(g, currentImage, renderLocation);
+    }
+    g.setComposite(oldComp);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,24 @@
+<response>
+  <reason><![CDATA[
+At the call site in `MapRenderer.drawTile`:
+
+```java
+ITileOffset offset = tile.getTilesetEntry().getTileset().getTileOffset();
+```
+
+there is no prior null check on `tile.getTilesetEntry()` itself. The only other usage shown is in `Tileset.containsTile`:
+
+```java
+ITilesetEntry entry = tile.getTilesetEntry();
+return entry == null
+    ? this.containsTile(tile.getGridId())
+    : this.containsTile(Nullability.castToNonnull(tile.getTilesetEntry()));
+```
+
+This code explicitly handles the case where `tile.getTilesetEntry()` is `null` (`entry == null` branch). That means, by design, `ITile.getTilesetEntry()` is allowed to and can return `null` in at least some situations.
+
+Since `MapRenderer.drawTile` is called for every tile in a row, and there is no additional filtering that would exclude tiles with a null tileset entry before entering `drawTile`, nothing in the provided code guarantees that, at this specific call site, `tile.getTilesetEntry()` is non-null. The presence of the null-handling branch in `Tileset.containsTile` is direct evidence that the method can legitimately return null for some `ITile` instances, and no stronger invariant is shown that would make all tiles passed to `drawTile` special or different.
+
+Therefore, `tile.getTilesetEntry()` can be `null` at this call site, making the chained call `tile.getTilesetEntry().getTileset()` potentially dereference a null value.]]></reason>
+  <value>YES</value>
+</response>

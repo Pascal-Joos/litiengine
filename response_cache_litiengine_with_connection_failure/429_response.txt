@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(Graphics2D g) {
+    final Rectangle2D viewport =
+        Game.screens() != null && Game.world().camera() != null
+            ? Game.world().camera().getViewport()
+            : null;
+    if (viewport == null) {
+      return;
+    }
+    ImageRenderer.render(g, this.layer, -viewport.getX(), -viewport.getY());
+  }
+  ```
+    ]]>
+  </code>
+</response>

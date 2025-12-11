@@ -1,0 +1,50 @@
+<response>
+    <reason><![CDATA[
+In the specific line you highlighted:
+
+    coll1 != null ? coll1.getCollisionBox().getMaxY() : m1.getBoundingBox().getMaxY();
+
+the subexpression `coll1.getCollisionBox()` is evaluated only in the branch where `coll1 != null`. That guarantees `coll1` itself is non-null, but it does not guarantee that `coll1.getCollisionBox()` is non-null.
+
+Looking at the full method:
+
+    ICollisionEntity coll1 = null;
+    ...
+    if (m1 instanceof ICollisionEntity) {
+        coll1 = (ICollisionEntity) m1;
+    }
+
+`coll1` is assigned from `m1` only if `m1` is an `ICollisionEntity`. There is no additional check on `getCollisionBox()` here or anywhere else before it is dereferenced in the ternary expression.
+
+You also create:
+
+    final Rectangle2D collBox1 = coll1 != null ? coll1.getCollisionBox() : null;
+
+and then later use:
+
+    final double m1MaxY =
+        collBox1 != null ? collBox1.getMaxY() : m1.getBoundingBox().getMaxY();
+
+This second use is safe with respect to `collBox1` being null; it explicitly checks `collBox1 != null` before calling `getMaxY()`.
+
+However, your question is about the *other* line (the one that in your description reads `coll1 != null ? coll1.getCollisionBox().getMaxY() : m1.getBoundingBox().getMaxY();`). In that line, there is no intermediate variable and no null check on the result of `coll1.getCollisionBox()` before calling `getMaxY()`.
+
+Whether `coll1.getCollisionBox()` can be null depends entirely on the contract/implementation of `ICollisionEntity.getCollisionBox()`:
+
+- If `ICollisionEntity.getCollisionBox()` is **guaranteed by contract** never to return null (for example, it always returns a valid `Rectangle2D`), then `coll1.getCollisionBox()` cannot be null.
+- If there is **no such guarantee**, or existing implementations sometimes return null (e.g., for entities without a current collision box), then `coll1.getCollisionBox()` can in fact be null, and calling `.getMaxY()` on it would lead to a `NullPointerException`.
+
+From the code you provided, there is no explicit safeguard or evidence that `getCollisionBox()` is non-null. Java’s type system does not encode non-nullability here, and there is no `Objects.requireNonNull` or similar.
+
+Therefore, without additional information about the `ICollisionEntity` interface and all its implementations, we cannot safely conclude that `coll1.getCollisionBox()` is always non-null. Static analysis must treat it as potentially null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[
+Provide the declaration (interface/abstract class) of ICollisionEntity, specifically the getCollisionBox() method signature and its documented contract (e.g., Javadoc or annotations such as @NonNull/@Nullable).
+        ]]></request>
+        <request><![CDATA[
+Confirm whether any known implementations of ICollisionEntity can return null from getCollisionBox(), for example in “inactive”, “uninitialized”, or “no collision” states.
+        ]]></request>
+    </requests>
+</response>

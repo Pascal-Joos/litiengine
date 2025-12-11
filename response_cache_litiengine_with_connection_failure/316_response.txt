@@ -1,0 +1,24 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only information provided is an interface-style declaration:
+
+  IMovementController movement()
+
+inside:
+
+class de.gurkenlabs.litiengine.entities.IMobileEntity {
+  IMovementController movement()
+}
+
+There is no implementation or body for this method—only its signature. Without the actual implementation (or explicit annotations/contract such as @NonNull / @Nullable), we cannot determine whether any implementation of this method guarantees a non-null return or may return null. Different implementations of IMobileEntity could legally choose to return either a non-null IMovementController or null.
+
+Because the question requires analyzing the method's implementation and no implementation is available, it is impossible to confidently say whether it can or cannot return null.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide the concrete implementation(s) of IMobileEntity.movement(), or at least one specific class that implements IMobileEntity and its movement() method body.]]></request>
+    <request><![CDATA[If applicable, provide any annotations or documentation that specify nullability contracts for IMobileEntity.movement() (e.g., @Nonnull, @Nullable, or similar).]]></request>
+  </requests>
+</response>
+```

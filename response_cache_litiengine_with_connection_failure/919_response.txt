@@ -1,0 +1,39 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+simply returns the value of the static field `keyboard` with no checks, initialization, or non‑null guarantees visible in the provided code.
+
+From the given call sites and surrounding code:
+
+- `GameLoop.updateInvariableEngineComponents()` explicitly checks for null before using it:
+  ```java
+  if (Input.keyboard() != null) {
+    ((Keyboard) Input.keyboard()).update();
+  }
+  ```
+  This null check only makes sense if `Input.keyboard()` can in fact be null at runtime; otherwise it would be redundant.
+
+- In several other places (`ListField.prepareInput`, `TextFieldComponent` constructor, `KeyboardEntityController` constructor, `PlatformingMovementController` constructor, `DropdownListField.prepareInput`), `Input.keyboard()` is called without any preceding null check:
+  ```java
+  Input.keyboard().onKeyTyped(...);
+  Input.keyboard().onKeyPressed(...);
+  ```
+  However, these usages do not prove non‑nullness; they just assume a working keyboard has been set. There is no code shown that initializes the static `keyboard` field, nor any annotation or defensive check ensuring it is never null.
+
+Because:
+- the return value is exactly the static field `keyboard`;
+- the initialization / assignment of that field is not shown;
+- another part of the codebase *explicitly* guards against it being null;
+
+it is possible, at this call site, that `keyboard` has never been assigned (or has been reset to null), so `Input.keyboard()` can return null.
+
+There is nothing in the provided snippets that constrains the field to be non‑null at all times, and no control‑flow or argument condition at this specific call site that would rule out null. Therefore, this invocation cannot be proven safe from returning null based solely on the given code.]]></reason>
+  <value>YES</value>
+</response>

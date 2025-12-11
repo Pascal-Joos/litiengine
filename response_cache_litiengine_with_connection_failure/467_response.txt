@@ -1,0 +1,30 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only information provided is the method signature:
+
+public IMapOrientation getOrientation()
+
+and that it belongs to:
+
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public IMapOrientation getOrientation()
+}
+
+There is no implementation shown for getOrientation(), only its declaration in an interface (or abstract type). Without the method body, there are no return statements to inspect, and no internal logic to analyze for guarantees of non-nullness.
+
+Since:
+- We cannot see any return paths or conditions.
+- We cannot see whether it always constructs or retrieves a non-null IMapOrientation.
+- We cannot see any annotations (e.g., @NotNull / @Nullable) that might constrain its behavior.
+
+we cannot determine whether implementations of this interface method may choose to return null or not.
+
+To make a confident determination, we would need the concrete implementation(s) of this method.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <methods>
+    <method>Any concrete implementation of de.gurkenlabs.litiengine.environment.tilemap.IMap#getOrientation()</method>
+  </methods>
+</response>
+```

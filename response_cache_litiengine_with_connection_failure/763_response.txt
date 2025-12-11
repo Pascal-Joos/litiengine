@@ -1,0 +1,29 @@
+<response>
+    <reason><![CDATA[
+The `load(EmitterData emitterData)` method is invoked at least in the following place:
+
+```java
+for (final EmitterData emitter : file.getEmitters()) {
+  EmitterLoader.load(emitter);
+}
+```
+
+This loop iterates over the result of `file.getEmitters()`. From the provided code, there is no indication that `file.getEmitters()` excludes null elements; thus, it is possible (and not guarded against) that the list may contain a null entry. No null check is performed before passing `emitter` to `EmitterLoader.load(emitter)`.
+
+Inside `EmitterLoader.load(EmitterData emitterData)`, `emitterData` is dereferenced immediately:
+
+```java
+if (loadedEmitters.containsKey(emitterData.getName())) {
+  return loadedEmitters.get(emitterData.getName());
+}
+loadedEmitters.put(emitterData.getName(), emitterData);
+```
+
+There is no defensive null check in this method either. If a null element were present in `file.getEmitters()`, this would cause a `NullPointerException` at `emitterData.getName()`.
+
+Since the analysis must be based on usage patterns (and not on assumptions of external guarantees like "the list never contains nulls"), the parameter *can* be passed null from its callers. The current implementation would crash in that case, which only tells us that the method is not null-safe, not that null is impossible in practice.
+
+Therefore, based solely on observable call patterns, `emitterData` can receive null.
+]]></reason>
+    <value>YES</value>
+</response>

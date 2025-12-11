@@ -1,0 +1,37 @@
+<response>
+  <reason><![CDATA[
+The method under analysis is:
+
+```java
+public T getMax() {
+  return this.applyMaxModifiers(this.maxBaseValue);
+}
+```
+
+At all shown call sites (e.g. `this.getHitPoints().getMax()` in `CombatEntity.resurrect()`, `this.getHitPoints().getMax()` in `Prop.getState()`, and within `RangeAttribute` itself), the same implementation is used.
+
+`getMax()` simply returns the result of `this.applyMaxModifiers(this.maxBaseValue)`. Whether this can be `null` depends on:
+
+1. Whether `this.maxBaseValue` can be `null`.
+2. Whether `applyMaxModifiers(...)` can return `null` (even if its argument is non-null).
+
+Neither `maxBaseValue` nor `applyMaxModifiers` is defined in the provided snippets. Because of that, we cannot determine:
+- If `maxBaseValue` is guaranteed to be initialized to a non-null value, or possibly `null`.
+- If `applyMaxModifiers` may transform a non-null `maxBaseValue` into `null`.
+
+Subsequent uses do not prove non-nullness. For example:
+
+```java
+this.getHitPoints().getMax()
+```
+
+is used in arithmetic and comparison contexts (`getMax().doubleValue()`, multiplication, etc.), but these are *potential* NPE sites and do not guarantee that `getMax()` itself is non-null; they only show the code expects it to be non-null. The presence of `Nullability.castToNonnull(this.getMax())` further suggests that the authors considered `getMax()` possibly nullable or at least needed a cast for nullness checking tools.
+
+Without the definition of `applyMaxModifiers` and information on `maxBaseValue`, any claim that `getMax()` can never be null would be an assumption beyond the provided code. Therefore, to make a confident determination, those declarations are required.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.attributes.RangeAttribute#applyMaxModifiers</method>
+    <method>de.gurkenlabs.litiengine.attributes.RangeAttribute#maxBaseValue (field declaration, initialization)</method>
+  </methods>
+</response>

@@ -1,0 +1,74 @@
+<response>
+  <reason><![CDATA[
+Game.loop() simply returns the static field `gameLoop`:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided `Game` class:
+
+- `gameLoop` is assigned in `init(...)`:
+  ```java
+  public static synchronized void init(String... args) {
+    ...
+    gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+    IGameLoop loop = loop();
+    if (loop != null) {
+      loop.attach(physics());
+      loop.attach(world());
+    }
+    ...
+    initialized = true;
+  }
+  ```
+  Here `gameLoop` is set to a new `GameLoop` instance. There is no branch in `init` where `gameLoop` remains unassigned once past this line.
+
+- `gameLoop` is set back to `null` only in `terminate()`:
+  ```java
+  static synchronized void terminate() {
+    if (!initialized) {
+      return;
+    }
+
+    hasStarted = false;
+    initialized = false;
+
+    config().save();
+    gameLoop.terminate();
+    tweenEngine.terminate();
+    soundEngine.terminate();
+
+    world().clear();
+    ...
+    gameLoop = null;
+    screenManager = null;
+    gameWindow = null;
+  }
+  ```
+
+There is no default initialization of `gameLoop` shown elsewhere; hence it is `null`:
+- before `Game.init(...)` is called for the first time, and
+- after `Game.terminate()` has executed.
+
+The various call sites you listed (e.g., `GameWorld.loadEnvironment`, `EntityNavigator` constructor, `GameWindow.initializeWindowEventListeners`, `ScreenManager.display`, `Emitter.activate/deactivate/update`, `MovementController.handleMovement`, etc.) do not guarantee that `Game.init(...)` has been invoked and that `Game.terminate()` has not yet run. They are all ordinary usages that can occur:
+- in user code that might call them before `Game.init()` or after `Game.terminate()`, or
+- from other framework code whose execution order relative to `init()`/`terminate()` is not enforced in the snippets.
+
+Moreover, the library code itself treats `Game.loop()` as possibly null in many of these same sites, adding explicit checks:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.attach(...);
+}
+```
+
+and similarly for `detach`/`setTickRate`. This is a strong internal indication that the designers expect `Game.loop()` to sometimes be `null` at those call sites.
+
+Because `Game.loop()` directly returns `gameLoop`, and `gameLoop` is explicitly set to `null` in `terminate()` and is `null` prior to `init()`, and because nothing about the provided call-chain constrains execution to only the period after `init()` and before `terminate()`, the return value at the call site `Game.loop()` is not guaranteed to be non-null. It can be null depending on lifecycle timing (e.g., pre-init or post-terminate).
+  ]]></reason>
+  <value>YES</value>
+</response>

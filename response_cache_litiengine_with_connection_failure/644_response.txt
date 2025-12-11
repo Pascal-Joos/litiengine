@@ -1,0 +1,9 @@
+```xml
+<response>
+    <reason><![CDATA[
+`afterUnmarshal(Unmarshaller u, Object parent)` matches a known JAXB lifecycle callback. JAXB calls this method once immediately after unmarshalling an object, as part of its construction/initialization phase, before normal client code typically interacts with the object. It is not a general-purpose setter intended for repeated state updates.
+
+Given NullAway’s definition—methods invoked by external frameworks as part of object setup and expected to be called once before other usage—this method qualifies as an initializer method.]]></reason>
+    <value>YES</value>
+</response>
+```

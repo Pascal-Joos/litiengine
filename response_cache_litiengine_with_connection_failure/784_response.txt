@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public Screen get(String screenName) {
+    Optional<Screen> opt =
+        this.screens.stream()
+            .filter(element -> element.getName() != null && element.getName().equalsIgnoreCase(screenName))
+            .findFirst();
+    return opt.orElse(null);
+  }
+  ```
+    ]]>
+  </code>
+</response>

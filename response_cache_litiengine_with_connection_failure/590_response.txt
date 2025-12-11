@@ -1,0 +1,43 @@
+<response>
+  <reason><![CDATA[
+The implementation of `getLayer()` is:
+
+```java
+@Override
+public IMapObjectLayer getLayer() {
+  return this.layer;
+}
+```
+
+There is no non‑null guarantee or initialization shown for `this.layer`. Across the provided call chain, `MapObject` instances are created in several ways:
+
+1. `new MapObject()` in `MapObjectSerializer.serialize(IEntity entity)` – no layer is set here, so `this.layer` remains at its default value, which for an object reference is `null`.
+
+2. `new MapObject(item, this.keepIds())` in `Blueprint` – the shown `MapObject(MapObject original)` constructor copies `this.setLayer(original.layer);`. If `original.layer` is `null`, the new object's `layer` field is also `null`.
+
+3. `new MapObject((MapObject) obj, mapId)` in `MapObjectLayer(MapObjectLayer original)` – a different constructor is used, whose body is not provided. Without that declaration, we cannot assume it always sets a non‑null layer.
+
+The only place we see `layer` being set for sure is in `MapObjectLayer.addMapObject`:
+
+```java
+if (mapObject instanceof MapObject) {
+  MapObject obj = (MapObject) mapObject;
+  if (obj.getLayer() != null && !obj.getLayer().equals(this)) {
+    obj.getLayer().removeMapObject(obj);
+  }
+
+  this.objects.add(obj);
+  obj.setLayer(this);
+}
+```
+
+However, the specific call site under analysis is simply `this.getLayer()`, with no guarantee that:
+- the `MapObject` was added to a `MapObjectLayer` via `addMapObject`, or
+- any constructor or setter has assigned a non‑null value to `layer`.
+
+Because `this.layer` is an ordinary reference field with no universal initialization to a non‑null value in the provided code, a `MapObject` can exist with `layer == null` (for example, immediately after `new MapObject()` in `MapObjectSerializer.serialize`). In that state, `this.getLayer()` will return `null`.
+
+Therefore, at this specific call site `this.getLayer()`, the method can return `null` for some instances of `MapObject` constructed and used as shown.
+  ]]></reason>
+  <value>YES</value>
+</response>

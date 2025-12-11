@@ -1,0 +1,97 @@
+<response>
+  <reason><![CDATA[
+Game.loop() is a static accessor:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+At this call site, we must determine whether `gameLoop` can be null at the time of invocation.
+
+From the provided `Game` class:
+
+- During initialization:
+
+```java
+public static synchronized void init(String... args) {
+  if (initialized) {
+    ...
+    return;
+  }
+
+  ...
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  IGameLoop loop = loop();
+  if (loop != null) {
+    loop.attach(physics());
+    loop.attach(world());
+  }
+  ...
+  initialized = true;
+}
+```
+
+`gameLoop` is assigned a new `GameLoop` instance before `initialized` is set to `true`.
+
+- During termination:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  tweenEngine.terminate();
+  soundEngine.terminate();
+
+  world().clear();
+  ...
+  gameLoop = null;
+  screenManager = null;
+  gameWindow = null;
+}
+```
+
+After a full termination, `gameLoop` is explicitly set to `null`.
+
+There are numerous call sites of `Game.loop()` in the code you provided. Importantly, many of them *defensively* check for null:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.detach(this);
+}
+```
+
+or
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  this.lastScreenChange = loop.getTicks();
+}
+```
+
+These null checks only make sense if `Game.loop()` is expected to sometimes return null at runtime. The only way this happens in the given code is when `Game.terminate()` has run and set `gameLoop` to null.
+
+Nothing in the provided code guarantees that none of the shown call sites will execute after `terminate()` has set `gameLoop` to null. On the contrary, some actions are scheduled on the game loop (`GameLoop.perform`) and other components can still be interacted with around shutdown; the engine code anticipates this by checking for null in several places.
+
+Since:
+
+- `loop()` just returns `gameLoop` with no additional checks.
+- `gameLoop` is definitely set to `null` in `terminate()`.
+- There is no global invariant that prevents the shown code paths from running after `terminate()` (and the presence of multiple `if (loop != null)` checks shows the authors consider this a real possibility).
+
+it follows that, at this call site, the result of `Game.loop()` can indeed be null in some execution states (specifically, after termination or before initialization if `loop()` is called early).
+
+Therefore, the method **can** return null at this specific call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

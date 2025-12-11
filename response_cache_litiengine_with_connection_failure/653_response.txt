@@ -1,0 +1,42 @@
+<response>
+  <reason><![CDATA[
+The only information provided for `IMap.getRenderOrder()` is its signature:
+
+```java
+public RenderOrder getRenderOrder()
+```
+
+and the call site:
+
+```java
+map.getRenderOrder()
+```
+
+as used inside `MapRenderer.renderTileLayer` and `MapRenderer.drawRow`:
+
+```java
+if (map.getRenderOrder().btt) { ... }
+...
+if (map.getRenderOrder().rtl) { ... }
+```
+
+From the call site we can infer that `getRenderOrder()` is expected to return a non-null `RenderOrder` instance (because its fields `btt` and `rtl` are accessed). However, this *expectation* is not sufficient to prove that the implementation never returns `null`.
+
+Per your rules, I must base the decision on:
+- All return paths in `getRenderOrder()`, and
+- Any methods it depends on.
+
+But the body of `getRenderOrder()` is not shown at all—only the signature. Without its implementation, I cannot know:
+- Whether it directly returns a field that might be `null`.
+- Whether it delegates to another method that might return `null`.
+- Whether it has conditional logic that could return `null` in some circumstances.
+
+Since the question is specifically whether `map.getRenderOrder()` *can* be `null` at this call site, I need to see how `IMap.getRenderOrder()` is implemented (and, if it delegates, any methods it calls that influence the return value). Without that, any claim that it "cannot be null" or "can be null" would be speculation.
+
+Therefore, I cannot make a confident determination with the information provided and must request the full declaration (including body) of `IMap.getRenderOrder()`.
+]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.environment.tilemap.IMap.getRenderOrder</method>
+  </methods>
+</response>

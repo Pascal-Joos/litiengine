@@ -1,0 +1,32 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the single method provided:
+
+    protected double getViewportHeight() {
+        return Game.window().getResolution().getHeight() / this.getRenderScale();
+    }
+
+we can see the usage of `Game.window()`, but we have no visibility into:
+
+- How `Game.window()` is implemented
+- Whether `Game.window()` is ever assigned `null`
+- Whether there are any guarantees or invariants in the codebase (e.g., "Game.window() always returns a non-null Window instance after initialization")
+- Whether any initialization or null-checks occur before `getViewportHeight()` is called
+
+To determine if `Game.window()` can be null, we would need to inspect either:
+
+- The implementation of `Game.window()`
+- The lifecycle/initialization sequence that ensures the `Game`'s window is set up and non-null before this method is called
+- Any documented contract (e.g., Javadoc or framework-level guarantee) stating that `Game.window()` never returns null
+
+Without that information, we cannot soundly conclude that `Game.window()` is either always non-null or possibly null. Hence, we cannot definitively determine nullability just from this snippet.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/contract) of Game.window().]]></request>
+        <request><![CDATA[Provide any initialization code or lifecycle methods where the window is created/assigned (e.g., Game.init(), constructors, or configuration code).]]></request>
+        <request><![CDATA[If available, share any documentation or comments asserting that Game.window() never returns null.]]></request>
+    </requests>
+</response>
+```

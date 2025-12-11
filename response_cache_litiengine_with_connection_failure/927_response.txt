@@ -1,0 +1,27 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided code snippet alone, there is no information about how `Input.keyboard()` is implemented, initialized, or what contractual guarantees it provides. 
+
+To determine whether `Input.keyboard()` can be null at the call site `Input.keyboard().onKeyPressed(this::handlePressedKey);`, we would need to know:
+
+- Whether `Input.keyboard()` is:
+  - A static method returning some `Keyboard` (or similar) instance, or
+  - A static field-accessor, or
+  - Something else entirely.
+- How and when the underlying `Keyboard` (or equivalent) instance is created.
+- Whether the API contract of `Input.keyboard()` explicitly guarantees a non-null return (e.g., by always returning a singleton instance and never null), or if it returns null before some initialization has happened, or under certain failure conditions.
+- Whether there are any prior initialization steps or checks that must be completed before constructing `PlatformingMovementController`, ensuring that `Input.keyboard()` is non-null at this point.
+
+The constructor itself does not perform any null checks or initialization related to `Input.keyboard()`, nor does it show any prior control flow that could enforce non-nullity. The rest of the method (clearing/updating keys, initializing `jump`) is independent and does not affect the keyboard input system.
+
+Because the implementation and contract of `Input.keyboard()` are unknown, and no surrounding initialization or guarantees are shown, it is not possible to conclusively say that the expression can or cannot be null based solely on this method.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/contract) of the `Input` class, especially the `keyboard()` method: its return type, whether it is static, and any documentation/comments indicating nullability guarantees.]]></request>
+        <request><![CDATA[Show any initialization or bootstrap code that sets up the input system (e.g., where the keyboard/input subsystem is constructed or assigned).]]></request>
+        <request><![CDATA[Indicate whether any static analysis annotations are used (e.g., @NotNull/@Nullable) on `Input.keyboard()` or its backing field.]]></request>
+    </requests>
+</response>
+```

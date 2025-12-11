@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private UnaryOperator<Point2D> listenerLocationCallback =
+      old ->
+          Game.world().camera() != null
+              ? Game.world().camera().getFocus()
+              : old;
+  ```
+    ]]>
+  </code>
+</response>

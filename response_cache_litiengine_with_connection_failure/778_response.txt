@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public float[] getTweenValues(TweenType tweenType) {
+    switch (tweenType) {
+      case POSITION_X:
+        return new float[] {(float) this.getX()};
+      case POSITION_Y:
+        return new float[] {(float) this.getY()};
+      case POSITION_XY:
+        return new float[] {(float) this.getX(), (float) this.getY()};
+      case SIZE_WIDTH:
+        return new float[] {(float) this.getWidth()};
+      case SIZE_HEIGHT:
+        return new float[] {(float) this.getHeight()};
+      case SIZE_BOTH:
+        return new float[] {(float) this.getWidth(), (float) this.getHeight()};
+      case ANGLE:
+        return new float[] {(float) this.getTextAngle()};
+      case FONTSIZE:
+        if (this.getFont() == null) {
+          return new float[] {0f};
+        }
+        return new float[] {this.getFont().getSize2D()};
+      default:
+        return Tweenable.super.getTweenValues(tweenType);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

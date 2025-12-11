@@ -1,0 +1,17 @@
+```xml
+<response>
+  <reason><![CDATA[
+The provided snippet only shows the method signature:
+
+  public IPolyShape getPolyline()
+
+with no implementation body. Without the implementation (no return statements, no internal logic, and no calls to other methods are visible), there is no basis to determine whether it always returns a non-null IPolyShape, can sometimes return null, or perhaps always returns null.
+
+Because the analysis must be based on actual implementation and not assumptions about behavior or contracts, and no further dependent methods are referenced, I cannot make a confident determination about nullability from the information provided.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide the full implementation (method body) of IPolyShape getPolyline() in de.gurkenlabs.litiengine.environment.tilemap.IMapObject.]]></request>
+  </requests>
+</response>
+```

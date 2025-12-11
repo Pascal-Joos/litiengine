@@ -1,0 +1,22 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only information provided is the method signature:
+
+public IMap getMap()
+
+inside the interface/class:
+class de.gurkenlabs.litiengine.environment.tilemap.ILayer {
+  public IMap getMap()
+}
+
+There is no implementation shown—no method body, no return statements, and no information about how the IMap value is obtained. Since this is effectively just a declaration, there is no basis to conclude whether the implementation guarantees a non-null value or may return null.
+
+Because the nullability depends entirely on the (missing) implementations of ILayer.getMap() in concrete classes, we cannot determine from the provided code whether it can return null or not. To make a confident decision, we would need to see at least one concrete implementation of this method.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <methods>
+    <method>Any concrete implementation of de.gurkenlabs.litiengine.environment.tilemap.ILayer#getMap()</method>
+  </methods>
+</response>
+```

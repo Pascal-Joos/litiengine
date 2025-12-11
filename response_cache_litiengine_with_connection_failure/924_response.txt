@@ -1,0 +1,23 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided constructor alone, there is no information about how `Input.keyboard()` is implemented, initialized, or what contracts it guarantees. The code snippet shows only:
+
+    Input.keyboard().onKeyPressed(this::handlePressedKey);
+
+To determine whether `Input.keyboard()` can be null, we would need to know at least one of the following:
+
+- How the `Input` class is implemented (e.g., is it a singleton, static utility, or framework class?).
+- Whether `Input.keyboard()` is annotated (e.g., @NonNull, @NotNull) or documented to never return null.
+- Whether there is any initialization or setup code that guarantees a non-null keyboard instance before this constructor is called.
+- Whether `Input.keyboard()` can return null under certain runtime conditions (e.g., no keyboard available, input system not initialized, etc.).
+
+Because none of this information is available in the snippet, we cannot safely conclude that `Input.keyboard()` is always non-null, nor that it can be null. Therefore, with the given code alone, the nullability of `Input.keyboard()` is indeterminate.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or API contract / documentation) of the Input class, specifically the keyboard() method.]]></request>
+        <request><![CDATA[Indicate whether there are any framework or lifecycle guarantees (e.g., engine initialization code) that ensure the keyboard subsystem is initialized and non-null before this constructor runs.]]></request>
+    </requests>
+</response>
+```

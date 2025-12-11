@@ -1,0 +1,52 @@
+<response>
+  <reason><![CDATA[
+At the call site `entity1.getLocation()` the static type is `IEntity`:
+
+```java
+class de.gurkenlabs.litiengine.entities.IEntity {
+  Point2D getLocation();
+}
+```
+
+`IEntity.getLocation()` is only declared here; there is no implementation provided. Therefore, for the specific receiver `entity1` we do not know:
+
+- What concrete class implements `IEntity.getLocation()` for `entity1`
+- Whether that implementation ever returns `null`
+
+The other code you provided shows various *usages* of `getLocation()` (e.g., in `PhysicsEngine`, `ICamera`, `RenderEngine`, `EntityDistanceComparator`, `MovementController`, `Camera`) and one *overriding* implementation in `EntityEmitter`:
+
+```java
+class de.gurkenlabs.litiengine.graphics.emitters.EntityEmitter {
+  @Override
+  public Point2D getLocation() {
+    if (this.getEntity() == null) {
+      return null;
+    }
+    return this.hasDynamicLocation() ? this.getEntity().getLocation() : super.getLocation();
+  }
+}
+```
+
+This shows that in at least one concrete implementation (`EntityEmitter`), `getLocation()` can return `null` if `this.getEntity() == null`, and it may delegate to `this.getEntity().getLocation()` or `super.getLocation()`, whose nullability is also unknown from the given code.
+
+However, the specific call site you ask about is just:
+
+```java
+entity1.getLocation();
+```
+
+with no additional context indicating:
+
+- that `entity1` is or is not an `EntityEmitter`, or
+- what other concrete class `entity1` might be.
+
+Because:
+
+1. `IEntity.getLocation()` has no body shown, so it might legally return `null`.
+2. At least one known implementation (`EntityEmitter`) explicitly returns `null` in some cases.
+3. We do not know the concrete runtime type of `entity1` at this call site.
+
+we must conclude that `entity1.getLocation()` *can* evaluate to `null` at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

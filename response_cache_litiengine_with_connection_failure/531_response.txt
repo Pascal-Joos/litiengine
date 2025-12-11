@@ -1,0 +1,17 @@
+```xml
+<response>
+  <reason><![CDATA[
+Only the method signature
+
+  public List<ILayer> getRenderLayers()
+
+has been provided, without its implementation body. Without seeing the actual return statements or any internal logic (fields accessed, other methods called, conditions, etc.), it is impossible to determine whether the method might return null.
+
+To make a confident decision, the concrete implementation of this method is required. If it delegates to other methods, their declarations/implementations would also be needed, but the first and essential piece of information is the full body of getRenderLayers() itself.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <methods>
+    <method>de.gurkenlabs.litiengine.environment.tilemap.ILayerList#getRenderLayers</method>
+  </methods>
+</response>
+```

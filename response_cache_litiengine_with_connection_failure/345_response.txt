@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void addStaticShadows() {
+    if (this.getMap() == null) {
+      return;
+    }
+
+    final Color color =
+        this.getMap().getColorValue(MapProperty.SHADOWCOLOR, StaticShadow.DEFAULT_COLOR);
+    this.staticShadowLayer = new StaticShadowLayer(this, color);
+  }
+  ```
+    ]]>
+  </code>
+</response>

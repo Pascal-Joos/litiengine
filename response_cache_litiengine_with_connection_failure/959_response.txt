@@ -1,0 +1,27 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the provided method, there is no information about how `Input.mouse()` is implemented, initialized, or what it guarantees. The method `set` itself does not assign or modify anything related to `Input` or the mouse instance, nor does it perform any null checks on `Input.mouse()` before use.
+
+The only control flow visible is:
+
+1. `this.image` is set from `img`.
+2. `setOffset` is called.
+3. If `this.getImage() != null`, `hideDefaultCursor()` is called and the method returns.
+4. Otherwise, `if (!Input.mouse().isGrabMouse()) { showDefaultCursor(); }` is executed.
+
+This control flow in no way constrains the nullability of `Input.mouse()`. Whether `Input.mouse()` can be `null` depends entirely on:
+
+- The implementation and contract of `Input.mouse()` (static method or accessor),
+- How and when the underlying mouse object is created/assigned,
+- Whether `Input.mouse()` is specified or documented to never return `null`.
+
+None of that is provided in the snippet. Without the definition or documented contract of `Input.mouse()`, it is not possible to prove that `Input.mouse()` can never be `null`, nor to prove that it sometimes is `null`. Therefore, based solely on the given code, we cannot determine the nullability of `Input.mouse()` at that call site.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/contract) of the Input class, especially the mouse() method.]]></request>
+        <request><![CDATA[Provide any framework or library documentation that specifies whether Input.mouse() can return null.]]></request>
+    </requests>
+</response>
+```

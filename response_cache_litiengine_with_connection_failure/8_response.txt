@@ -1,0 +1,41 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void display( final Screen screen) {
+      if (Game.hasStarted() && Game.time().since(this.lastScreenChange) < this.getChangeCooldown()) {
+        log.log(
+            Level.INFO,
+            "Skipping displaying of screen {0} because screen changing is currently on cooldown.",
+            screen != null ? screen.getName() : "");
+        return;
+      }
+
+      final Screen previous = this.current();
+      if (previous != null) {
+        previous.suspend();
+      }
+
+      if (screen != null && !this.screens.contains(screen)) {
+        this.screens.add(screen);
+      }
+
+      this.currentScreen = screen;
+      if (!Game.isInNoGUIMode() && this.current() != null) {
+        this.current().prepare();
+      }
+
+      final IGameLoop loop = Game.loop();
+      if (loop != null) {
+        this.lastScreenChange = loop.getTicks();
+      }
+
+      final ScreenChangedEvent event = new ScreenChangedEvent(this.current(), previous);
+      for (final ScreenChangedListener listener : this.screenChangedListeners) {
+        listener.changed(event);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

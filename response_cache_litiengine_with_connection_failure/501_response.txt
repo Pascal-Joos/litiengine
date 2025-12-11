@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public char getAsChar() {
+    return Objects.requireNonNull(this.value).charAt(
+        0); // TODO Is this enough? Should it check if it's the right length and throw an exception
+    // if it's not?
+  }
+  ```
+    ]]>
+  </code>
+</response>

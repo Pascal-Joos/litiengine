@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void modifyBaseValue(final AttributeModifier<T> modifier) {
+    this.setBaseValue(this.valueInRange(Nullability.castToNonnull(modifier.modify(this.getBase()))));
+  }
+  ```
+    ]]>
+  </code>
+</response>

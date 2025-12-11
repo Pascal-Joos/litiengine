@@ -1,0 +1,43 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private List<Tile> parseChunkData() throws InvalidTileLayerException {
+      // first fill a two-dimensional array with all the information of the chunks
+      Tile[][] tileArr = new Tile[this.getHeight()][this.getWidth()];
+  
+      if (this.getEncoding() == null || this.getEncoding().isEmpty()) {
+        throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
+      } else if (this.getEncoding().equals(Encoding.BASE64)) {
+        if (this.isInfinite()) {
+          for (TileChunk chunk : this.chunks) {
+            List<Tile> chunkTiles = parseBase64Data(chunk.getValue(), this.compression);
+            this.addTiles(tileArr, chunk, chunkTiles);
+          }
+        }
+      } else if (this.getEncoding().equals(Encoding.CSV)) {
+        if (this.isInfinite()) {
+          for (TileChunk chunk : this.chunks) {
+            List<Tile> chunkTiles = parseCsvData(chunk.getValue());
+            this.addTiles(tileArr, chunk, chunkTiles);
+          }
+        }
+      } else {
+        throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
+      }
+  
+      // fill up the rest of the map with Tile.EMPTY
+      for (int y = 0; y < tileArr.length; y++) {
+        for (int x = 0; x < tileArr[y].length; x++) {
+          if (tileArr[y][x] == null) {
+            tileArr[y][x] = Tile.EMPTY;
+          }
+        }
+      }
+  
+      return ArrayUtilities.toList(tileArr);
+  }
+  ```
+    ]]>
+  </code>
+</response>

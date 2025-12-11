@@ -1,0 +1,52 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  protected void initializeComponents() {
+    super.initializeComponents();
+
+    this.setButton1(
+        new ImageComponent(
+            this.getX(),
+            this.getY(),
+            this.getHeight(),
+            this.getHeight(),
+            this.getButtonSpritesheet(),
+            ARROW_LEFT.getText(),
+            null));
+    final ImageComponent button1 = this.getButton1();
+    if (button1 != null) {
+      button1.setFont(ARROW_LEFT.getFont());
+    }
+    this.setButton2(
+        new ImageComponent(
+            this.getX() + this.getWidth() - this.getHeight(),
+            this.getY(),
+            this.getHeight(),
+            this.getHeight(),
+            this.getButtonSpritesheet(),
+            ARROW_RIGHT.getText(),
+            null));
+    final ImageComponent button2 = this.getButton2();
+    if (button2 != null) {
+      button2.setFont(ARROW_RIGHT.getFont());
+    }
+
+    final double sliderWidth = this.getHeight() * 2;
+    this.minSliderX = this.getX() + this.getHeight();
+    this.maxSliderX = this.getX() + this.getWidth() - this.getHeight() * 3;
+    this.setSliderComponent(
+        new ImageComponent(
+            this.getRelativeSliderPosition().getX(),
+            this.getRelativeSliderPosition().getY(),
+            sliderWidth,
+            this.getHeight(),
+            this.getSliderSpritesheet(),
+            "",
+            null));
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,61 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+private void updateRowsAndCols() {
+    final BufferedImage sprite = this.getImage();
+    this.columns = sprite.getWidth() / this.spriteWidth;
+    this.rows = sprite.getHeight() / this.spriteHeight;
+}
+```
+
+`this.getImage()` directly returns the field `this.image`:
+
+```java
+public BufferedImage getImage() {
+  return this.image;
+}
+```
+
+We must determine if `this.image` can be null at the moment `updateRowsAndCols()` is executed.
+
+From the constructor:
+
+```java
+public Spritesheet(
+   final BufferedImage image,
+   final String path,
+   final int spriteWidth,
+   final int spriteHeight) {
+  checkImage(image, path);
+  this.image = image;
+  this.name = FileUtilities.getFileName(path);
+  this.checkHeight(spriteHeight);
+  this.checkWidth(spriteWidth);
+
+  this.spriteWidth = spriteWidth;
+  this.spriteHeight = spriteHeight;
+  this.imageFormat = ImageFormat.get(FileUtilities.getExtension(path));
+
+  this.updateRowsAndCols();
+  ...
+}
+```
+
+`updateRowsAndCols()` is called after:
+
+1. `checkImage(image, path);`
+2. assignment `this.image = image;`
+
+So at this first call site, `this.image` is exactly the constructor parameter `image`, unless `checkImage` throws an exception (which we ignore per the rules).
+
+Whether `image` itself can be null depends entirely on `checkImage(image, path)`. That method is not provided. It may enforce `image != null` (throwing if null), or it may allow null. Without its declaration we cannot know if the constructor ever successfully completes with `this.image == null`. If the constructor can complete with a null `image`, then `this.getImage()` can be null at this call site; if `checkImage` forbids that, then it cannot.
+
+Because `checkImage` is the only place guarding/validating the constructor argument before `this.image` is stored and used here, its behavior is necessary to make a confident determination.
+]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.graphics.Spritesheet.checkImage</method>
+  </methods>
+</response>

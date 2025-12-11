@@ -1,0 +1,43 @@
+<response>
+  <reason><![CDATA[
+The call site `coll2.getCollisionBox()` appears only inside `EntityYComparator.compare`:
+
+```java
+ICollisionEntity coll1 = null;
+ICollisionEntity coll2 = null;
+if (m1 instanceof ICollisionEntity) {
+  coll1 = (ICollisionEntity) m1;
+}
+
+if (m2 instanceof ICollisionEntity) {
+  coll2 = (ICollisionEntity) m2;
+}
+
+final double m1MaxY =
+    coll1 != null ? coll1.getCollisionBox().getMaxY() : m1.getBoundingBox().getMaxY();
+final double m2MaxY =
+    coll2 != null ? coll2.getCollisionBox().getMaxY() : m2.getBoundingBox().getMaxY();
+```
+
+At the specific call site in question, `coll2.getCollisionBox()` is used only when `coll2 != null`, which further implies `m2 instanceof ICollisionEntity`.
+
+However, nothing in the provided code guarantees that `ICollisionEntity.getCollisionBox()` itself never returns `null`:
+
+- `ICollisionEntity` is an interface with the method declaration:
+  ```java
+  Rectangle2D getCollisionBox();
+  ```
+- No implementation of this method is shown.
+- Many other parts of the code *assume* a non-null result (e.g., they immediately call `intersects`, `getCenterX`, `getWidth`, etc.), but those are assumptions, not proofs; they do not prevent an implementation from returning `null`.
+
+Because the actual implementations of `ICollisionEntity.getCollisionBox()` are not provided, we cannot rule out that, for some entity type, `getCollisionBox()` may return `null`. That possibility would make `coll2.getCollisionBox()` null at this call site and cause a `NullPointerException` when `.getMaxY()` is accessed.
+
+To make a confident determination, we need to see at least one concrete implementation that covers all possible runtime types of `coll2` in contexts where `EntityYComparator` is used (typically some base class like `Entity` / `CollisionEntity` or similar).
+
+Without those, the method result *can* be `null` in principle at this call site.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>All concrete implementations of de.gurkenlabs.litiengine.entities.ICollisionEntity.getCollisionBox()</method>
+  </methods>
+</response>

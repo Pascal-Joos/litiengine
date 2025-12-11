@@ -1,0 +1,40 @@
+```xml
+<response>
+  <reason><![CDATA[
+Inside EntityActionMap.get(String actionName), the implementation is:
+
+  return this.actions.getOrDefault(actionName, null);
+
+By definition, getOrDefault(key, null) will return either:
+- the value mapped to key, which may be:
+  - a non-null EntityAction instance, or
+  - null if the map allows null values and the key is explicitly mapped to null, or
+- the default value, which in this code is explicitly null, when the map does not contain the given key.
+
+At the specific call site in Entity.perform(String actionName):
+
+  if (!this.actions.exists(actionName)) {
+    ...
+    return;
+  }
+
+  this.actions.get(actionName).perform();
+
+we know only that actions.exists(actionName) returned true. However:
+- We are not given the declaration or implementation of exists(String actionName).
+- We therefore cannot assume that exists(actionName) guarantees:
+  - that the key is present in the underlying map used by getOrDefault, or
+  - that the corresponding value is non-null.
+
+For example, exists might:
+- Check some different data structure or condition than the exact map used by get, or
+- Consider a key as "existing" even if its mapped value is null.
+
+Since:
+- getOrDefault(..., null) explicitly uses null as a default, and
+- We have no guarantee from exists(...) that get(actionName) will return a non-null EntityAction,
+
+the invocation this.actions.get(actionName) can evaluate to null at this call site, which would then cause a NullPointerException when .perform() is called.]]></reason>
+  <value>YES</value>
+</response>
+```

@@ -1,0 +1,26 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method body, there is no information about:
+
+- How `Input.mouse()` is implemented (static field vs. factory vs. service lookup)
+- Whether `Input.mouse()` is documented/guaranteed to never return null
+- Whether any initialization or lifecycle code elsewhere ensures a non-null mouse object before `setValueRelativeToMousePosition()` is called
+- Any prior null checks on `Input.mouse()` on the call site or within `Input`
+
+Within this method itself:
+- There are no null checks on `Input.mouse()`
+- Control flow does not restrict when `Input.mouse()` is called; it is always invoked at the start
+- The method then directly calls `.getLocation()` on the result, which would throw a NullPointerException if `Input.mouse()` were null
+
+Because we lack the implementation, contracts, or usage conventions of the `Input` class and its `mouse()` method, we cannot safely assert that `Input.mouse()` can *never* be null, nor can we prove that it *can* be null. The determination depends on external guarantees not shown in the snippet.
+
+Therefore, with the information given, the nullability of `Input.mouse()` at that line cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/abstract class) of the `Input` class, specifically the `mouse()` method.]]></request>
+        <request><![CDATA[Provide any documentation or comments that specify whether `Input.mouse()` is guaranteed to be non-null (e.g., lifecycle guarantees, initialization code, or invariants enforced by the framework).]]></request>
+    </requests>
+</response>
+```

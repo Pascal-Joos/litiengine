@@ -1,0 +1,50 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void clear() {
+      Game.physics().clear();
+
+      this.combatEntities.clear();
+      this.mobileEntities.clear();
+      this.gravityForces.clear();
+      this.layerEntities.clear();
+      this.entitiesByTag.clear();
+      this.allEntities.clear();
+
+      for (RenderType renderType : RenderType.values()) {
+        Nullability.castToNonnull(this.miscEntities.get(renderType)).clear();
+        this.renderListeners.get(renderType).clear();
+        this.renderables.get(renderType).clear();
+      }
+
+      dispose(this.allEntities.values());
+      dispose(this.triggers);
+      this.emitters.clear();
+      this.colliders.clear();
+      this.props.clear();
+      this.creatures.clear();
+      this.staticShadows.clear();
+      this.combatEntities.clear();
+      this.mobileEntities.clear();
+      this.lightSources.clear();
+      this.spawnPoints.clear();
+      this.soundSources.clear();
+      this.mapAreas.clear();
+      this.triggers.clear();
+
+      this.ambientLight = null;
+      this.staticShadowLayer = null;
+
+      for (Map<Integer, IEntity> type : this.miscEntities.values()) {
+        type.clear();
+      }
+
+      this.initialized = false;
+
+      this.fireEvent(l -> l.cleared(this));
+  }
+  ```
+    ]]>
+  </code>
+</response>

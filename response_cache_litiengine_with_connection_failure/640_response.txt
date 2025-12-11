@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public ITilesetEntry getTile(int id) {
+    if (this.sourceTileset != null) {
+      return this.sourceTileset.getTile(id);
+    }
+
+    if (id < 0 || id >= this.getTileCount()) {
+      return null;
+    }
+
+    return this.allTiles != null ? this.allTiles.get(id) : null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

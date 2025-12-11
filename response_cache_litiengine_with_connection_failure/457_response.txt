@@ -1,0 +1,22 @@
+<response>
+  <reason><![CDATA[
+The only available declaration for `getType()` is:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMapObject {
+
+  public String getType()
+}
+```
+
+No implementation is provided, nor is there any other method whose behavior constrains or overrides this return value. All usages in the provided code (e.g., null checks such as `mapObject.getType() == null || mapObject.getType().isEmpty()` and `mapObject.getType() != null && !mapObject.getType().isEmpty()`) show that the callers explicitly treat `getType()` as *potentially null*. These are just defensive checks at call sites, not guarantees about what the method actually returns.
+
+Per the guidelines:
+- We must base the answer on the method’s implementation and any methods that affect it.
+- That implementation is absent, and no other provided methods determine or wrap `getType()`’s behavior.
+- Therefore, we cannot deduce any invariant that `getType()` never returns null.
+
+Since nothing in the supplied code prevents `getType()` from returning null, and the existing callers are written under the assumption that null is possible, we must conclude that at the call site `mapObject.getType()` **can** evaluate to null.
+  ]]></reason>
+  <value>YES</value>
+</response>

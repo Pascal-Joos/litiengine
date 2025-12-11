@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Point2D getCollisionBoxCenter() {
+    if (this.getCollisionBox() == null) {
+      return new Point2D.Double();
+    }
+    return new Point2D.Double(
+        this.getCollisionBox().getCenterX(), this.getCollisionBox().getCenterY());
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,41 @@
+<response>
+  <reason><![CDATA[
+`ICollisionEntity.getCollisionBox()` is only specified as an interface method:
+
+```java
+interface ICollisionEntity {
+  Rectangle2D getCollisionBox();
+}
+```
+
+No implementation of this method is provided anywhere in the supplied call chain. All usages you showed (physics, triggers, pathfinding, debug rendering, etc.) *assume* that `getCollisionBox()` may be `null` in many cases:
+
+- Direct null checks:
+  - `if (collisionEntity.getCollisionBox() == null) { return null; }`
+  - `if (coll.getCollisionBox() == null || this.getCollisionBox() == null) { continue; }`
+  - In `EntityPivot`:
+    ```java
+    Rectangle2D collisionBox = ((ICollisionEntity) this.getEntity()).getCollisionBox();
+    if (collisionBox == null) {
+      return null;
+    }
+    ```
+- Code paths that *don’t* check for null:
+  - `entity.getCollisionBox().getCenterX()` (Navigator, PhysicsEngine, PathFinder, etc.)
+  - `Game.graphics().renderOutline(g, collisionEntity.getCollisionBox());` in `DebugRenderer`
+
+These inconsistent usages indicate that, by design, `getCollisionBox()` is allowed to return `null` for some entities, and client code is merely being careless or relying on external guarantees (e.g., “this particular entity always has a collision box”).
+
+However, for the specific call site you asked about:
+
+```java
+entity.getCollisionBox()
+```
+
+there is no surrounding null check or prior guarantee shown that would ensure this particular `entity` has a non-null collision box, and we have no implementation of `getCollisionBox()` to prove it always returns a non-null `Rectangle2D`.
+
+Per your guidelines, without the actual implementation of `ICollisionEntity.getCollisionBox()` (or a concrete class that `entity` is an instance of), we must respect what the interface allows and what other code paths already explicitly handle: a `null` return is possible.
+
+Therefore, at this specific call site, it is *possible* that `entity.getCollisionBox()` evaluates to `null`.]]></reason>
+  <value>YES</value>
+</response>

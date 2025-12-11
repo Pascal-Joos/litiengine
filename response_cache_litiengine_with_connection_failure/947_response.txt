@@ -1,0 +1,25 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided constructor alone, there is no explicit guarantee that `Input.mouse()` is non-null:
+
+- `Input.mouse()` is a static method call on some `Input` class; its implementation is not shown.
+- There are no prior null checks (e.g., `Objects.requireNonNull(Input.mouse())`) or other defensive checks in this method.
+- The fact that `Input.keyboard()` is called earlier without a null check does not, by itself, guarantee that `Input.mouse()` is non-null; they are separate methods and could have independent initialization/validity conditions.
+- The code further calls `Input.mouse().getLocation()` inside the lambda, again without null checks. This only indicates the *author assumes* it is non-null, not that it’s actually guaranteed.
+
+Whether `Input.mouse()` can be null depends entirely on:
+- How the `Input` class is initialized and managed
+- The contract of `Input.mouse()` (e.g., documented as always returning a singleton mouse instance and throwing if not initialized, versus possibly returning null when input is not available)
+
+None of that information is present in the snippet.
+
+Because the nullability of `Input.mouse()` is determined by external code and contracts that are not shown, a definitive determination cannot be made based solely on the given method. Thus, with the available information, its nullability is unknown.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or documentation/contract of Input.mouse() (and any related initialization logic).]]></request>
+        <request><![CDATA[Provide any framework or library specification that defines whether Input.mouse() can ever return null (e.g., Javadoc, design docs, or usage conventions).]]></request>
+    </requests>
+</response>
+```

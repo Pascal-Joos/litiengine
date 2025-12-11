@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setUpperBound(final BigDecimal upperBound) {
+      this.upperBound = upperBound;
+      if (this.getCurrentValue() != null && this.getCurrentValue().compareTo(this.getUpperBound()) > 0) {
+        this.setCurrentValue(this.getUpperBound());
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

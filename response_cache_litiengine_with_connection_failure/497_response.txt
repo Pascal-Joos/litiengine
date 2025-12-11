@@ -1,0 +1,35 @@
+<response>
+  <reason><![CDATA[
+The only information available about `IMapObject.getPolyline()` is its signature:
+
+```java
+public IPolyShape getPolyline()
+```
+
+No implementation or contract (annotations, documentation, or invariants) is provided that would guarantee:
+- it always returns a non-null `IPolyShape`, or
+- it returns non-null under specific conditions that we know to hold at this call site.
+
+In the provided call chain, `mapObject.getPolyline()` is used in `MapUtilities` like this:
+
+```java
+List<Point2D> points =
+    mapObject.getPolyline() != null
+        ? mapObject.getPolyline().getPoints()
+        : mapObject.getPolygon().getPoints();
+```
+
+This code explicitly checks `mapObject.getPolyline() != null`, which strongly suggests that `getPolyline()` is allowed to return `null` in general. However, this does not prove whether, at the specific call site `mapObject.getPolyline()`, the result is guaranteed to be non-null for the particular `mapObject` instance being used. That depends entirely on the actual implementation of `IMapObject.getPolyline()` and potentially on the state of `mapObject`.
+
+Because the body of `getPolyline()` is not provided, I cannot determine:
+- whether it ever returns `null`,
+- whether it returns `null` only when some condition (e.g., `isPolyline() == false`) holds, or
+- whether, for the specific `mapObject` at this call site, those conditions can or cannot occur.
+
+To make a confident determination for this specific invocation, the implementation of `IMapObject.getPolyline()` is required.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.environment.tilemap.IMapObject#getPolyline</method>
+  </methods>
+</response>

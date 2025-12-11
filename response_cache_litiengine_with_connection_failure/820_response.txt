@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void decrement() {
+      this.setCurrentValue(Nullability.castToNonnull(this.getCurrentValue()).subtract(this.getStepSize()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

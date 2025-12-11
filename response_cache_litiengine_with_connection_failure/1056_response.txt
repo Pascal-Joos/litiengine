@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static BufferedImage horizontalFlip(final BufferedImage img) {
+    final int w = img.getWidth();
+    final int h = img.getHeight();
+    if (w == 0 || h == 0) {
+      return img;
+    }
+
+    final BufferedImage dimg = getCompatibleImage(w, h);
+    final Graphics2D g = Nullability.castToNonnull(dimg.createGraphics());
+    g.drawImage(img, 0, 0, w, h, w, 0, 0, h, null);
+    g.dispose();
+    return dimg;
+  }
+  ```
+    ]]>
+  </code>
+</response>

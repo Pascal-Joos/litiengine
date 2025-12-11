@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Point2D getMapLocation() {
+    if (Game.world().camera() == null) {
+      return null;
+    }
+    return Game.world()
+        .camera()
+        .getMapLocation(
+            new Point2D.Double(
+                this.getLocation().getX() / Game.world().camera().getRenderScale(),
+                this.getLocation().getY() / Game.world().camera().getRenderScale()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

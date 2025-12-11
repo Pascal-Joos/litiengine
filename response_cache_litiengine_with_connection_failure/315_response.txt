@@ -1,0 +1,41 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the method, the result of entity.movement() is first stored in a local variable:
+
+    IMovementController mvmtControl = entity.movement();
+
+and immediately checked for null:
+
+    if (mvmtControl != null) {
+        ...
+        entity.movement().apply(force);
+        ...
+    }
+
+This guarantees only that the specific call that produced mvmtControl was non-null at that moment. However, inside the if-block the code does not reuse mvmtControl; it makes a new call:
+
+    entity.movement().apply(force);
+
+For this second call to be safely non-null, at least one of the following must be true:
+
+1. The contract of IMobileEntity.movement() guarantees it never returns null (in which case the explicit null check would be unnecessary), or
+2. The implementation of IMobileEntity for all reachable instances guarantees that movement() will return the same non-null controller (or at least a non-null controller) for the entire duration of this method call.
+
+From the code provided alone, there is no such guarantee. Between the first and second calls, movement() could, in principle, return null (e.g., if entity is mutable and some other thread or internal state change sets its movement controller to null). The null check applies only to mvmtControl, not to the new result of entity.movement().
+
+Because you have not provided:
+- The contract / implementation of IMobileEntity.movement(), or
+- Any concurrency or immutability guarantees about IMobileEntity,
+
+it is not possible to conclusively determine that entity.movement() in entity.movement().apply(force); cannot be null under all possible implementations and runtime conditions.
+
+Therefore, based solely on the given snippet and without stronger contracts, the possibility that the second entity.movement() returns null cannot be ruled out.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the interface or documentation for IMobileEntity, specifically the contract of the movement() method (e.g., whether it is guaranteed to never return null).]]></request>
+        <request><![CDATA[Provide the implementation details of the concrete IMobileEntity classes used at this call site, including whether movement() can change (or become null) over time or from other threads.]]></request>
+    </requests>
+</response>
+```

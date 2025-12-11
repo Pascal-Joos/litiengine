@@ -1,0 +1,115 @@
+<response>
+  <reason><![CDATA[
+At the call site in question, `this.getImage()` is invoked on an instance of `de.gurkenlabs.litiengine.graphics.Spritesheet`. The implementation of `getImage()` is:
+
+```java
+public BufferedImage getImage() {
+  return this.image;
+}
+```
+
+So the question reduces to: can `this.image` be null for a `Spritesheet` instance that is being used in `MapRenderer.renderImageLayer`?
+
+Relevant constructor and usages:
+
+```java
+public Spritesheet(
+       final BufferedImage image,
+       final String path,
+       final int spriteWidth,
+       final int spriteHeight) {
+    checkImage(image, path);
+    this.image = image;
+    this.name = FileUtilities.getFileName(path);
+    this.checkHeight(spriteHeight);
+    this.checkWidth(spriteWidth);
+
+    this.spriteWidth = spriteWidth;
+    this.spriteHeight = spriteHeight;
+    this.imageFormat = ImageFormat.get(FileUtilities.getExtension(path));
+
+    this.updateRowsAndCols();
+    this.sprites = new BufferedImage[this.getTotalNumberOfSprites()];
+
+    Resources.spritesheets().add(this.name, this);
+
+    Resources.images()
+        .addClearedListener(
+            () -> {
+              this.emptySprites.clear();
+              this.sprites = new BufferedImage[this.getTotalNumberOfSprites()];
+            });
+}
+```
+
+and:
+
+```java
+protected static void renderImageLayer(
+      Graphics2D g, IImageLayer layer, final IMap map, Rectangle2D viewport, float opacity) {
+    Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
+    BufferedImage img;
+    if (sprite == null) {
+      img = Resources.images().get(layer.getImage().getAbsoluteSourcePath());
+    } else {
+      img = sprite.getImage();
+    }
+    if (img == null) {
+      return;
+    }
+    ...
+}
+```
+
+Key points:
+
+1. **Constructor enforces a non‑null image on construction**  
+   The `Spritesheet` constructor calls `checkImage(image, path);` before assigning `this.image = image;`. While we are not given `checkImage`’s implementation, its purpose and placement strongly indicate it validates the passed `BufferedImage`. Even if `checkImage` throws when `image` is null (which is consistent with its name), that would prevent construction of a `Spritesheet` with `this.image == null`. An exception is not a null return value.
+
+2. **No later assignment setting `this.image` to null is shown**  
+   In the provided snippets, after construction `this.image` is never reassigned, only read via `getImage()` and used in:
+   - `checkHeight`: guarded by `if (this.getImage() == null) { return; }`
+   - `checkWidth`: uses `this.getImage().getWidth()` without a null check.
+   - `updateRowsAndCols`: 
+     ```java
+     final BufferedImage sprite = this.getImage();
+     this.columns = Nullability.castToNonnull(sprite).getWidth() / this.spriteWidth;
+     this.rows = sprite.getHeight() / this.spriteHeight;
+     ```
+     The explicit `Nullability.castToNonnull(sprite)` also encodes the assumption that `sprite` (i.e., `this.image`) is not null in normal operation.
+
+   No code path in the snippets can change `this.image` to null after construction.
+
+3. **Rendering call site behavior if `getImage()` were null**  
+   At the concrete call site:
+   ```java
+   if (sprite == null) {
+     img = Resources.images().get(layer.getImage().getAbsoluteSourcePath());
+   } else {
+     img = sprite.getImage();
+   }
+   if (img == null) {
+     return;
+   }
+   ```
+   If `sprite.getImage()` could be null, the method would just return early (no crash). However, this guard merely shows that the renderer is defensive; it doesn’t prove null is actually possible. Whether it *can* be null still depends on `this.image`.
+
+4. **Internal uses assume non‑null image**  
+   Multiple methods on `Spritesheet` use `this.getImage().getWidth()` / `.getHeight()` without a null guard (except in `checkHeight`). If `this.image` were allowed to be null in a normal `Spritesheet` instance, these would be obvious NPE risks. The presence of `Nullability.castToNonnull(sprite)` further reinforces that in the library’s intended state, `this.image` is meant to be non‑null for any valid `Spritesheet`.
+
+5. **We see the only construction path used in this call chain**  
+   In this call chain, `Spritesheet` instances come from `Resources.spritesheets().get(...)`. The provided constructor is the one that registers the spritesheet in `Resources.spritesheets().add(this.name, this);`. For this path to produce a `Spritesheet` with `null` image, either:
+   - `checkImage(image, path)` allows `image == null`, and
+   - the constructor is still used with `image == null`.
+
+   Even if such construction were attempted, `checkWidth(spriteWidth)` and `updateRowsAndCols()` both dereference `this.getImage()` without null checks; this would produce immediate NPEs at construction time, not a valid `Spritesheet` that later reaches `renderImageLayer`.
+
+Given the code we have, and restricting analysis to the specific call site in `MapRenderer.renderImageLayer`, the only consistent reading is:
+
+- Any `Spritesheet` instance that makes it into `Resources.spritesheets()` and then to `renderImageLayer` has been constructed with a non‑null `BufferedImage` and never has `this.image` set to null afterward.
+
+Therefore, at this specific call site, `sprite.getImage()` cannot be null in a successfully constructed, usable `Spritesheet` instance.
+
+]]></reason>
+  <value>NO</value>
+</response>

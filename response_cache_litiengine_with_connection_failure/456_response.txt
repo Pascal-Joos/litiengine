@@ -1,0 +1,24 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only information provided for the method is its signature:
+
+  public String getType()
+
+There is no implementation body shown (only a closing brace), so we cannot see any return statements or logic. Without the implementation, we cannot determine:
+
+- Whether it always returns a constant non-null string
+- Whether it returns a field that might be null
+- Whether it delegates to another method whose nullability is unknown
+- Whether it ever explicitly returns null
+
+Because the analysis must be based on the actual implementation and we are not allowed to assume behavior not shown, there is no basis to conclude either that it always returns non-null or that it can return null.
+
+To make a definitive determination, the concrete implementation of this method is required. If this is an interface or abstract declaration, then we would need to inspect each concrete implementation class that overrides `getType()`.
+]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide the full implementation body of de.gurkenlabs.litiengine.environment.tilemap.IMapObject#getType(), including all return statements. If IMapObject is an interface or abstract class, also provide the implementations of getType() in the concrete classes whose nullability you want analyzed.]]></request>
+  </requests>
+</response>
+```

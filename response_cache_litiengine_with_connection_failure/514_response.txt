@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void addLayer(ILayer layer) {
+    if (this.layers == null) {
+      return;
+    }
+    this.layers.add(layer);
+    this.layerAdded(layer);
+    if (layer instanceof Layer) {
+      ((Layer) layer).setMap((TmxMap) this.getMap());
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

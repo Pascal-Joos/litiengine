@@ -1,0 +1,25 @@
+<response>
+  <reason><![CDATA[
+At the specific call site, `this.getFrames()` is invoked in two methods of `TileAnimation`: `getCurrentFrame()` and `getTotalDuration()`.
+
+Inside `getTotalDuration()` we see:
+
+```java
+List<ITileAnimationFrame> frames = this.getFrames();
+if (frames == null || frames.isEmpty()) {
+  return 0;
+}
+```
+
+This defensive null check proves that the implementation of `getFrames()` is *allowed* to return `null`; otherwise, the `frames == null` branch would be unnecessary. There is no other code shown that initializes or guarantees non-nullity of `this.frames`. The `getFrames()` implementation is simply:
+
+```java
+@Override
+public List<ITileAnimationFrame> getFrames() {
+  return this.frames;
+}
+```
+
+Since `this.frames` is returned directly and we have no constructor or setter code ensuring it is non-null, it can be null at runtime for the receiver object (`this`) at these call sites. Therefore the invocation `this.getFrames()` at the shown call site can evaluate to `null`.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static synchronized void start() {
+        if (!initialized) {
+          throw new IllegalStateException(
+              "The game cannot be started without being first initialized. Call Game.init(...) before Game.start().");
+        }
+  
+        if (gameLoop == null) {
+          throw new IllegalStateException("Game loop has not been initialized");
+        }
+  
+        Nullability.castToNonnull(gameLoop).start();
+        tweenEngine.start();
+        soundEngine.start();
+  
+        for (final GameListener listener : gameListeners) {
+          listener.started();
+        }
+  
+        hasStarted = true;
+  }
+  ```
+    ]]>
+  </code>
+</response>

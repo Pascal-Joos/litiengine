@@ -1,0 +1,39 @@
+<response>
+  <reason><![CDATA[
+At the provided call sites, `map` is a non‑null `IMap`, and the call is `map.getOrientation()`.
+
+We are not given the implementation of `IMap.getOrientation()` itself, so by default it could legally return `null`. The calling code in this snippet explicitly assumes that `null` is possible:
+
+- In multiple methods of `MapUtilities`, there are guard checks:
+
+```java
+if (map == null) {
+  return new Rectangle2D.Double();
+}
+
+if (map.getOrientation() == null) {
+  return new Rectangle2D.Double();
+}
+```
+
+and
+
+```java
+if (map.getOrientation() == null) {
+  return null;
+}
+return getTopMostTile(map.getOrientation().getTile(location, map));
+```
+
+These checks demonstrate that the library authors consider `map.getOrientation()` capable of returning `null` at runtime.
+
+In other places (e.g. `MapRenderer.drawTile`, `DebugRenderer.drawTileBoundingBox`), `map.getOrientation()` is used without a preceding null check. That only tells us those code paths may throw `NullPointerException` if `getOrientation()` returns `null`; it does not prove that `getOrientation()` is non‑null there. Since no invariants or postconditions are shown that would guarantee a non‑null orientation for those `map` instances, we cannot rule out `null` at these specific sites.
+
+Because:
+- The implementation of `IMap.getOrientation()` is not provided, and
+- Existing callers in the same codebase explicitly guard for a `null` orientation,
+
+the only sound conclusion is that `map.getOrientation()` *can* be `null` at the given call sites.
+  ]]></reason>
+  <value>YES</value>
+</response>

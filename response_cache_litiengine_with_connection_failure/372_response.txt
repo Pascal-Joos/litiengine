@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setColor(final Color color) {
+      this.color = color;
+      if (this.environment != null && this.environment.getMap() != null) {
+        this.updateSection(this.environment.getMap().getBounds());
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

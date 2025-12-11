@@ -1,0 +1,47 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void render(Graphics2D g, RenderType renderType) {
+      long renderStart = System.nanoTime();
+
+      // 1. Render map layers
+      if (this.getMap() != null) {
+        MapRenderer.render(g, this.getMap(), Game.world().camera().getViewport(), this, renderType);
+      }
+
+      // 2. Render renderables
+      for (final IRenderable rend : this.getRenderables(renderType)) {
+        rend.render(g);
+      }
+
+      // 3. Render entities
+      Game.graphics()
+          .renderEntities(
+              g, this.miscEntities.get(renderType).values(), renderType == RenderType.NORMAL);
+
+      // 4. fire event
+      this.fireRenderEvent(g, renderType);
+
+      if (Game.config().debug().trackRenderTimes()) {
+        final double renderTime = TimeUtilities.nanoToMs(System.nanoTime() - renderStart);
+        final IMap map = this.getMap();
+        final long layerCount =
+            map == null || map.getRenderLayers() == null
+                ? 0
+                : map.getRenderLayers().stream()
+                    .filter(m -> m.getRenderType() == renderType)
+                    .count();
+        Game.metrics()
+            .trackRenderTime(
+                renderType.toString().toLowerCase(),
+                renderTime,
+                new GameMetrics.RenderInfo("layers", layerCount),
+                new GameMetrics.RenderInfo("renderables", this.getRenderables(renderType).size()),
+                new GameMetrics.RenderInfo("entities", this.miscEntities.get(renderType).size()));
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

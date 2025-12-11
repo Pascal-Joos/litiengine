@@ -1,0 +1,26 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+simply returns the static field `mouse`. There is no initialization or assignment of this field shown anywhere in the provided call chain or surrounding classes.
+
+Multiple call sites explicitly guard against `null`:
+
+```java
+if (Input.mouse() != null) { ... }
+final IMouse mouse = Input.mouse();
+if (mouse != null) { ... }
+```
+
+This is strong evidence that `Input.mouse()` is expected to be nullable at runtime. Since we have no code that guarantees `mouse` is non-null before any of the provided usages, and the method has no logic that could replace a null with a non-null value, the only safe conclusion at this specific call site (`Input.mouse()`) is that it can return null.
+
+Because the value returned is exactly the static field `mouse` and we do not see its initialization, we must assume it can be uninitialized or explicitly set to null. Therefore, `Input.mouse()` can evaluate to null at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,40 @@
+```xml
+<response>
+    <reason><![CDATA[
+The only guarantees this method provides are:
+
+1. It immediately returns if `entity.getCollisionType()` is `null`, so at the call sites we know:
+   - `entity.getCollisionType()` is non-null.
+   - Its value is one of the enum constants handled in the `switch` (or will go to `default` and return).
+
+2. The `switch` handles only:
+   - `DYNAMIC`
+   - `STATIC`
+   and uses:
+   ```java
+   this.collisionEntities.get(entity.getCollisionType()).add(entity);
+   ```
+   for those two values.
+
+However, there is no information here about:
+- How `this.collisionEntities` is initialized,
+- What its key and value types are,
+- Whether it always contains non-null collections for the keys `DYNAMIC`, `STATIC`, and `Collision.ANY`,
+- Whether `.get(...)` ever returns `null`.
+
+For example, if `collisionEntities` is a `Map<Collision, List<ICollisionEntity>>`, then any of the following are possible:
+- The map might not contain an entry for `DYNAMIC` or `STATIC`, in which case `get(...)` returns `null` and `.add(entity)` will throw a `NullPointerException`;
+- The map might contain those keys but with `null` values, also causing `NullPointerException`;
+- The map might be fully initialized with non-null lists for all relevant keys, in which case `get(...)` cannot be `null` for those keys.
+
+None of these behaviors can be ruled out from this method alone. The method does not perform any explicit null-check on `this.collisionEntities.get(entity.getCollisionType())` before calling `.add(entity)`, and there is no visible contract or assertion ensuring the map is populated for all needed keys.
+
+Because the nullability entirely depends on the unseen initialization and invariants of `this.collisionEntities`, and those are not given, we cannot definitively state that the expression is always non-null, nor that it can be null, based only on the provided snippet.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show how this.collisionEntities is declared (its type) and how/where it is initialized.]]></request>
+        <request><![CDATA[Confirm whether all possible collision types used here (DYNAMIC, STATIC, and Collision.ANY) are always inserted into collisionEntities with non-null collection values before add(...) can be called.]]></request>
+    </requests>
+</response>
+```

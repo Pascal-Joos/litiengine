@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static synchronized void setUncaughtExceptionHandler(
+      UncaughtExceptionHandler uncaughtExceptionHandler) {
+    if (gameLoop != null) {
+      gameLoop.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+    }
+    Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
+  }
+  ```
+    ]]>
+  </code>
+</response>

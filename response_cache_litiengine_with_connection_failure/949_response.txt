@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public TextFieldComponent(
+      final double x, final double y, final double width, final double height, final String text) {
+    super(x, y, width, height, text);
+    this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
+    this.setText(text);
+    this.flickerDelay = 100;
+    Input.keyboard().onKeyTyped(this::handleTypedKey);
+    this.onClicked(
+        e -> {
+          if (!this.isSelected()) {
+            this.toggleSelection();
+          }
+        });
+
+    final IMouse mouse = Input.mouse();
+    if (mouse != null) {
+      mouse.onClicked(
+          e -> {
+            if (!this.getBoundingBox().contains(mouse.getLocation())) {
+              this.setSelected(false);
+            }
+          });
+    }
+
+    this.setTextAlign(Align.LEFT);
+  }
+  ```
+    ]]>
+  </code>
+</response>

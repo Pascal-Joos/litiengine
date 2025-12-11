@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public PropState getState() {
+      if (!this.isIndestructible() && this.getHitPoints().get() <= 0) {
+        return PropState.DESTROYED;
+      } else if (!this.isIndestructible()
+          && this.getHitPoints().get() <= Nullability.castToNonnull(this.getHitPoints().getMax()) * 0.5) {
+        return PropState.DAMAGED;
+      } else {
+        return PropState.INTACT;
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

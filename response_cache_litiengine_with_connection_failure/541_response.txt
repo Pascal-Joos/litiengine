@@ -1,0 +1,20 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only information provided is the interface-like declaration:
+
+public IMapImage getImage()
+
+inside:
+class de.gurkenlabs.litiengine.environment.tilemap.IImageLayer { ... }
+
+There is no implementation body for getImage(), nor any other methods or fields that would influence its behavior. Without the actual implementation (or at least a contract annotation like @Nonnull/@NotNull/@Nullable), it is impossible to determine whether any implementation of this method will guarantee a non-null return or may return null under some conditions.
+
+Because the analysis must be based on the implementation and not on assumptions about external methods or contracts, and we are not given that implementation, we cannot decide if null is possible.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide the full implementation body of de.gurkenlabs.litiengine.environment.tilemap.IImageLayer.getImage().]]></request>
+  </requests>
+</response>
+```

@@ -1,0 +1,52 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+    @Nullable
+    @Override
+    public Path findPath(final IMobileEntity entity, final Point2D target) {
+      // if there is no collision between the start and the target return a direct
+      // path
+      final Point2D startLocation = entity.getCollisionBoxCenter();
+      if (!this.intersectsWithAnyCollisionBox(entity, startLocation, target)) {
+        return this.findDirectPath(startLocation, target);
+      }
+  
+      final AStarNode startNode = this.getGrid().getNode(startLocation);
+      AStarNode targetNode = this.getGrid().getNode(target);
+      if (targetNode == null) {
+        return null;
+      }
+      if (startNode == null) {
+        return null;
+      }
+      if (startNode.equals(targetNode)) {
+        return null;
+      }
+  
+      // simple fallback if the target tile is not walkable.
+      boolean gotoNeighbor = false;
+      if (!targetNode.isWalkable()) {
+        for (AStarNode neighbor : this.getGrid().getNeighbors(targetNode)) {
+          if (neighbor.isWalkable()) {
+            targetNode = neighbor;
+            gotoNeighbor = true;
+            break;
+          }
+        }
+  
+        if (!gotoNeighbor) {
+          return this.findDirectPath(startLocation, target);
+        }
+      }
+  
+      if (gotoNeighbor && startNode.equals(targetNode)) {
+        return null;
+      }
+  
+      return this.findAStarPath(startNode, targetNode);
+    }
+  ```
+    ]]>
+  </code>
+</response>

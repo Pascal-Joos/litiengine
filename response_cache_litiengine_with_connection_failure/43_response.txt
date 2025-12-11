@@ -1,0 +1,89 @@
+<response>
+  <reason><![CDATA[
+Game.loop() is a static accessor:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+The field `gameLoop` is manipulated in `Game` as follows:
+
+- In `init(...)`:
+
+```java
+gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+IGameLoop loop = loop();
+if (loop != null) {
+  loop.attach(physics());
+  loop.attach(world());
+}
+...
+initialized = true;
+```
+
+Here `gameLoop` is set to a new `GameLoop` instance before `initialized` is set to `true`.
+
+- In `start()`:
+
+```java
+public static synchronized void start() {
+  if (!initialized) {
+    throw new IllegalStateException(...);
+  }
+
+  gameLoop.start();
+  ...
+  hasStarted = true;
+}
+```
+
+`start()` requires `initialized == true`, so any normal start sequence implies that `init()` has successfully created a non-null `gameLoop` first.
+
+- In `terminate()`:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  ...
+  world().clear();
+  ...
+  gameLoop = null;
+  screenManager = null;
+  gameWindow = null;
+}
+```
+
+`gameLoop` is explicitly set to `null` during termination.
+
+At all the provided call sites (e.g., within `Environment`, `GameWorld`, `GameWindow`, `GameTime`, `Emitter`, `MovementController`, etc.), there is no local guarantee that `Game.terminate()` has not already been called. The call sites do not check `Game.hasStarted()` or `initialized` before calling `Game.loop()`, except in some cases where they *do* guard against `loop == null` explicitly:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  ...
+}
+```
+
+The presence of such null checks indicates that the library itself considers `Game.loop()` possibly null at those points, and the state where `gameLoop` becomes null is clearly defined in `terminate()`.
+
+Since:
+
+- `loop()` simply returns the current value of `gameLoop`,
+- `gameLoop` is set to `null` in `terminate()`,
+- and there is no global invariant in the shown code that prevents any of these call sites from being reached after `terminate()` has run,
+
+the specific invocation `Game.loop()` at the analyzed call sites can evaluate to `null` in any context where termination has occurred (or before `init()` has been called).
+
+Therefore, for the specific call site pattern `Game.loop()` as shown in this code base, the method can return null.]]></reason>
+  <value>YES</value>
+</response>

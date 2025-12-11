@@ -1,0 +1,31 @@
+```xml
+<response>
+    <reason><![CDATA[
+With only the provided method:
+
+    public Dimension getResolution() {
+        return this.resolution;
+    }
+
+there is no information about:
+
+- where or how `this.resolution` is declared,
+- how or when it is initialized,
+- whether it is ever assigned `null`,
+- whether any constructor or setter guarantees a non-null value,
+- whether there are any annotations (e.g., @NonNull, @NotNull) or invariants.
+
+Without that surrounding context, both of these are possible along some execution path:
+
+1. `this.resolution` is always set to a non-null `Dimension` before `getResolution()` is called → then it cannot be null.
+2. `this.resolution` is never initialized or may be explicitly set to `null` → then it can be null.
+
+Because the nullability depends entirely on code and contracts not shown here, it is impossible to determine definitively from this snippet alone whether the returned expression can be null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of the field `resolution` (including any annotations) and its initialization points (constructors, field initializers, setters).]]></request>
+        <request><![CDATA[Indicate whether there are any documented invariants or external guarantees that `resolution` is never null (e.g., class-level Javadoc, @NonNull annotations, or framework constraints).]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,74 @@
+<response>
+  <reason><![CDATA[
+The call site in question is inside `NumberAdjuster.prepare()`:
+
+```java
+this.onChangeConfirmed(
+    e -> {
+      try {
+        this.setCurrentValue(BigDecimal.valueOf(Double.parseDouble(this.getText())));
+      } catch (final Exception ex) {
+        log.log(Level.SEVERE, ex.getMessage(), ex);
+      }
+    });
+```
+
+Here, `this` is a `NumberAdjuster`, which (by the provided chain) ultimately uses `TextFieldComponent`’s implementation of `getText()`:
+
+```java
+@Override
+public String getText() {
+  return this.fullText;
+}
+```
+
+So the nullability of `this.getText()` depends on whether `TextFieldComponent.fullText` can be `null` at the time the lambda is executed.
+
+From the constructor:
+
+```java
+public TextFieldComponent(
+    final double x, final double y, final double width, final double height, final String text) {
+  super(x, y, width, height, text);
+  this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
+  this.setText(text);
+  ...
+}
+```
+
+- The initial value comes from the `text` constructor parameter passed into `setText(text)`. We are not shown `setText`’s implementation, nor whether `text` can be `null`.
+- Subsequent modifications of the text in the provided code paths do *not* guarantee non-null:
+  - `handleNormalTyping` explicitly treats `currentText` as possibly `null`:
+
+    ```java
+    final String currentText = this.getText();
+    if (this.getMaxLength() > 0 && currentText != null && currentText.length() >= this.getMaxLength()) {
+      return;
+    }
+
+    // pattern check uses (currentText == null ? "" : currentText)
+    final Matcher mat = pat.matcher((currentText == null ? "" : currentText) + text);
+    ...
+    this.setText((currentText == null ? "" : currentText) + text);
+    ```
+
+    This code path only proves that **after** calling `setText(...)` it will not pass `null` there; it does *not* prevent `getText()` from being `null` before this method (or before any key typed event) ever runs.
+
+  - `handleBackSpace` explicitly contains a null check, which shows the developers acknowledge `this.getText()` might be `null`:
+
+    ```java
+    if (this.isKnownNumericFormat() && (this.getText() == null || this.getText().isEmpty())) {
+      this.setText("0");
+    }
+    ```
+
+- Nothing shown enforces non-nullity of `fullText` (or of the argument to `setText`) at all times. We do not see:
+  - the implementation of `setText`
+  - the superclass constructor that might or might not initialize `fullText` non-null
+  - any external callers that could invoke `setText(null)` or construct a `TextFieldComponent`/`NumberAdjuster` with a `null` initial text.
+
+Because the lambda in `prepare()` can be executed at an arbitrary later time (on change confirmation), it can run while `fullText` is `null`. Since `getText()` is a simple field getter and that field is allowed to be `null` by other parts of the class (`this.getText() == null` checks), `this.getText()` at this call site **can** be `null`.
+
+Thus, at this specific call site, `getText()` can evaluate to `null`.]]></reason>
+  <value>YES</value>
+</response>

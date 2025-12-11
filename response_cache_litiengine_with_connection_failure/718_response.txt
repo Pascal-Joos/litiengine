@@ -1,0 +1,60 @@
+<response>
+  <reason><![CDATA[
+At the call site `anim.getSpritesheet()`, the returned value is exactly the value of the instance field `this.spritesheet` of that `Animation` object, possibly after reloading:
+
+```java
+public Spritesheet getSpritesheet() {
+  if (this.spritesheet != null && !this.spritesheet.isLoaded()) {
+    this.spritesheet = Resources.spritesheets().get(this.spritesheet.getName());
+    this.initKeyFrames();
+  }
+  return this.spritesheet;
+}
+```
+
+From this code alone, there are two clear ways for `getSpritesheet()` to return `null`:
+
+1. **`this.spritesheet` was never set / was constructed as null**
+
+   In the provided constructor:
+   ```java
+   public Animation(
+       final String name,
+       final Spritesheet spritesheet,
+       final boolean loop,
+       final int... keyFrameDurations) {
+     this.name = name;
+     this.spritesheet = spritesheet;
+     ...
+     if (spritesheet == null) {
+       log.log(Level.WARNING, "no spritesheet defined for animation {0}", this.getName());
+       return;
+     }
+     this.initKeyFrames(keyFrameDurations);
+   }
+   ```
+   If `spritesheet` is passed as `null` when the `Animation` is created, `this.spritesheet` remains `null`. The constructor only logs a warning and returns; it does not replace the `null` with a non-null object. In that case, `getSpritesheet()` will simply return `null` (the `if` condition is skipped because `this.spritesheet == null`).
+
+   Nothing in the call chain you provided rules out `anim` having been constructed with a `null` spritesheet. In fact, multiple callers defensively check for `animation.getSpritesheet() == null` (e.g., `AnimationController.getCurrentImage`, `PropAnimationController.getCurrentImage`, `Camera#getViewportDimensionCenter`), which strongly indicates that `null` is an expected and valid state.
+
+2. **Reload attempt can yield null**
+
+   The reload branch is:
+   ```java
+   if (this.spritesheet != null && !this.spritesheet.isLoaded()) {
+     this.spritesheet = Resources.spritesheets().get(this.spritesheet.getName());
+     this.initKeyFrames();
+   }
+   ```
+   The returned value depends on `Resources.spritesheets().get(...)`. You have not provided that method’s declaration, and according to your guidelines, we cannot assume its behavior. If `Resources.spritesheets().get(name)` can return `null` (for example, if the named spritesheet is not found), then `this.spritesheet` will become `null`, and `getSpritesheet()` will then return `null`.
+
+   Since callers elsewhere already handle `animation.getSpritesheet() == null`, the API design suggests that a failing lookup (or unloaded/non-reloadable resource) may indeed result in `null`.
+
+Because:
+
+- `this.spritesheet` can be `null` from construction time, and
+- `this.spritesheet` can potentially be set to `null` by the reload call (depending on `Resources.spritesheets().get`),
+
+the specific invocation `anim.getSpritesheet()` can return `null`. The surrounding code in the call chain consistently checks for this possibility and branches accordingly, confirming that `null` is an expected outcome at this call site.]]></reason>
+  <value>YES</value>
+</response>

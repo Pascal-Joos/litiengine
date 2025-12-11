@@ -1,0 +1,75 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+final BufferedImage sprite = this.getImage();
+```
+
+inside `de.gurkenlabs.litiengine.graphics.Spritesheet.updateRowsAndCols()`, `this` is a `Spritesheet` instance.
+
+Key points:
+
+1. The `Spritesheet` constructor shown is:
+
+```java
+public Spritesheet(
+       final BufferedImage image,
+       final String path,
+       final int spriteWidth,
+       final int spriteHeight) {
+  checkImage(image, path);
+  this.image = image;
+  ...
+  this.updateRowsAndCols();
+}
+```
+
+2. `checkImage(image, name)` is:
+
+```java
+private static void checkImage(BufferedImage image, String name) {
+  if (image == null) {
+    throw new IllegalArgumentException("The image for the spritesheet '" + name + "' is null!");
+  }
+  ...
+}
+```
+
+So, for any `Spritesheet` constructed via this constructor:
+
+- If `image` is `null`, `checkImage` throws an `IllegalArgumentException`.
+- The constructor then never completes, `this.image` is never assigned, and no valid `Spritesheet` instance is created.
+- If the constructor returns normally, `image` was non‑null, and `this.image` is set to that non‑null `BufferedImage`.
+
+3. After assigning `this.image = image;`, the constructor calls `this.updateRowsAndCols();`, which contains the call site:
+
+```java
+private void updateRowsAndCols() {
+    final BufferedImage sprite = this.getImage();
+    this.columns = sprite.getWidth() / this.spriteWidth;
+    this.rows = sprite.getHeight() / this.spriteHeight;
+}
+```
+
+4. `getImage()` is a simple field getter:
+
+```java
+public BufferedImage getImage() {
+  return this.image;
+}
+```
+
+There is no code anywhere in the provided snippets that assigns `this.image` to `null` after the non‑null check; `this.image` is set once in the constructor (after `checkImage` guarantees non‑null), and then used. Therefore, at any point reached after the constructor has successfully finished, `this.image` is non‑null.
+
+Since `updateRowsAndCols()` is called *inside* that constructor after `this.image = image;` and `image` has been validated as non‑null by `checkImage`, the specific invocation
+
+```java
+final BufferedImage sprite = this.getImage();
+```
+
+cannot evaluate to `null`. If it were `null`, that would contradict the enforced precondition in `checkImage`. Any case where `image` is actually `null` results in an exception before this call is reached, which per your rules is not considered a "null return."
+
+Thus, at this specific call site, `getImage()` cannot return `null`.]]></reason>
+  <value>NO</value>
+</response>

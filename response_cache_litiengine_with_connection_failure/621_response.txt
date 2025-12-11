@@ -1,0 +1,6 @@
+```xml
+<response>
+    <reason><![CDATA[The method `setEncoding` follows the typical naming and behavior pattern of a setter: it sets a single field (`this.encoding`) from a parameter and can reasonably be expected to be callable multiple times to update that field. According to the provided definition, setter methods are explicitly NOT considered initializer methods, even if they initialize fields. There is no indication that this method is part of a framework lifecycle, a one-time setup hook, or an initialization protocol guaranteed to run exactly once before other methods. Therefore, it should not be treated as an initializer method by NullAway.]]></reason>
+    <value>NO</value>
+</response>
+```

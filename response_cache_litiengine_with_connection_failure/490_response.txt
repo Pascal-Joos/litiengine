@@ -1,0 +1,26 @@
+<response>
+  <reason><![CDATA[
+At the call site `this.getOrientation()` inside `getSizeInPixels`, the returned value is simply `this.mapOrientation` after a possible lazy initialization:
+
+```java
+public IMapOrientation getOrientation() {
+  if (this.mapOrientation == null) {
+    this.mapOrientation = MapOrientations.forName(this.orientation);
+  }
+  return this.mapOrientation;
+}
+```
+
+The only way `this.mapOrientation` is assigned inside this method is via:
+
+```java
+this.mapOrientation = MapOrientations.forName(this.orientation);
+```
+
+Since `MapOrientations.forName` is not provided, its behavior is unknown. It may, in some cases, legitimately return `null` (for example, if `this.orientation` is invalid or not recognized). If that happens, `this.mapOrientation` will be set to `null` and subsequently returned as `null` from `getOrientation()`.
+
+Because the analysis rules say we must not assume behavior of other methods without their full declarations, and because the returned value is directly dependent on `MapOrientations.forName`, we cannot guarantee non-null here. Therefore, `this.getOrientation()` can evaluate to `null` at this call site.
+
+To decide confidently that the return value cannot be null, we would need to know that `MapOrientations.forName(String)` never returns null under any circumstances.]]></reason>
+  <value>YES</value>
+</response>

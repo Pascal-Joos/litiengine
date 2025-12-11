@@ -1,0 +1,35 @@
+```xml
+<response>
+  <reason><![CDATA[
+The provided implementation for the method
+
+public RenderOrder getRenderOrder()
+}
+
+is incomplete; no method body or return statements are shown. The only additional information is that there exists an interface/class:
+
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public RenderOrder getRenderOrder()
+}
+}
+
+which again only declares the method signature without an implementation.
+
+Because:
+
+- We do not see any return statements.
+- We do not see whether the implementation returns a constant, a field, or delegates to another method.
+- We do not know whether any underlying value or field might be nullable.
+- We cannot infer nullability from the type alone (RenderOrder), as Java allows returning null for any non-primitive type unless explicitly constrained (e.g., by annotations or implementation details, which are not provided).
+
+we cannot determine if null can or cannot be returned.
+
+To decide this, we must see the actual implementation of getRenderOrder in the concrete class that implements IMap (or any default method body, if present).
+
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide the full implementation (method body) of de.gurkenlabs.litiengine.environment.tilemap.IMap#getRenderOrder (or of the concrete class implementing this method) so that all return paths can be analyzed.]]></request>
+  </requests>
+</response>
+```

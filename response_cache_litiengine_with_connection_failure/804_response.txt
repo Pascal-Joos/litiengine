@@ -1,0 +1,87 @@
+<response>
+  <reason><![CDATA[
+At the shown call sites (inside `render` and `initContentList`), `this.getVerticalSlider()` returns the field `this.verticalSlider` directly.
+
+From the constructor:
+```java
+this.initSliders();
+this.initContentList();
+```
+`initSliders()` may or may not assign `this.verticalSlider`, depending on runtime conditions:
+
+```java
+final int maxNbOfRows = this.getMaxRows() - this.getNumberOfShownRows();
+...
+if (maxNbOfRows > 0) {
+  // various branches, all assign this.verticalSlider = new VerticalSlider(...)
+  ...
+  this.getComponents().add(this.getVerticalSlider());
+}
+```
+
+- If `maxNbOfRows > 0`, `this.verticalSlider` is definitely set to a new `VerticalSlider` before `initContentList()` runs, so during that initial `initContentList` call `getVerticalSlider()` is non‑null.
+- However, there is no code shown that:
+  - initializes `verticalSlider` to a non‑null default, or
+  - guarantees `maxNbOfRows > 0` for all list configurations, or
+  - prevents later reconfiguration from removing the vertical slider.
+
+Additionally, `setSliderInside` and the sprite setters (`setButtonSprite`, `setEntrySprite`) re‑invoke `initSliders()` / `initContentList()`:
+
+```java
+public void setSliderInside(boolean sliderInside) {
+    this.sliderInside = sliderInside;
+    this.initSliders();
+}
+```
+
+`initSliders()` contains no `else` branch that creates a vertical slider when `maxNbOfRows <= 0`. In that case, `this.verticalSlider` remains whatever it previously was, which can be:
+
+- `null` (e.g., initial construction where `maxNbOfRows <= 0`), or
+- still non‑null from an earlier configuration (if one existed).
+
+The call sites themselves are written defensively:
+
+- In `render`:
+  ```java
+  if (this.getVerticalSlider() != null
+      && this.getVerticalSlider().isVisible()
+      && this.isSliderInside()) {
+    borderWidth = borderWidth - this.getVerticalSlider().getWidth();
+  }
+  ```
+  This check is only needed if `getVerticalSlider()` might be `null`.
+
+- In `initContentList`:
+  ```java
+  if (this.isSliderInside() && this.getVerticalSlider() != null) {
+    entryComponent.setX(... this.getVerticalSlider().getWidth() ...);
+    entryComponent.setWidth(... this.getVerticalSlider().getWidth() ...);
+  }
+  ...
+  this.onChange(
+      s -> {
+        if (this.getVerticalSlider() != null) {
+          this.getVerticalSlider().setCurrentValue(...);
+          ...
+        }
+        ...
+      });
+  if (this.getVerticalSlider() != null) {
+    this.getVerticalSlider().onChange(...);
+  }
+  ```
+  The repeated `!= null` guards also indicate that `verticalSlider` is allowed to be absent.
+
+Nothing in the provided code enforces that `maxNbOfRows > 0` (or any other condition guaranteeing creation of `verticalSlider`) before every use site of `this.getVerticalSlider()`. Since `verticalSlider` is a plain field with no default assignment shown, it starts as `null`, and remains `null` if `initSliders()` never enters the `if (maxNbOfRows > 0)` block.
+
+Therefore, at these specific call sites, the method:
+
+```java
+public VerticalSlider getVerticalSlider() {
+    return this.verticalSlider;
+}
+```
+
+can return `null`, and the surrounding code correctly anticipates that possibility via explicit null checks.]]></reason>
+  <value>YES</value>
+</response>

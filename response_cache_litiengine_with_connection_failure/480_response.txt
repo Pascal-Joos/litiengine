@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static Rectangle2D getTileBoundingBox( final IMap map, final Point tile) {
+      if (map == null) {
+        return new Rectangle2D.Double();
+      }
+
+      if (map.getOrientation() == null) {
+        return new Rectangle2D.Double();
+      }
+
+      return map.getOrientation().getBounds(tile, map);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+GameWindow() {
+    this.hostControl = new JFrame();
+
+    this.resolutionChangedListeners = new CopyOnWriteArrayList<>();
+
+    this.renderCanvas = new RenderComponent(Game.config().graphics().getResolution());
+    this.cursor = new MouseCursor();
+    if (!Game.isInNoGUIMode()) {
+      this.hostControl.setBackground(Color.BLACK);
+      this.hostControl.add(this.renderCanvas);
+
+      this.initializeEventListeners();
+
+      GameInfo gameInfo = Game.info();
+      if (gameInfo != null) {
+        this.hostControl.setTitle(gameInfo.getTitle());
+      }
+      this.hostControl.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+      initializeWindowEventListeners(this.hostControl);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

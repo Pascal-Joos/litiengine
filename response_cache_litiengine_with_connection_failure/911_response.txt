@@ -1,0 +1,37 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no visible initialization or null-check for the object returned by Input.keyboard(). The method init(...) does the following relevant steps inside the if (!isInNoGUIMode()) block:
+
+- It configures the window and render component.
+- Then it directly calls:
+  
+  Input.keyboard()
+      .onKeyTyped(
+          KeyEvent.VK_PRINTSCREEN,
+          key -> {
+              if (key.getModifiers() != 0) {
+                  return;
+              }
+              window().getRenderComponent().takeScreenshot();
+          });
+
+There are no prior assignments in this snippet that ensure a non-null keyboard instance, nor a preceding call like Input.init(...), nor a documented contract visible here stating that Input.keyboard() is guaranteed to be non-null after some specific operation (e.g., window().init()).
+
+To determine definitively whether Input.keyboard() can be null, we would need to inspect:
+
+- The implementation of the Input class;
+- Any static initialization blocks, factory methods, or lifecycle hooks that might guarantee that keyboard is created and never null once the program reaches this point;
+- Any null safety annotations (e.g., @Nonnull) or explicit checks inside Input.keyboard().
+
+Without that information, we cannot soundly conclude that Input.keyboard() is always non-null. It *might* be guaranteed non-null by design, but that guarantee is not derivable from this snippet alone.
+
+Therefore, based strictly on the provided code and without assumptions about Input.keyboard()'s contract or implementation, it is not possible to determine if it can be null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or at least the signature and body) of Input.keyboard().]]></request>
+        <request><![CDATA[Provide any initialization code or lifecycle methods related to Input (e.g., static initializers, Input.init(), or where the keyboard instance is constructed).]]></request>
+    </requests>
+</response>
+```

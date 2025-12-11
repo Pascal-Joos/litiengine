@@ -1,0 +1,38 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public RaycastHit raycast(Line2D line, Collision collision,  ICollisionEntity entity) {
+    final Point2D rayCastSource = new Point2D.Double(line.getX1(), line.getY1());
+    if (this.collisionEntities.get(collision) == null) {
+      return null;
+    }
+
+    for (final ICollisionEntity collisionEntity : this.collisionEntities.get(collision)) {
+      if (!canCollide(entity, collisionEntity)) {
+        continue;
+      }
+
+      if (collisionEntity.getCollisionBox().intersectsLine(line)) {
+        double closestDist = -1;
+        Point2D closestPoint = null;
+        for (final Point2D intersection :
+            GeometricUtilities.getIntersectionPoints(line, collisionEntity.getCollisionBox())) {
+          final double dist = intersection.distance(rayCastSource);
+          if (closestPoint == null || dist < closestDist) {
+            closestPoint = intersection;
+            closestDist = dist;
+          }
+        }
+
+        return new RaycastHit(closestPoint, collisionEntity, closestDist);
+      }
+    }
+
+    return null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

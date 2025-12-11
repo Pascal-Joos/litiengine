@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void add(final Screen screen) {
+    if (Game.window() != null) {
+      screen.setWidth(Game.window().getWidth());
+      screen.setHeight(Game.window().getHeight());
+    }
+    this.screens.add(screen);
+
+    if (this.current() == null) {
+      this.display(screen);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

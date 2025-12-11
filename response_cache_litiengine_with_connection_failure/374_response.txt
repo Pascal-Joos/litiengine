@@ -1,0 +1,43 @@
+<response>
+  <reason><![CDATA[
+Environment.getMap() is a simple getter:
+
+```java
+public IMap getMap() {
+  return this.map;
+}
+```
+
+It directly returns the field `this.map` without any guards or transformations.
+
+From the provided code, `Environment.map` is set in at least these ways:
+
+```java
+public Environment(final IMap map) {
+  this();
+  this.map = map;
+  if (this.getMap() != null) {
+    ...
+  }
+}
+
+public Environment(final String mapPath) {
+  this(Resources.maps().get(mapPath));
+}
+```
+
+In both constructors, there is no non-null enforcement on `map` or the result of `Resources.maps().get(mapPath)`. Therefore:
+
+- `new Environment(map)` can be constructed with `map == null`, leaving `this.map` as null.
+- `new Environment(mapPath)` can construct an `Environment` with `map == null` if `Resources.maps().get(mapPath)` returns null.
+
+These `Environment` instances are then used throughout the engine:
+
+- `GameWorld.getEnvironment(IMap map)` may construct a new `Environment(map)`; if it gets a null `map` (for example, from `Resources.maps().get(mapName)` in `getEnvironment(String mapName)`), it would pass that null into the constructor.
+- Many call sites explicitly check `env.getMap() == null` (e.g., `Environment.init`, `Environment.loadMapObjects`, `Environment.addStaticShadows`, `Environment.addAmbientLight`, `Environment.loadFromMap`, `Environment.getCenter`, rendering logic, `GameWorld.getMapName`, `MapUtilities.getCurrentMap`, etc.), which only makes sense if `getMap()` can legitimately return null.
+
+Crucially, there is no invariant or check in `Environment` or `GameWorld` that guarantees `this.map` is always non-null for any given `Environment` instance. On the contrary, the repeated null checks show that callers must be prepared for `getMap()` to return null.
+
+Since `this.getMap()` simply returns `this.map`, and the field is not guaranteed to be initialized to a non-null value for all `Environment` instances, the invocation `this.getMap()` at the given call site can indeed evaluate to null.]]></reason>
+  <value>YES</value>
+</response>

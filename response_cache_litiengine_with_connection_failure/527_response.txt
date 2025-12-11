@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    void finish(  URL location) throws TmxException {
+      super.finish(location);
+      if (this.layers != null) {
+        for (ILayer layer : Nullability.castToNonnull(this.layers)) {
+          if (layer instanceof Layer) {
+            ((Layer) layer).finish(location);
+          }
+        }
+      }
+    }
+  ```
+    ]]>
+  </code>
+</response>

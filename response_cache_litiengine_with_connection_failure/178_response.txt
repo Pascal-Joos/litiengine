@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void rotateTowards(final Point2D target) {
+      if (this.entity.getCollisionBox() == null) {
+        return;
+      }
+
+      final double angle =
+          GeometricUtilities.calcRotationAngleInDegrees(
+              this.entity.getCollisionBox().getCenterX(),
+              this.entity.getCollisionBox().getCenterY(),
+              target.getX(),
+              target.getY());
+      this.entity.setAngle((float) angle);
+  }
+  ```
+    ]]>
+  </code>
+</response>

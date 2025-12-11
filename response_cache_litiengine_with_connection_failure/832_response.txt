@@ -1,0 +1,8 @@
+```xml
+<response>
+    <reason><![CDATA[
+The method is named and structured like a typical setter (`setButton1`) and takes a single parameter assigned to a field, which strongly matches the pattern of a setter. By NullAway's definition, setter methods are not considered initializer methods, even if they configure listeners or add components, because setters are not guaranteed to be called exactly once during object setup and may be invoked multiple times to change state. There is no indication this method is a framework lifecycle hook or a special one-time initialization callback. Therefore, it should not be treated as an initializer method.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

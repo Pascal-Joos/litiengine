@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public Environment getEnvironment(IMap map) {
+    if (map == null || map.getName() == null || map.getName().isEmpty()) {
+      return null;
+    }
+
+    Environment env =
+        this.getEnvironments().stream()
+            .filter(e -> {
+              if (e.getMap() == null) {
+                return false;
+              }
+              return e.getMap().equals(map);
+            })
+            .findFirst()
+            .orElse(null);
+    if (env != null) {
+      return env;
+    }
+
+    env = new Environment(map);
+    this.addEnvironment(env);
+
+    return env;
+  }
+  ```
+    ]]>
+  </code>
+</response>

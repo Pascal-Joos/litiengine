@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public float getY() {
+    if (this.isInfiniteMap()) {
+      TmxMap map = (TmxMap) this.getLayer().getMap();
+      return this.y == null ? -map.getChunkOffsetY() * map.getTileHeight()
+          : this.y - map.getChunkOffsetY() * map.getTileHeight();
+    }
+
+    return this.y == null ? 0 : this.y;
+  }
+  ```
+    ]]>
+  </code>
+</response>

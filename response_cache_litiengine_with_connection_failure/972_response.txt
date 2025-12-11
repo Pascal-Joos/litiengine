@@ -1,0 +1,37 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+You provided no initialization or assignment for this `mouse` field anywhere in the code shown. Without seeing where and how `Input.mouse` is set, we cannot assume it is ever assigned a non-null value.
+
+Across the call sites you included, the code frequently performs explicit null checks before using the mouse:
+
+```java
+IMouse mouse = Input.mouse();
+if (mouse == null) {
+  return;
+}
+```
+
+and
+
+```java
+if (Input.mouse() != null) {
+  Input.mouse().onDragged(...);
+}
+```
+
+and similar checks in `GuiComponent.prepare`, `GuiComponent.suspend`, `DebugRenderer.renderMapDebugInfo`, `MouseCursor.set`, `HorizontalSlider.setValueRelativeToMousePosition`, etc.
+
+These checks strongly indicate that `Input.mouse()` is expected to be able to return `null` at runtime. Since the return value is just the static field and we have no guarantee it is initialized to a non-null value before this call, `Input.mouse()` can be `null` at this specific call site as well.
+
+Therefore, at the call site `Input.mouse()` (e.g., in `FreeFlightCamera.handleFreeFlightCamera` and others), the return value can be `null.
+]]></reason>
+  <value>YES</value>
+</response>

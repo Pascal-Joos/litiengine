@@ -1,0 +1,42 @@
+<response>
+  <reason><![CDATA[
+The potential nullness of `this.collisionEntities.get(Collision.ANY)` depends entirely on how `collisionEntities` is constructed and populated, which is not shown.
+
+From the provided code we can conclude:
+
+- `collisionEntities` is some kind of map-like structure (e.g., `Map<Collision, Collection<ICollisionEntity>>`), because `.get(...)` is used and then `.add(entity)` is immediately called on the result.
+- Java collections’ `Map.get(key)` *can* legally return `null` if:
+  - the key is not present in the map, or
+  - the key is mapped explicitly to `null`.
+
+In `add(final ICollisionEntity entity)`:
+
+```java
+switch (entity.getCollisionType()) {
+  case DYNAMIC:
+  case STATIC:
+    this.collisionEntities.get(entity.getCollisionType()).add(entity);
+    break;
+  default:
+    return;
+}
+
+this.collisionEntities.get(Collision.ANY).add(entity);
+```
+
+There is no check that:
+
+1. `this.collisionEntities` has an entry for `Collision.ANY`, and  
+2. The value for key `Collision.ANY` is non-null.
+
+The surrounding code (e.g., `setCollisionType` disallowing `Collision.ANY` on entities) only guarantees that an entity’s `collisionType` isn’t set to `ANY`. It does **not** guarantee anything about the presence or non-nullness of `this.collisionEntities.get(Collision.ANY)`.
+
+Thus, at this specific call site, the nullability of `this.collisionEntities.get(Collision.ANY)` depends on how `collisionEntities` is initialized/populated elsewhere in the class. Since that initialization is not provided, we cannot safely conclude that the result is non-null.
+
+To decide confidently whether `this.collisionEntities.get(Collision.ANY)` can be null, we need to see how `collisionEntities` is declared and initialized (e.g., constructor or field initialization).
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.physics.PhysicsEngine.collisionEntities declaration and all its initializations (constructor, field initializer, any setup methods)</method>
+  </methods>
+</response>

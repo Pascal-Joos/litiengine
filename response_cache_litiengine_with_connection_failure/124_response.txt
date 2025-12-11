@@ -1,0 +1,34 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the single method shown:
+
+    protected double getViewportHeight() {
+        return Game.window().getResolution().getHeight() / this.getRenderScale();
+    }
+
+there is no visible guarantee that:
+- Game.window() is non-null, and/or
+- Game.window().getResolution() is non-null.
+
+To determine nullability, we would need to analyze:
+- How Game.window() is initialized and whether it is ever cleared or left unset.
+- The contract and implementation of Game.window():
+  - Is it a singleton window initialized at application startup and never null afterward?
+  - Is there any lazy initialization or shutdown sequence where it can be null?
+- The contract and implementation of getResolution():
+  - Does it always return a non-null resolution object after window initialization?
+  - Can it return null while the window is being resized, recreated, or before initialization?
+
+None of that information is present in the snippet you provided. Without the definitions and documented contracts of Game.window() and getResolution(), we cannot soundly conclude that the expression Game.window().getResolution() is guaranteed non-null on all code paths.
+
+Therefore, based solely on this method, the expression can neither be proven always non-null nor definitively known to be nullable; more information is required.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or interface/contract) of Game.window(), including its return type and initialization logic.]]></request>
+        <request><![CDATA[Provide the implementation and documented behavior of the getResolution() method (including when it is set and whether it is allowed to be null).]]></request>
+        <request><![CDATA[If available, share any lifecycle/initialization code that guarantees the window and its resolution are set before getViewportHeight() is called.]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static EmitterData load( EmitterData emitterData) {
+    if (loadedEmitters.containsKey(Nullability.castToNonnull(emitterData).getName())) {
+      return loadedEmitters.get(emitterData.getName());
+    }
+
+    loadedEmitters.put(emitterData.getName(), emitterData);
+    return emitterData;
+}
+  ```
+    ]]>
+  </code>
+</response>

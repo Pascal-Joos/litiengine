@@ -1,0 +1,28 @@
+<response>
+  <reason><![CDATA[
+Based on the provided code, there is no information about the implementation of:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public IMapOrientation getOrientation()
+}
+```
+
+For the specific call site `map.getOrientation()` in the shown methods (e.g., `MapUtilities`, `MapRenderer`, `DebugRenderer`), the only constraints we can infer are:
+
+- Callers sometimes defensively check `if (map.getOrientation() == null)` before using it (see `MapUtilities.getTopMostTile(IMap, Point2D)`), which strongly suggests that `getOrientation()` is *allowed* to return null.
+- Other call sites use `map.getOrientation()` without any null check, but that only shows an assumption by those callers, not a guarantee enforced by the `IMap` interface or its implementation.
+
+However, without seeing the concrete implementing class(es) of `IMap` and the actual body of `getOrientation()`, we cannot determine whether, at these particular call sites, the map instance passed in is guaranteed to have a non-null orientation. The nullability here fundamentally depends on the implementation of `getOrientation()` in the concrete map class (or on class invariants we are not shown).
+
+Because the actual return logic of `getOrientation()` is not provided, and no stronger invariants about `map` or its orientation are shown in the supplied code, a confident yes/no determination about nullability at this specific call site is not possible from the current information. To decide, we must inspect the concrete implementation.
+
+Therefore, the declarations/implementations of the following are needed:
+
+- The concrete class(es) that implement `de.gurkenlabs.litiengine.environment.tilemap.IMap` and override `getOrientation()`.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>Concrete IMap implementation(s) containing the body of getOrientation()</method>
+  </methods>
+</response>

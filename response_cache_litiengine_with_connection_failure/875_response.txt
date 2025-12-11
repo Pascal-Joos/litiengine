@@ -1,0 +1,98 @@
+<response>
+  <reason><![CDATA[
+At the call site in `NumberAdjuster.prepare()`:
+
+```java
+this.onChangeConfirmed(
+    e -> {
+      try {
+        this.setCurrentValue(BigDecimal.valueOf(Double.parseDouble(this.getText())));
+      } catch (final Exception ex) {
+        log.log(Level.SEVERE, ex.getMessage(), ex);
+      }
+    });
+```
+
+`this` is an instance of `NumberAdjuster`, which (from the provided code) is a GUI control that uses the `TextFieldComponent` behavior for text entry (`onChangeConfirmed` is triggered when ENTER is pressed in the text field).
+
+The `getText()` implementation we are analyzing is:
+
+```java
+@Override
+public String getText() {
+  return this.fullText;
+}
+```
+
+So the nullability of `this.getText()` depends entirely on whether `this.fullText` can be null at this point.
+
+From the `TextFieldComponent` constructor:
+
+```java
+public TextFieldComponent(
+      final double x, final double y, final double width, final double height, final String text) {
+  super(x, y, width, height, text);
+  this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
+  this.setText(text);
+  ...
+}
+```
+
+Key points from the behavior of the text field (all of which operate on `this.getText()` and `this.setText(...)`):
+
+- `handleNormalTyping` always uses `this.getText()` as a non-null string, appending characters:
+  ```java
+  if (this.getMaxLength() > 0 && this.getText().length() >= this.getMaxLength()) { ... }
+  ...
+  if (this.isKnownNumericFormat() && this.getText().equals("0")) {
+    this.setText("");
+  }
+  this.setText(this.getText() + text);
+  ```
+  These calls assume `getText()` never returns null (they use `.length()` and `.equals` without null checks).
+
+- `handleBackSpace` also assumes non-null for most of its logic and only later checks for null:
+  ```java
+  else if (this.getText().length() >= 1) {
+    this.setText(this.getText().substring(0, this.getText().length() - 1));
+  }
+
+  if (this.isKnownNumericFormat() && (this.getText() == null || this.getText().isEmpty())) {
+    this.setText("0");
+  }
+  ```
+  The presence of `(this.getText() == null || ...)` shows the authors consider null a theoretical possibility, but the method body itself would throw a `NullPointerException` earlier if `getText()` were actually null during normal use (e.g., in the `.length()` and `.charAt()` calls). That means the code is written under the practical assumption that `fullText` is non-null during normal operation.
+
+- In `handleTypedKey`, the SPACE and ENTER cases call:
+  ```java
+  if (!this.getText().equals("")) {
+    this.setText(this.getText() + " ");
+  }
+  ...
+  this.changeConfirmedConsumers.forEach(c -> c.accept(this.getText()));
+  ```
+  Again, `this.getText()` is used as non-null (`.equals("")`).
+
+Given the above:
+
+1. The constructor calls `this.setText(text)` immediately. Although we are not shown `setText`, all subsequent logic assumes `getText()` is a non-null `String` (or the component would NPE during routine typing). In normal GUI lifecycle, `onChangeConfirmed` will be triggered as part of ENTER handling after typing, which uses `this.getText()` repeatedly as non-null.
+
+2. At the specific call site in `NumberAdjuster.prepare()`, the lambda using `this.getText()` is hooked into `onChangeConfirmed`. That callback is invoked from `TextFieldComponent.handleTypedKey` when ENTER is pressed:
+   ```java
+   case KeyEvent.VK_ENTER:
+     this.toggleSelection();
+     this.changeConfirmedConsumers.forEach(c -> c.accept(this.getText()));
+   ```
+   For this callback to run, the user has been interacting with the text field and all intervening code paths (SPACE, normal typing, backspace) rely on `getText()` being non-null. If it were null at this time, earlier uses like `this.getText().equals("")` or `this.getText().length()` would already have thrown `NullPointerException` before `onChangeConfirmed` fires.
+
+3. No code shown assigns `fullText` directly; it is controlled via `setText`. All manipulations of text use string operations (concatenation, substring) that inherently produce non-null `String` instances.
+
+Therefore, under the runtime conditions necessary to reach this call site (user input, ENTER confirmation, and the component not having crashed earlier with NPE), `this.fullText` and thus `this.getText()` are effectively guaranteed to be non-null. The only ways it could be null would be:
+- If `setText` explicitly allowed setting `fullText` to null, or
+- If some other unseen method directly set `fullText` to null.
+
+Such methods are not shown, and the rest of the provided code strongly assumes non-null text. Considering this specific call site after the normal GUI interaction path, `this.getText()` cannot be null without causing earlier failures.
+
+Hence, for this specific invocation in `NumberAdjuster.prepare()`'s `onChangeConfirmed` lambda, `this.getText()` cannot return null.]]></reason>
+  <value>NO</value>
+</response>

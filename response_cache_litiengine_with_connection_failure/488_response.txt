@@ -1,0 +1,24 @@
+<response>
+  <reason><![CDATA[
+The method `getOrientation` returns the field `this.mapOrientation`. The only place this field is assigned within the shown code is:
+
+```java
+if (this.mapOrientation == null) {
+  this.mapOrientation = MapOrientations.forName(this.orientation);
+}
+```
+
+There are two relevant possibilities:
+
+1. `this.mapOrientation` is already non-null when `getOrientation()` is called. In that case, the method returns that non-null value.
+2. `this.mapOrientation` is null, so the method calls `MapOrientations.forName(this.orientation)` and assigns its result to `this.mapOrientation`, then returns it.
+
+Whether `this.mapOrientation` can be null after this assignment, and thus whether `getOrientation()` can return null, depends entirely on whether `MapOrientations.forName(String)` can return null. Since the declaration/contract of `MapOrientations.forName` is not provided, we cannot conclude that its return value is guaranteed non-null.
+
+Because we must not assume behavior of other methods without their declarations, we cannot determine with certainty that `this.mapOrientation` will always be non-null after the call. Therefore, we cannot confidently say that `getOrientation()` cannot return null, nor that it definitely can, without examining `MapOrientations.forName`.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <methods>
+    <method>de.gurkenlabs.litiengine.environment.tilemap.MapOrientations.forName</method>
+  </methods>
+</response>

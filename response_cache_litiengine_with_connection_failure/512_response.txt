@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void setTypeOfProperty(String propertyName, String type) {
+    ICustomProperty property = this.getProperty(propertyName);
+    if (property == null) {
+      return;
+    }
+    property.setType(type);
+  }
+  ```
+    ]]>
+  </code>
+</response>

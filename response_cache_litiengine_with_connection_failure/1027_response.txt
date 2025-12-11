@@ -1,0 +1,15 @@
+<response>
+    <reason><![CDATA[
+The parameter `resourceName` in `ResourcesContainer.add(URL resourceName, T resource)` is used immediately as `resourceName.toString()`, so a null value would cause a `NullPointerException`.
+
+From the provided call chain:
+- The only shown caller is `Maps$MapGenerator.close()`, which obtains the URL via `Resources.getLocation(map.getName() + "." + TmxMap.FILE_EXTENSION)` and passes that value directly as the first argument to `Maps.this.add(resource, this.map)`, which (by type) is `ResourcesContainer.add(URL, T)`.
+- There are no null checks on `resource` before it is passed to `add`, so if `Resources.getLocation(...)` could return null, `add` would throw at runtime.
+
+To determine whether `resourceName` can actually be null in practice, we must know whether `Resources.getLocation(String)` can ever return null. That behavior is not provided in the snippets, and cannot be inferred from usage alone here (no defensive checks or guarantees are visible). Thus we cannot conclusively say whether `resourceName` is always non-null without the declaration/implementation of `Resources.getLocation`.
+    ]]></reason>
+    <success>false</success>
+    <methods>
+      <method>de.gurkenlabs.litiengine.resources.Resources.getLocation</method>
+    </methods>
+</response>

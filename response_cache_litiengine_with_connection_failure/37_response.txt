@@ -1,0 +1,102 @@
+<response>
+  <reason><![CDATA[
+Game.loop() is a simple getter:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+The static field `gameLoop` is assigned in `Game.init`:
+
+```java
+public static synchronized void init(String... args) {
+  if (initialized) {
+    ...
+    return;
+  }
+
+  ...
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  IGameLoop loop = loop();
+  if (loop != null) {
+    loop.attach(physics());
+    loop.attach(world());
+  }
+  ...
+  initialized = true;
+}
+```
+
+and cleared in `Game.terminate`:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  tweenEngine.terminate();
+  soundEngine.terminate();
+
+  world().clear();
+  ...
+
+  gameLoop = null;
+  screenManager = null;
+  gameWindow = null;
+}
+```
+
+So `Game.loop()` returns `null` when:
+
+1. The game has not been initialized yet (i.e., `Game.init` has not set `gameLoop`), or
+2. The game has been terminated (`terminate` sets `gameLoop = null`).
+
+The call chain you provided contains many usages of `Game.loop()`; some of them explicitly null‑check the result:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop == null) {
+  return;
+}
+```
+
+or
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.setTickRate(...);
+}
+```
+
+Those checks only make sense because `Game.loop()` can indeed be `null` at those points (e.g., window listeners may be triggered before initialization or after termination).
+
+There is no global guarantee (such as a non-null static initializer or a final assignment) that `gameLoop` is always non-null when `Game.loop()` is called. In fact, `terminate()` explicitly sets it to `null`, and there are call sites that do not guard against null before dereferencing (e.g., `Game.time().now()` uses `Game.loop().getTicks()` directly), which means calls at those sites are only safe while the game is in a running/initialized state. However, your question concerns whether `Game.loop()` *can* be null at the call sites under analysis, not whether each dereference is safe.
+
+Because `gameLoop` is:
+- `null` before the first `Game.init(...)` call,
+- non-null only between successful `init` and `terminate`, and
+- set back to `null` in `terminate`,
+
+and because there is nothing in the provided code that prevents any of the shown call sites from executing in a state where initialization has not yet occurred or the game has already been terminated, the method:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+can indeed return `null` at those `Game.loop()` call sites.
+
+Therefore, `Game.loop()` is not guaranteed to be non-null and can return `null` at the specific invocation(s) you provided.
+  ]]></reason>
+  <value>YES</value>
+</response>

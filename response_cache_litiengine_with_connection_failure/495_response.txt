@@ -1,0 +1,31 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the shown method alone, there is no explicit guarantee that `mapObject.getPolyline()` is non-null when `mapObject.isPolyline()` returns true.
+
+Control flow:
+- The line in question is only executed inside:
+  
+  if (mapObject.isPolyline()) {
+      return mapObject.getPolyline().getAbsolutePoints(mapObject.getLocation());
+  }
+
+So `mapObject.getPolyline()` is only called if `mapObject.isPolyline()` is true. However, without additional information about the semantics or contract of `IMapObject`, there is no formal guarantee that:
+- `isPolyline()` returning true implies `getPolyline()` returns a non-null value.
+
+Typical Java practice would be that `isPolyline()` being true means the object has a polyline and `getPolyline()` is non-null, but that is a design convention, not something enforceable from the given snippet alone. `getPolyline()` could still legally return null unless the interface or implementation explicitly forbids it.
+
+No null checks, initializations, or defensive programming are present in this method that would prevent a null return from `getPolyline()` from propagating to a `NullPointerException` on `.getAbsolutePoints(...)`.
+
+Therefore, without the contract or implementation details of:
+- `IMapObject.isPolyline()`
+- `IMapObject.getPolyline()`
+
+we cannot definitively say that `mapObject.getPolyline()` cannot be null.]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the definition (interface/abstract class) of IMapObject, especially the documentation/contract for isPolyline() and getPolyline().]]></request>
+        <request><![CDATA[Provide at least one concrete implementation of IMapObject that includes the behavior of isPolyline() and getPolyline(), or any class invariants that state getPolyline() is non-null when isPolyline() is true.]]></request>
+    </requests>
+</response>
+```

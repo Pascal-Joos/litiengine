@@ -1,0 +1,72 @@
+<response>
+  <reason><![CDATA[
+The call site in question is:
+
+```java
+this.onChangeConfirmed(
+    e -> {
+      try {
+        this.setCurrentValue(BigDecimal.valueOf(Double.parseDouble(this.getText())));
+      } catch (final Exception ex) {
+        log.log(Level.SEVERE, ex.getMessage(), ex);
+      }
+    });
+```
+
+Within that lambda, `this.getText()` calls:
+
+```java
+@Override
+public String getText() {
+  return this.fullText;
+}
+```
+
+There is no non-null guarantee on `fullText` in the provided code. In the `TextFieldComponent` constructor we see:
+
+```java
+this.setText(text);
+```
+
+but we are not given the implementation of `setText`. `setText` could:
+
+- Store `null` into `fullText` when constructed with a `null` `text`, or later during user interaction, or
+- Normalize `null` to `""` and never allow `fullText` to be null.
+
+The behavior of `handleBackSpace` and `handleNormalTyping` shows multiple explicit null checks on `this.getText()`:
+
+```java
+String text = this.getText();
+if (text != null && Input.keyboard().isPressed(...)) { ... }
+else if (text != null && text.length() >= 1) { ... }
+
+text = this.getText();
+if (this.isKnownNumericFormat() && (text == null || text.isEmpty())) { ... }
+```
+
+and
+
+```java
+final String currentText = this.getText();
+if (this.getMaxLength() > 0 && currentText != null && currentText.length() >= this.getMaxLength()) { ... }
+
+...
+final Matcher mat = pat.matcher((currentText == null ? "" : currentText) + text);
+...
+if (this.isKnownNumericFormat() && "0".equals(currentText == null ? "" : currentText)) { ... }
+
+this.setText((currentText == null ? "" : currentText) + text);
+```
+
+These branches explicitly guard against `getText()` being `null`, which strongly suggests that `getText()` *can* be `null` in some situations (otherwise the null checks would be unnecessary).
+
+The specific call site in `NumberAdjuster.prepare()` does not introduce any additional constraints that would prevent `fullText` from being null at the time the lambda is executed. `onChangeConfirmed` is merely registering a callback; when that callback later runs (on an ENTER key event from `handleTypedKey`), `this.getText()` is whatever `fullText` currently is. Since:
+
+- We do not see any invariant enforcing `fullText` to be non-null, and
+- Other methods in the same class defensively handle the case where `getText()` returns null,
+
+we must conclude that at this call site `this.getText()` can indeed evaluate to `null`.
+
+]]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static Rectangle2D getTileBoundingBox(
+         final IMap map, final Point2D mapLocation) {
+      if (map == null) {
+        return new Rectangle2D.Double();
+      }
+
+      if (map.getOrientation() == null) {
+        return new Rectangle2D.Double();
+      }
+
+      return map.getOrientation().getEnclosingTileBounds(mapLocation, map);
+  }
+  ```
+    ]]>
+  </code>
+</response>

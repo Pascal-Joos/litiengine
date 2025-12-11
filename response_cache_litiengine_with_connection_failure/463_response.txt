@@ -1,0 +1,6 @@
+```xml
+<response>
+    <reason><![CDATA[The method is explicitly a setter (`setOrientation`) whose purpose is to update a single field and can reasonably be called multiple times to change state. NullAway’s definition treats such setter methods as *not* being initializer methods, even if they assign non-null values. It is not a framework lifecycle hook or a one-time initialization method invoked by an external framework, but a conventional mutator. Therefore, it does not qualify as an initializer method under NullAway’s definition.]]></reason>
+    <value>NO</value>
+</response>
+```

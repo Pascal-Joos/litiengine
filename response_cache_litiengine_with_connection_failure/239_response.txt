@@ -1,0 +1,39 @@
+```xml
+<response>
+    <reason><![CDATA[
+The null-check in the method is:
+
+    if (Game.world().environment() == null) {
+      return;
+    }
+
+but the expression under analysis is:
+
+    this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
+
+There is no direct evidence in the provided code that:
+
+1. this.getEnvironment() == Game.world().environment(), or
+2. this.getEnvironment() is guaranteed non-null whenever Game.world().environment() is non-null.
+
+The method relies on an implicit contract/assumption that the entity’s environment (this.getEnvironment()) is non-null if the global environment (Game.world().environment()) is non-null. That relationship is not shown in the snippet.
+
+From the code alone:
+
+- this.getEnvironment() is never null-checked.
+- Its initialization or lifecycle is not shown.
+- There is no explicit guarantee that this.getEnvironment() is bound or synchronized to Game.world().environment().
+
+Therefore, based only on the visible method, we cannot safely conclude that this.getEnvironment() cannot be null. Whether it can be null depends on class invariants or framework guarantees that are not provided here.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[
+Show the implementation or documented contract of:
+- this.getEnvironment()
+- Game.world().environment()
+and how/when the entity is attached to or detached from the environment. Specifically, is there a class invariant that whenever removeTag is callable, this.getEnvironment() is guaranteed non-null, or that this.getEnvironment() always returns Game.world().environment()?
+        ]]></request>
+    </requests>
+</response>
+```

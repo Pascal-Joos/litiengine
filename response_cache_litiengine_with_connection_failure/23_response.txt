@@ -1,0 +1,45 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(final Graphics2D g) {
+    this.updateMetrics();
+
+    if (!Game.config().client().showGameMetrics()) {
+      return;
+    }
+
+    this.currentOffsetY = 0;
+
+    g.setColor(this.renderColor);
+
+    // render client metrics
+    this.drawTitle(g, "[client]");
+    this.drawMetric(g, "fps       : " + this.getFramesPerSecond());
+    this.drawMetric(g, "max fps   : " + this.maxFramesPerSecond);
+    this.drawMetric(g, "updatables: " + Nullability.castToNonnull(Game.loop()).getUpdatableCount());
+
+    // render jvm metrics if debug is enabled
+    if (Game.config().debug().isDebugEnabled()) {
+      this.drawTitle(g, "[jvm]");
+      this.drawMetric(g, "java      : " + this.javaVersion);
+      this.drawMetric(g, "memory    : " + String.format("%-5.5s", this.usedMemory) + " MB");
+      this.drawMetric(g, "threads   : " + Thread.activeCount());
+    }
+
+    // render rendering metrics
+    if (!this.renderMetrics.isEmpty()) {
+      this.drawTitle(g, "[update]");
+
+      for (RenderMetrics metric : this.renderMetrics) {
+        this.drawMetric(g, metric.toString());
+      }
+
+      this.renderMetrics.clear();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

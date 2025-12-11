@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected Shape internalCalculateImpactArea(final double angle) {
+          final int impact = Nullability.castToNonnull(this.getAttributes().impact().get());
+          final int impactAngle = Nullability.castToNonnull(this.getAttributes().impactAngle().get());
+          final double arcX = this.getPivot().getPoint().getX() - impact * 0.5;
+          final double arcY = this.getPivot().getPoint().getY() - impact * 0.5;
+      
+          // project
+          final Point2D appliedRange =
+              GeometricUtilities.project(
+                  new Point2D.Double(arcX, arcY), angle, Nullability.castToNonnull(this.getAttributes().range().get()) * 0.5);
+          final double start = angle - 90 - (impactAngle / 2.0);
+          if (impactAngle % 360 == 0) {
+            return new Ellipse2D.Double(appliedRange.getX(), appliedRange.getY(), impact, impact);
+          }
+      
+          return new Arc2D.Double(
+              appliedRange.getX(), appliedRange.getY(), impact, impact, start, impactAngle, Arc2D.PIE);
+  }
+  ```
+    ]]>
+  </code>
+</response>

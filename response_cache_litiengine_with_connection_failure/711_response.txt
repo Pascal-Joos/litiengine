@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean isLoaded() {
+      Spritesheet sprite = Resources.spritesheets().get(this.getName());
+      return sprite != null && sprite.equals(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

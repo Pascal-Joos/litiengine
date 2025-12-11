@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  void finish( URL location) throws TmxException {
+    super.finish(location);
+    if (this.image != null) {
+      this.image.finish(location);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void detach() {
+      final IGameLoop loop = Game.loop();
+      if (loop != null) {
+        loop.detach(this);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

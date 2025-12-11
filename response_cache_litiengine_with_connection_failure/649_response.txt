@@ -1,0 +1,6 @@
+```xml
+<response>
+    <reason><![CDATA[The method is a typical JavaBean-style setter (`setRenderOrder`) that can be called multiple times to update the field `renderorder`. According to the definition, setter methods are explicitly not considered initializer methods, even if they assign to fields. There is no indication it is a framework lifecycle or one-time initialization hook; it is just a standard mutator. Therefore, it is not an initializer method per NullAway’s definition.]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,94 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void renderEntity(final Graphics2D g, final IEntity entity) {
+    if (entity == null) {
+      return;
+    }
+
+    if (!this.canRender(entity)) {
+      return;
+    }
+
+    final EntityRenderEvent renderEvent = new EntityRenderEvent(g, entity);
+
+    if (entity instanceof EntityRenderListener) {
+      ((EntityRenderListener) entity).rendering(renderEvent);
+    }
+
+    for (final EntityRenderListener listener : this.entityRenderListener) {
+      listener.rendering(renderEvent);
+    }
+
+    final IEntityAnimationController<?> animationController = entity.animations();
+    if (animationController != null) {
+      final BufferedImage img = animationController.getCurrentImage();
+      if (img != null && Game.world().camera() != null) {
+        if (animationController.isAutoScaling()) {
+          final double ratioX = entity.getWidth() / img.getWidth();
+          final double ratioY = entity.getHeight() / img.getHeight();
+          ImageRenderer.renderScaled(
+              g,
+              img,
+              Game.world().camera().getViewportLocation(entity.getLocation()),
+              ratioX,
+              ratioY);
+        } else {
+          // center the image relative to the entity dimensions -> the pivot point for rendering is
+          // the center of the entity
+          double deltaX = (entity.getWidth() - img.getWidth()) / 2.0;
+          double deltaY = (entity.getHeight() - img.getHeight()) / 2.0;
+
+          final AffineTransform transform = animationController.getAffineTransform();
+          if (transform != null) {
+            // center the scaled image relative to the desired render location if the transform
+            // provides a scaling element
+            deltaX += (img.getWidth() - (img.getWidth() * transform.getScaleX())) / 2.0;
+            deltaY += (img.getHeight() - (img.getHeight() * transform.getScaleY())) / 2.0;
+          }
+
+          Point2D renderLocation =
+              Game.world()
+                  .camera()
+                  .getViewportLocation(entity.getX() + deltaX, entity.getY() + deltaY);
+          ImageRenderer.renderTransformed(
+              g, img, renderLocation.getX(), renderLocation.getY(), transform);
+
+          if (Game.config().debug().renderBoundingBoxes()) {
+            g.setColor(new Color(255, 0, 0, 50));
+            renderOutline(
+                g,
+                new Rectangle2D.Double(
+                    entity.getX(), entity.getY(), img.getWidth(), img.getWidth()));
+            ShapeRenderer.renderOutlineTransformed(
+                g,
+                new Rectangle2D.Double(
+                    renderLocation.getX(), renderLocation.getY(), img.getWidth(), img.getWidth()),
+                animationController.getAffineTransform(),
+                0.25f);
+          }
+        }
+      }
+    }
+
+    if (entity instanceof IRenderable) {
+      ((IRenderable) entity).render(g);
+    }
+
+    if (entity instanceof EntityRenderListener) {
+      ((EntityRenderListener) entity).rendered(renderEvent);
+    }
+
+    for (final EntityRenderListener listener : this.entityRenderListener) {
+      listener.rendered(renderEvent);
+    }
+
+    for (final EntityRenderedListener listener : this.entityRenderedListener) {
+      listener.rendered(renderEvent);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,41 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void renderShadows(final Graphics2D g) {
+    if (Game.world().environment() == null) {
+      return;
+    }
+
+    if (!Game.world().environment().getCombatEntities().stream()
+        .anyMatch(isInRange(this.getCenter(), SHADOW_GRADIENT_SIZE))) {
+      return;
+    }
+
+    final Paint gradientPaint =
+        new RadialGradientPaint(
+            Game.world().camera().getViewportDimensionCenter(this),
+            SHADOW_GRADIENT_SIZE,
+            SHADOW_GRADIENT_FRACTIONS,
+            SHADOW_GRADIENT_COLORS);
+
+    final Paint oldPaint = g.getPaint();
+    g.setPaint(gradientPaint);
+
+    for (final ICombatEntity mob : Game.world().environment().getCombatEntities()) {
+      if (mob.isDead() || !isInRange(this.getCenter(), SHADOW_GRADIENT_SIZE).test(mob)) {
+        continue;
+      }
+
+      final Shape obstructedVision =
+          getObstructedVisionArea(mob, Game.world().camera().getViewportDimensionCenter(this));
+
+      ShapeRenderer.render(g, obstructedVision);
+    }
+
+    g.setPaint(oldPaint);
+  }
+  ```
+    ]]>
+  </code>
+</response>

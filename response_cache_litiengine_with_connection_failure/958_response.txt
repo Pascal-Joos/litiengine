@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static void renderMapDebugInfo(final Graphics2D g, final IMap map) {
+    if (!Game.config().debug().isDebugEnabled()) {
+      return;
+    }
+
+    // draw collision boxes from shape layer
+    if (Game.config().debug().renderCollisionBoxes()) {
+      final BasicStroke shapeStroke = new BasicStroke(1 / Game.world().camera().getRenderScale());
+      for (final Rectangle2D shape : Game.physics().getCollisionBoxes(Collision.STATIC)) {
+        g.setColor(Color.RED);
+        Game.graphics().renderOutline(g, shape, shapeStroke);
+      }
+    }
+
+    if (Game.config().debug().showTilesMetric()) {
+      if (Input.mouse() != null) {
+        // draw mouse tile info
+        drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
+      }
+    }
+
+    final MapRenderedEvent event = new MapRenderedEvent(g, map);
+    for (MapRenderedListener cons : mapDebugListener) {
+      cons.rendered(event);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

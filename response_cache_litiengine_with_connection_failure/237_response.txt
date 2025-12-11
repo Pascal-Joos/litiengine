@@ -1,0 +1,61 @@
+<response>
+  <reason><![CDATA[
+At the specific call site `this.getEnvironment()`, the implementation is:
+
+```java
+@Override
+public Environment getEnvironment() {
+  return this.environment;
+}
+```
+
+`this.environment` is a plain field with no non-null guarantees in the shown code. The lifecycle methods in `Entity` explicitly show it being both set and cleared:
+
+```java
+@Override
+public void loaded(Environment environment) {
+  this.environment = environment;
+  this.loaded = true;
+  for (EntityListener listener : this.listeners) {
+    listener.loaded(this, this.getEnvironment());
+  }
+}
+
+@Override
+public void removed(Environment environment) {
+  this.loaded = false;
+
+  for (EntityListener listener : this.listeners) {
+    listener.removed(this, this.getEnvironment());
+  }
+
+  // set to null after informing the listeners so they can still access the environment instance
+  this.environment = null;
+}
+```
+
+From this:
+
+- Before `loaded` has ever been called, `this.environment` will be its default value, i.e. `null`.
+- After `removed` completes, `this.environment` is explicitly set to `null`.
+- There are other usages that defensively check for null, e.g.:
+
+  ```java
+  if (this.getEnvironment() != null && this.getEnvironment().isLoaded()) { ... }
+  ```
+
+  and in `Spawnpoint`:
+
+  ```java
+  Environment env = this.getEnvironment();
+  if (env == null) {
+    env = Game.world().environment();
+  }
+  ```
+
+These checks only make sense if `getEnvironment()` can be null in normal operation.
+
+Nothing in the provided call chains enforces that, at every point where `this.getEnvironment()` is invoked, `this.environment` must already have been set non-null by `loaded` and not yet cleared by `removed`. Therefore, at the analyzed call site, `getEnvironment()` can return `null` depending on the entity’s lifecycle state (e.g., not yet loaded or already removed).
+  ]]></reason>
+  <value>YES</value>
+</response>

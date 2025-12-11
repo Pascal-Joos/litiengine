@@ -1,0 +1,42 @@
+<response>
+  <reason><![CDATA[
+The method `getName()` in `GuiComponent` simply returns the field `this.name` with no additional checks or guarantees:
+
+```java
+public String getName() {
+  return this.name;
+}
+```
+
+At the call site in question:
+
+```java
+if (this.current() != null && this.current().getName().equalsIgnoreCase(screenName)) {
+  ...
+}
+```
+
+the only protection is a null-check on `this.current()`. There is **no** null-check on `this.current().getName()` before calling `equalsIgnoreCase`.
+
+Elsewhere in `ScreenManager`, the code explicitly treats `getName()` as possibly returning null:
+
+```java
+.noneMatch(element -> element != null 
+    && element.getName() != null 
+    && element.getName().equalsIgnoreCase(screenName))
+```
+
+and
+
+```java
+.filter(element -> element.getName() != null 
+    && element.getName().equalsIgnoreCase(screenName))
+```
+
+In both of these places, `element.getName() != null` is checked before calling `equalsIgnoreCase`, which only makes sense if `getName()` can sometimes return null.
+
+There is no code shown that enforces `name` to be non-null for the "current" screen (the object returned by `this.current()`). Since `this.current()` can reference any `Screen` in `screens`, and those are treated throughout as potentially having `null` names, `this.current().getName()` can also be null.
+
+Therefore, at this specific call site, the expression `this.current().getName()` can evaluate to null.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,112 @@
+<response>
+  <reason><![CDATA[
+The method `Game.world().camera()` simply returns the field `this.camera` of `GameWorld`:
+
+```java
+public ICamera camera() {
+  return this.camera;
+}
+```
+
+From the provided code, this field is manipulated in two key places:
+
+1. **Initialization in `Game.init`**:
+   ```java
+   public static synchronized void init(String... args) {
+     ...
+     world.setCamera(new Camera());
+     ...
+   }
+   ```
+   Here, a non-null `Camera` instance is assigned to `world`’s camera.
+
+2. **Setter that allows null**:
+   ```java
+   public void setCamera(final ICamera cam) {
+     if (this.camera() != null) {
+       Game.loop().detach(camera);
+     }
+
+     camera = cam;
+
+     if (cam != null && !Game.isInNoGUIMode()) {
+       Game.loop().attach(cam);
+       cam.updateFocus();
+     }
+   }
+   ```
+
+   This setter can set `camera` **to null**. The `clear()` method of `GameWorld` uses this:
+
+   ```java
+   public void clear() {
+     this.unloadEnvironment();
+     this.environments.clear();
+     this.setCamera(null);
+     ...
+   }
+   ```
+
+Thus, after `Game.init` has run, the camera is initially non-null, but later calls like `Game.world().clear()` or any direct/indirect use of `setCamera(null)` can set it to `null`.
+
+At the specific call site, `Game.world().camera()` is used in many locations, and several of those locations themselves perform `null` checks or are written to tolerate a null camera, which would be unnecessary if `camera()` could never be null. Examples:
+
+- In `Mouse.getMapLocation()`:
+  ```java
+  if (Game.world().camera() == null) {
+    return null;
+  }
+  final ICamera camera = Game.world().camera();
+  ...
+  ```
+
+- In `Emitter.renderParticles(...)`:
+  ```java
+  final Rectangle2D viewport =
+      Game.screens() != null && Game.world().camera() != null
+          ? Game.world().camera().getViewport()
+          : null;
+  ```
+
+- In `RenderEngine.renderShape(...)`:
+  ```java
+  if (Game.world().camera() != null
+      && (Game.world().environment() == null || !Game.world().environment().isRendering())) {
+    t.scale(Game.world().camera().getRenderScale(), Game.world().camera().getRenderScale());
+    ...
+  }
+  ```
+
+- In `AStarGrid.render(...)`:
+  ```java
+  final Rectangle2D viewport =
+      Game.screens() != null && Game.world().camera() != null
+          ? Game.world().camera().getViewport()
+          : null;
+  if (viewport == null) {
+    return;
+  }
+  ```
+
+Also, `RenderEngine.renderOutline(...)` explicitly bails out if `Game.world().camera() == null`:
+
+```java
+if (Game.world().environment() == null
+    || !Game.world().environment().isRendering()
+    || Game.world().camera() == null) {
+  return;
+}
+```
+
+These checks only make sense if the camera **can indeed be null at runtime**.
+
+Since:
+
+- `setCamera` is public and can set `camera` to `null` (and `clear()` demonstrably does), and
+- many call sites defensively check `Game.world().camera() != null` first,
+
+there is no guarantee that `this.camera` is always non-null when `Game.world().camera()` is invoked. Therefore, the method can return null at this call site, depending on the game state (e.g., after `clear()` or any other `setCamera(null)` use, or before `Game.init` assigns a camera if `world` is constructed with a null camera by default).
+
+So, for the invocation `Game.world().camera()`, the return value can be null.]]></reason>
+  <value>YES</value>
+</response>

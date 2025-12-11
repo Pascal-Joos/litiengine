@@ -1,0 +1,104 @@
+<response>
+  <reason><![CDATA[
+The method `Game.loop()` simply returns the static field `gameLoop`:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+So the nullability of `Game.loop()` is exactly the nullability of `gameLoop`.
+
+From the provided `Game` class:
+
+- During initialization:
+
+```java
+public static synchronized void init(String... args) {
+  if (initialized) {
+    ...
+    return;
+  }
+
+  ...
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  IGameLoop loop = loop();
+  if (loop != null) {
+    loop.attach(physics());
+    loop.attach(world());
+  }
+  ...
+  initialized = true;
+}
+```
+
+After `init` completes, `gameLoop` is non-null.
+
+- During termination:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  hasStarted = false;
+  initialized = false;
+
+  config().save();
+  gameLoop.terminate();
+  ...
+  gameLoop = null;
+  screenManager = null;
+  gameWindow = null;
+}
+```
+
+Here `gameLoop` is explicitly set to `null`. So globally, `Game.loop()` can return null after `Game.terminate()`.
+
+At the various call sites you showed (e.g., `GameWorld.loadEnvironment`, `Effect.update/apply`, `Emitter.activate/deactivate/update`, `MovementController.handleMovement`, `GameTime.*`, `Camera.setZoom`, etc.), there is no common guarantee that:
+- `Game.init(...)` has already been called, and
+- `Game.terminate()` has not yet been called.
+
+Indeed, some call sites explicitly defensively check for null:
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  loop.detach(this);
+}
+```
+
+and
+
+```java
+final IGameLoop loop = Game.loop();
+if (loop != null) {
+  this.lastScreenChange = loop.getTicks();
+}
+```
+
+Others call `Game.loop()` directly without null-checks:
+
+```java
+Game.loop().getLock();
+Game.loop().attach(this);
+Game.loop().getTickRate();
+Game.loop().detach(this);
+...
+```
+
+Since `gameLoop` is set to `null` in `Game.terminate()`, any of these direct call sites can observe `Game.loop() == null` if they execute after termination (for example, due to lingering references, shutdown hooks, or misuse of the API).
+
+Because you did not constrain the execution point to "during a period where the game is guaranteed initialized and not yet terminated", the method `loop()` *can* return null at this specific call site. The code itself acknowledges and guards for this situation in multiple places.
+
+Therefore, from the class' own life-cycle logic:
+
+- Before `init` → `gameLoop` is never set → `Game.loop()` returns `null`.
+- After `init` and before `terminate` → `gameLoop` is non-null.
+- After `terminate` → `gameLoop` is explicitly set to `null` → `Game.loop()` returns `null`.
+
+Since these states are all possible and not excluded for the given call site, the invocation `Game.loop()` can yield `null`.]]></reason>
+  <value>YES</value>
+</response>

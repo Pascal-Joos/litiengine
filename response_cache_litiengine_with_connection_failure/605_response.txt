@@ -1,0 +1,25 @@
+```xml
+<response>
+  <reason><![CDATA[
+The only definition provided is:
+
+class de.gurkenlabs.litiengine.environment.tilemap.ITile {
+  public ITilesetEntry getTilesetEntry()
+}
+
+This is just a method signature on an interface, with no implementation and no annotations (such as @NotNull) or documented contract stating that a non-null value is guaranteed.
+
+Because:
+- There is no body to analyze (no return statements, no internal logic).
+- Implementations of this interface are free to return null unless constrained by additional contracts or annotations.
+- We have no declarations of any methods that this might delegate to.
+
+We cannot conclude that the method always returns a non-null value, nor that it always can return null, purely from this signature. We need an actual implementation (or explicit non-null contract) to decide.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Provide at least one concrete implementation of ITile.getTilesetEntry(), including its full method body.]]></request>
+    <request><![CDATA[If available, provide any annotations or documentation (e.g., @NotNull, @Nullable, Javadoc) applied to ITile.getTilesetEntry() or ITilesetEntry that define nullability expectations.]]></request>
+  </requests>
+</response>
+```

@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int getHexSideLength() {
+    return Nullability.castToNonnull(this.hexsidelength);
+  }
+  ```
+    ]]>
+  </code>
+</response>

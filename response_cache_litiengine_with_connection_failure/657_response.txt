@@ -1,0 +1,29 @@
+<response>
+  <reason><![CDATA[
+The only information provided about `IMap.getRenderOrder()` is its signature:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public RenderOrder getRenderOrder()
+}
+```
+
+No implementation or additional contracts/annotations (like `@NotNull`) are shown. At the call site, the value is used as:
+
+```java
+final RenderOrder renderOrder = map.getRenderOrder();
+if (renderOrder != null && renderOrder.btt) {
+  ...
+}
+```
+
+This explicit null check (`renderOrder != null`) in the library’s own code demonstrates that the authors consider `map.getRenderOrder()` potentially returning `null`; otherwise, the null check would be unnecessary.
+
+Because:
+- We have no implementation of `getRenderOrder()` to prove it always returns a non-null value, and
+- The consuming code clearly defensively checks for `null`,
+
+we must conclude that `map.getRenderOrder()` can evaluate to `null` at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

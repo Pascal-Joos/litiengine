@@ -1,0 +1,41 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(Graphics2D g) {
+    final Rectangle2D viewport =
+        Game.screens() != null && Game.world().camera() != null
+            ? Game.world().camera().getViewport()
+            : null;
+    if (viewport == null) {
+      return;
+    }
+
+    final AStarNode startNode = this.getNode(viewport.getX(), viewport.getY());
+    final AStarNode endNode = this.getNode(viewport.getMaxX(), viewport.getMaxY());
+    final int startX = startNode == null ? 0 : clampX(startNode.getGridX());
+    final int endX = endNode == null ? this.getGrid().length - 1 : clampX(endNode.getGridX());
+    final int startY = startNode == null ? 0 : clampY(startNode.getGridY());
+    final int endY = endNode == null ? this.getGrid()[0].length - 1 : clampY(endNode.getGridY());
+
+    g.setColor(new Color(255, 0, 255, 100));
+    for (int x = startX; x <= endX; x++) {
+      for (int y = startY; y <= endY; y++) {
+        AStarNode node = this.getGrid()[x][y];
+        if (node.isWalkable()) {
+          Game.graphics()
+              .renderShape(
+                  g,
+                  new Rectangle2D.Double(
+                      node.getLocation().x - 0.25, node.getLocation().y - 0.25, 0.5, 0.5));
+        } else {
+          Game.graphics().renderShape(g, node.getBounds());
+        }
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

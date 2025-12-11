@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void fireRenderEvent(Graphics2D g, RenderType type) {
+      for (EnvironmentRenderedListener listener : Nullability.castToNonnull(this.renderListeners.get(type))) {
+        listener.rendered(g, type);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,67 @@
+<response>
+  <reason><![CDATA[
+At the call site in question, `x` is a `Tileset` used inside the `distinctTilesets` stream in `ResourceBundle.beforeMarshal`:
+
+```java
+for (Tileset tileset : this.getTilesets()) {
+  if (distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))) {
+    continue;
+  }
+
+  distinctTilesets.add(tileset);
+}
+```
+
+Here, `x.getName()` is evaluated in the lambda `x -> x.getName().equals(tileset.getName())`.
+
+The implementation of `Tileset.getName()` is:
+
+```java
+@Override
+public String getName() {
+  return this.sourceTileset != null ? this.sourceTileset.getName() : this.name;
+}
+```
+
+This method can return:
+- `this.sourceTileset.getName()` if `sourceTileset != null`
+- `this.name` if `sourceTileset == null`
+
+From the provided code:
+
+1. **No guarantee that `this.name` is non-null**  
+   There is no shown constructor or setter that initializes `this.name` to a non-null value. In the `Tileset(Tileset source)` constructor we see only:
+   ```java
+   this.source = source.getName() + "." + FILE_EXTENSION;
+   this.sourceTileset = source;
+   this.firstgid = 1;
+   ```
+   No assignment to `this.name` occurs there, and nothing else in the provided snippets enforces non-nullity of `this.name`. Therefore, for a `Tileset` with `sourceTileset == null`, `getName()` can return `null` (i.e., `this.name` might be `null`).
+
+2. **No guarantee that `sourceTileset.getName()` is non-null**  
+   `sourceTileset` is another `Tileset`. Its `getName()` has the same implementation and the same potential to return `null` (either from its own `name` field or further delegation). There is no provided method that ensures any `Tileset` in this chain has a non-null `name`.
+
+3. **Usage pattern does not enforce non-nullity**  
+   In `beforeMarshal`, the code explicitly checks:
+   ```java
+   if (set.getName() != null && set.getName().equals(fileName)) {
+   ```
+   This indicates that `Tileset.getName()` is expected to possibly be `null` (otherwise the null check would be unnecessary). That same type (`Tileset`) and same `getName()` are what is used at the call site for `x.getName()`.
+
+4. **Call site specifics do not add constraints**  
+   At the specific call site, `x` is drawn from `distinctTilesets`, which is just populated from `this.getTilesets()` without any non-null-name filtering:
+   ```java
+   List<Tileset> distinctTilesets = new ArrayList<>();
+   for (Tileset tileset : this.getTilesets()) {
+     if (distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))) {
+       continue;
+     }
+     distinctTilesets.add(tileset);
+   }
+   ```
+   No step here ensures that any `Tileset` added to `distinctTilesets` has a non-null result from `getName()`.
+
+Therefore, at this specific call site (`x.getName()` in the lambda inside `beforeMarshal`), `Tileset.getName()` can return `null`.
+  ]]></reason>
+  <value>YES</value>
+</response>

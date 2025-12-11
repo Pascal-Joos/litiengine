@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void init() {
+      try {
+        keyboard = new Keyboard();
+        Mouse m = new Mouse();
+
+        if (!Game.isInNoGUIMode()) {
+          if (Game.window() != null && Game.window().getRenderComponent() != null) {
+            Game.window().getRenderComponent().addMouseListener(m);
+            Game.window().getRenderComponent().addMouseMotionListener(m);
+            Game.window().getRenderComponent().addMouseWheelListener(m);
+          }
+        }
+
+        mouse = m;
+        if (Game.config().input().isGamepadSupport()) {
+          gamePadManager = new GamepadManager();
+        }
+      } catch (AWTException e) {
+        log.log(Level.SEVERE, e.getMessage(), e);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

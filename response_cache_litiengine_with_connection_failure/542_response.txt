@@ -1,0 +1,25 @@
+```xml
+<response>
+  <reason><![CDATA[
+Only the declaration of `IImageLayer.getImage()` is provided:
+
+```java
+public IMapImage getImage()
+```
+
+There is no implementation shown, nor any documentation or annotations (e.g., @Nonnull/@Nullable) that would constrain its behavior. At the call site
+
+```java
+Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
+```
+
+the code immediately dereferences the result of `layer.getImage()` by calling `.getSource()`, but this does not prove non-nullity; it only shows that the author expects it to be non-null at runtime. Without seeing the implementation of `getImage()` and any methods it delegates to, we cannot rule out that it might return `null`.
+
+To determine definitively whether `layer.getImage()` can be null at this call site, we must inspect the actual implementation of `IImageLayer.getImage()` (and any internal methods it relies on to compute the return value).
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>de.gurkenlabs.litiengine.environment.tilemap.IImageLayer#getImage</method>
+  </methods>
+</response>
+```

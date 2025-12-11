@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void clear() {
+    for (Collision type : Collision.values()) {
+      if (type == Collision.NONE) {
+        continue;
+      }
+
+      this.collisionEntities.get(type).clear();
+      Nullability.castToNonnull(this.collisionBoxes.get(type)).clear();
+    }
+
+    this.setBounds(null);
+}
+  ```
+    ]]>
+  </code>
+</response>

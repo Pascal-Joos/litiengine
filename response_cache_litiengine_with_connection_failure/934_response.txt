@@ -1,0 +1,48 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+simply returns the value of the static field `keyboard` and does not initialize or modify it at this call site (or anywhere in the provided code). There is no shown guarantee in the snippets that this static field is ever assigned a non‑null value before any of the `Input.keyboard()` calls.
+
+Within the provided call sites, some code explicitly defends against `null`, for example:
+
+```java
+IKeyboard keyboard = Input.keyboard();
+if (keyboard == null) {
+  return;
+}
+```
+
+and
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard().onKeyTyped(this::handleTypedKey);
+}
+```
+
+These checks only make sense if `Input.keyboard()` can, in fact, be `null`. In contrast, other places (e.g. `DropdownListField.prepareInput`) call:
+
+```java
+Input.keyboard()
+  .onKeyTyped(...);
+```
+
+with no null check. However, this lack of a check is not evidence of non-nullness; it is just a potential NPE if `keyboard` is null.
+
+Since:
+- The implementation shown only returns the field as-is.
+- No initialization or assignment to `Input.keyboard` is provided.
+- Multiple call sites explicitly guard against `Input.keyboard()` being null.
+
+we must conclude that at the specific invocation `Input.keyboard()` (e.g., in `DropdownListField.prepareInput` and similar unguarded uses), the result can be null, because there is no demonstrated invariant or initialization path that guarantees it is non-null at that time.
+
+Therefore, `Input.keyboard()` can return null at this call site.]]></reason>
+  <value>YES</value>
+</response>

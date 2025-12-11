@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void renderTileLayer(
+        final Graphics2D g,
+        final ITileLayer layer,
+        final IMap map,
+        final Rectangle2D viewport,
+        float opacity) {
+      // TODO: possibly implement the same render order that Tiled uses for staggered maps: undo the
+      // staggering, and then render it right-down
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+      final RenderOrder renderOrder = map.getRenderOrder();
+      if (renderOrder != null && renderOrder.btt) {
+        for (int y = map.getHeight() - 1; y >= 0; y--) {
+          drawRow(g, layer, y, map, viewport);
+        }
+      } else {
+        for (int y = 0; y < map.getHeight(); y++) {
+          drawRow(g, layer, y, map, viewport);
+        }
+      }
+
+      final LayerRenderEvent event = new LayerRenderEvent(g, map, layer);
+      for (LayerRenderedListener listener : layerRenderedListeners) {
+        listener.rendered(event);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

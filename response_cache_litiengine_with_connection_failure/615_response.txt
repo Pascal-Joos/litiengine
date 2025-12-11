@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public ITileAnimationFrame getCurrentFrame() {
+    long time = Game.time().sinceEnvironmentLoad() % this.getTotalDuration();
+    List<ITileAnimationFrame> frames = this.getFrames();
+    if (frames == null) {
+      throw new AssertionError();
+    }
+    for (ITileAnimationFrame frame : frames) {
+      time -= frame.getDuration();
+      if (time <= 0) {
+        return frame;
+      }
+    }
+    throw new AssertionError(); // we should never reach this line
+  }
+  ```
+    ]]>
+  </code>
+</response>

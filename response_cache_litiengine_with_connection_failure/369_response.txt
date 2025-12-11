@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void loadMapObjects() {
+    if (this.getMap() == null) {
+      return;
+    }
+
+    for (final IMapObjectLayer layer : this.getMap().getMapObjectLayers()) {
+      for (final IMapObject mapObject : layer.getMapObjects()) {
+        this.load(mapObject);
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

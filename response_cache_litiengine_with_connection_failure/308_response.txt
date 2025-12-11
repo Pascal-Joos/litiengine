@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void spawn( final Spawnpoint spawnpoint, final int amount) {
+      if (Nullability.castToNonnull(spawnpoint).getEnvironment() == null || !Nullability.castToNonnull(spawnpoint).getEnvironment().isLoaded()) {
+        return;
+      }
+      for (int i = 0; i < amount; i++) {
+        final T newEntity = this.createNew();
+        spawnpoint.spawn(newEntity);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

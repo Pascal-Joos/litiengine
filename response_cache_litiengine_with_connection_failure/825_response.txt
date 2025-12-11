@@ -1,0 +1,62 @@
+<response>
+  <reason><![CDATA[
+getCurrentValue simply returns the field this.currentValue.
+
+From the provided code, currentValue is written only via setCurrentValue:
+
+```java
+public void setCurrentValue(final BigDecimal newValue) {
+  if (newValue.compareTo(this.getUpperBound()) > 0) {
+    this.currentValue = this.getUpperBound();
+  } else if (newValue.compareTo(this.getLowerBound()) < 0) {
+    this.currentValue = this.getLowerBound();
+  } else {
+    this.currentValue = newValue;
+  }
+  this.setText(this.getCurrentValue() + "");
+  this.valueChangeConsumers.forEach(c -> c.accept(this.getCurrentValue()));
+}
+```
+
+Every assignment to currentValue is one of:
+- this.getUpperBound()
+- this.getLowerBound()
+- newValue
+
+None of these are guaranteed non-null by the provided code:
+
+- The constructor initializes via `this.setCurrentValue(BigDecimal.valueOf(startValue));`, which ensures non-null only when that constructor is used and not overridden later.
+- setCurrentValue can be called from:
+  - `increment()` → `this.getCurrentValue().add(this.getStepSize())`
+  - `decrement()` → `Nullability.castToNonnull(this.getCurrentValue()).subtract(this.getStepSize())`
+  - `setUpperBound(...)` and `setLowerBound(...)` using their BigDecimal parameters
+  - the `prepare()` callback:
+
+    ```java
+    this.onChangeConfirmed(
+      e -> {
+        try {
+          this.setCurrentValue(BigDecimal.valueOf(Double.parseDouble(this.getText())));
+        } catch (final Exception ex) {
+          log.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+      });
+    ```
+
+The code does not show:
+- any default initialization of currentValue at field declaration,
+- any guarantees that upperBound, lowerBound, or newValue passed to setCurrentValue are never null,
+- any guarantee that getCurrentValue has been called only after construction/initialization that sets it.
+
+Moreover, decrement uses `Nullability.castToNonnull(this.getCurrentValue())`, which is a runtime null-check helper, not a compile-time guarantee; its very presence suggests getCurrentValue might be null at some points.
+
+Since the question is about the call site `this.getCurrentValue()` in general within this class (no narrower context like "inside the constructor after line X" is specified), and there is a visible code path where:
+- currentValue could be left uninitialized (null) before any call to setCurrentValue,
+- or could be set from potentially null inputs (upperBound, lowerBound, newValue) whose nullability is not restricted,
+
+the method getCurrentValue can return null at that call site.
+
+There is no invariant in the shown code that enforces non-nullability of currentValue for all uses of `this.getCurrentValue()`.
+  ]]></reason>
+  <value>YES</value>
+</response>

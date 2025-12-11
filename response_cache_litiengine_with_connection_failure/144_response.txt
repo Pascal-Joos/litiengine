@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void resurrect() {
+    if (!this.isDead()) {
+      return;
+    }
+
+    this.getHitPoints()
+        .modifyBaseValue(new AttributeModifier<>(Modification.SET, Nullability.castToNonnull(this.getHitPoints().getMax())));
+
+    for (final CombatEntityListener listener : this.listeners) {
+      listener.resurrect(this);
+    }
+
+    for (final CombatEntityResurrectListener listener : this.resurrectListeners) {
+      listener.resurrect(this);
+    }
+
+    this.setCollision(true);
+  }
+  ```
+    ]]>
+  </code>
+</response>

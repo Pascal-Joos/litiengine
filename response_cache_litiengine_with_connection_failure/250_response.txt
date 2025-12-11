@@ -1,0 +1,52 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the given method:
+
+@Override
+public void removeTag(String tag) {
+    this.getTags().remove(tag);
+    if (Game.world().environment() == null) {
+      return;
+    }
+    this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
+    if (this.getEnvironment().getEntitiesByTag().get(tag).isEmpty()) {
+      this.getEnvironment().getEntitiesByTag().remove(tag);
+    }
+}
+
+We can only know the following for sure:
+- `Game.world().environment() == null` is checked; this guarantees that `this.getEnvironment()` (assuming it resolves to that environment) is non-null past the `if` block.
+- Nothing in the shown code guarantees that:
+  - `this.getEnvironment().getEntitiesByTag()` is non-null, or
+  - the `Map` returned by `getEntitiesByTag()` contains the key `tag`, or
+  - `get(tag)` returns a non-null value.
+
+In idiomatic Java, `Map.get(key)` returns:
+- the value associated with `key` if present, or
+- `null` if the key is absent or the stored value is null.
+
+You call `this.getEnvironment().getEntitiesByTag().get(tag).remove(this);` directly, with no prior check that:
+- the map contains `tag` (e.g., `containsKey(tag)`), or
+- the result of `get(tag)` is non-null.
+
+Thus, in any case where:
+- `getEntitiesByTag()` returns a `Map<String, List<Entity>>` (or similar), and
+- `tag` has no associated list (or its value is explicitly null),
+
+then `get(tag)` will evaluate to null, and `null.remove(this)` would cause a `NullPointerException`.
+
+The method’s earlier operation `this.getTags().remove(tag);` does not provide a guarantee that the environment’s `entitiesByTag` map still has the key `tag` or that its value is non-null. These appear to be two separate data structures, and no invariant tying them together is given.
+
+Since we are not provided:
+- the implementation/contract of `getEnvironment()`,
+- the type and contract of `getEntitiesByTag()`,
+- any guarantee that `get(tag)` never returns null,
+
+we cannot soundly conclude that the expression is always non-null. Standard Java `Map` behavior allows null values and null returns for missing keys, so by default this expression *can* be null.
+
+Therefore, under normal Java semantics and absent additional guarantees, `this.getEnvironment().getEntitiesByTag().get(tag)` can be null at the line in question.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```
