@@ -261,7 +261,15 @@ public abstract class GuiComponent
    *
    * @return the name
    */
+  /**
+   * Gets the name of this GuiComponent.
+   *
+   * @return the name
+   */
   public String getName() {
+    if (this.name == null) {
+      return "";
+    }
     return this.name;
   }
 
