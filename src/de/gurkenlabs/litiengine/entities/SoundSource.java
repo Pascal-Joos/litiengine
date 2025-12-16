@@ -30,11 +30,8 @@ public class SoundSource extends Entity {
   private SFXPlayback playback;
 
   /** An empty constructor that just calls the super constructor of {@link Entity}. */
-  /** An empty constructor that just calls the super constructor of {@link Entity}. */
   public SoundSource() {
     super();
-    this.sound = Sounds.get("");
-    this.playback = SoundEngine.play(this.sound, false);
   }
 
   /**
