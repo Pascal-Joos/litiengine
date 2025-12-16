@@ -22,7 +22,7 @@ public class GroupLayer extends Layer implements IGroupLayer {
     @XmlElement(name = "objectgroup", type = MapObjectLayer.class),
     @XmlElement(name = "group", type = GroupLayer.class)
   })
-  private List<ILayer> layers;
+  private List<ILayer> layers = new ArrayList<>();
 
   private transient List<ITileLayer> rawTileLayers = new ArrayList<>();
   private transient List<IMapObjectLayer> rawMapObjectLayers = new ArrayList<>();
