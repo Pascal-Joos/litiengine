@@ -32,10 +32,6 @@ public class SoundEvent extends EventObject {
 
   @Override
   public String toString() {
-    Sound localSound = this.sound;
-    return super.toString()
-        + "[sound="
-        + (localSound != null ? localSound.getName() : "null")
-        + "]";
+    return super.toString() + "[sound=" + this.sound.getName() + "]";
   }
 }
