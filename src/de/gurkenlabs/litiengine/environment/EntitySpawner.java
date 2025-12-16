@@ -196,9 +196,6 @@ public abstract class EntitySpawner<T extends IEntity> implements IEntitySpawner
   }
 
   private void spawn(@Nullable final Spawnpoint spawnpoint, final int amount) {
-    if (spawnpoint == null) {
-      return;
-    }
     if (spawnpoint.getEnvironment() == null || !spawnpoint.getEnvironment().isLoaded()) {
       return;
     }
