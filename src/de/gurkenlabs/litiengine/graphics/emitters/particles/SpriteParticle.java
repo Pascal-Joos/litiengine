@@ -22,6 +22,7 @@ public class SpriteParticle extends Particle {
     super(0, 0);
     this.spritesheet = spritesheet;
     if (spritesheet == null) {
+      this.animation = new AnimationController(null);
       return;
     }
     this.setWidth(spritesheet.getSpriteWidth());
