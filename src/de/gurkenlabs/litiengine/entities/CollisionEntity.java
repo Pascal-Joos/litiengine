@@ -87,8 +87,24 @@ public abstract class CollisionEntity extends Entity implements ICollisionEntity
    *
    * @return the collision box
    */
+  /**
+   * Gets the collision box.
+   *
+   * @return the collision box
+   */
   @Override
   public Rectangle2D getCollisionBox() {
+    if (this.collisionBox == null) {
+      return new Rectangle2D.Double(
+          this.getX(),
+          this.getY(),
+          this.getCollisionBoxWidth() != -1
+              ? this.getCollisionBoxWidth()
+              : this.getWidth() * WIDTH_FACTOR,
+          this.getCollisionBoxHeight() != -1
+              ? this.getCollisionBoxHeight()
+              : this.getHeight() * HEIGHT_FACTOR);
+    }
     return this.collisionBox;
   }
 
