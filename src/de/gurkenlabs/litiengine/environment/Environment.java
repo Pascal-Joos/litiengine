@@ -1100,7 +1100,12 @@ public final class Environment implements IRenderable {
    * @see ILayer#getRenderType()
    */
   public Collection<IEntity> getEntities(final RenderType renderType) {
-    return Collections.unmodifiableCollection(this.miscEntities.get(renderType).values());
+    final Map<?, IEntity> entities = this.miscEntities.get(renderType);
+    if (entities == null) {
+      return Collections.emptySet();
+    }
+
+    return Collections.unmodifiableCollection(entities.values());
   }
 
   /**
