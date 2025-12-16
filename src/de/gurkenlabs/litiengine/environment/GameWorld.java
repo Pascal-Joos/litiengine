@@ -227,16 +227,7 @@ public final class GameWorld implements IUpdateable {
    * @return The currently active camera.
    * @see ICamera
    */
-  /**
-   * Gets the game's current {@code Camera}.
-   *
-   * @return The currently active camera.
-   * @see ICamera
-   */
   public ICamera camera() {
-    if (this.camera == null) {
-      throw new IllegalStateException("Camera has not been initialized");
-    }
     return this.camera;
   }
 
