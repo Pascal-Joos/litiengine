@@ -104,9 +104,6 @@ public class RenderComponent extends Canvas {
     this.handleFade();
     Graphics2D g = null;
     do {
-      if (this.currentBufferStrategy == null) {
-        break;
-      }
       try {
 
         g = (Graphics2D) this.currentBufferStrategy.getDrawGraphics();
@@ -170,12 +167,10 @@ public class RenderComponent extends Canvas {
 
       // PERFORMANCE HINT: this method call basically takes up all the time required by this method
       this.currentBufferStrategy.show();
-    } while (this.currentBufferStrategy != null && this.currentBufferStrategy.contentsLost());
+    } while (this.currentBufferStrategy.contentsLost());
 
-    if (this.currentBufferStrategy != null) {
-      Toolkit.getDefaultToolkit().sync();
-      this.frameCount++;
-    }
+    Toolkit.getDefaultToolkit().sync();
+    this.frameCount++;
   }
 
   public void takeScreenshot() {
