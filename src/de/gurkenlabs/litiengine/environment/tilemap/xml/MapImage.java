@@ -28,11 +28,8 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
   @XmlTransient private URL absolutePath;
 
   /** Instantiates a new {@code MapImage} instance. */
-  /** Instantiates a new {@code MapImage} instance. */
   public MapImage() {
     super();
-    this.transparentcolor = new Color(0, 0, 0, 0);
-    this.absolutePath = null;
   }
 
   /**
