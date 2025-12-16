@@ -634,7 +634,7 @@ public final class Game {
       }
     }
 
-    gameLoop = new GameLoop();
+    gameLoop = null;
     screenManager = null;
     gameWindow = null;
   }
