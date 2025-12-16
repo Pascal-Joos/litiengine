@@ -50,10 +50,6 @@ public class MouseDrawComponent extends ImageComponent {
   public void mouseDragged(MouseEvent e) {
     super.mouseDragged(e);
 
-    if (this.drawingSpace == null) {
-      return;
-    }
-
     double brushX = e.getX();
     double brushY = e.getY();
     Graphics2D g = (Graphics2D) this.drawingSpace.getGraphics();
