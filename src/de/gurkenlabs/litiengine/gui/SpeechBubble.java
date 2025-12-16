@@ -156,11 +156,6 @@ public class SpeechBubble implements IUpdateable, IRenderable {
       return;
     }
 
-    final Point2D entityCenter = this.getEntity().getCenter();
-    if (entityCenter == null) {
-      return;
-    }
-
     final float deltaX = (float) (this.textBoxWidth / 2.0 + this.getAppearance().getPadding());
     final float deltaY =
         (float)
@@ -196,8 +191,8 @@ public class SpeechBubble implements IUpdateable, IRenderable {
           .renderOutline(
               g,
               new Rectangle2D.Double(
-                  entityCenter.getX() - deltaX,
-                  entityCenter.getY() - deltaY,
+                  this.getEntity().getCenter().getX() - deltaX,
+                  this.getEntity().getCenter().getY() - deltaY,
                   this.bubble.getWidth(),
                   this.bubble.getHeight()));
     }
