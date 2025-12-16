@@ -68,6 +68,17 @@ public final class PhysicsEngine implements IUpdateable {
    * @see ICollisionEntity#getCollisionBox()
    * @see PhysicsEngine#remove(ICollisionEntity)
    */
+  /**
+   * Adds the specified collision aware entity to the physics engine which will make it respect the
+   * entity's collision box for upcoming calls.
+   *
+   * <p><i>If you add a {@code ICollisionEntiy} to your Environment, it will automatically be added
+   * to the the PhysicsEngine. There is typically no need to call this explicitly.</i>
+   *
+   * @param entity The collision entity to be added.
+   * @see ICollisionEntity#getCollisionBox()
+   * @see PhysicsEngine#remove(ICollisionEntity)
+   */
   public void add(final ICollisionEntity entity) {
     if (entity.getCollisionType() == null) {
       return;
@@ -76,12 +87,18 @@ public final class PhysicsEngine implements IUpdateable {
     switch (entity.getCollisionType()) {
       case DYNAMIC:
       case STATIC:
+        if (this.collisionEntities.get(entity.getCollisionType()) == null) {
+          return;
+        }
         this.collisionEntities.get(entity.getCollisionType()).add(entity);
         break;
       default:
         return;
     }
 
+    if (this.collisionEntities.get(Collision.ANY) == null) {
+      return;
+    }
     this.collisionEntities.get(Collision.ANY).add(entity);
   }
 
