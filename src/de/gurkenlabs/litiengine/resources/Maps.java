@@ -266,9 +266,6 @@ public final class Maps extends ResourcesContainer<IMap> {
      * @return The added map object.
      */
     public IMapObject add(@Nullable IMapObjectLayer layer, IMapObject mapObject) {
-      if (layer == null) {
-        return mapObject;
-      }
       layer.addMapObject(mapObject);
       return mapObject;
     }
