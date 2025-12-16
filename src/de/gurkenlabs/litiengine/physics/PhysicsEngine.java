@@ -91,12 +91,6 @@ public final class PhysicsEngine implements IUpdateable {
    *
    * @param entity The entity that is about to be removed.
    */
-  /**
-   * Removes the specified entity from any collision processing. Typically this method is implicitly
-   * called when an entity is removed from the current environment.
-   *
-   * @param entity The entity that is about to be removed.
-   */
   public void remove(final ICollisionEntity entity) {
     if (entity.getCollisionType() == null) {
       return;
@@ -111,11 +105,7 @@ public final class PhysicsEngine implements IUpdateable {
         return;
     }
 
-    final Collection<ICollisionEntity> anyCollisionEntities =
-        this.collisionEntities.get(Collision.ANY);
-    if (anyCollisionEntities != null) {
-      anyCollisionEntities.remove(entity);
-    }
+    this.collisionEntities.get(Collision.ANY).remove(entity);
   }
 
   /**
