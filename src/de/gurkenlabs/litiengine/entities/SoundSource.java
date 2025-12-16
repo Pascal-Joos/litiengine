@@ -50,15 +50,7 @@ public class SoundSource extends Entity {
    * @param name The name of the sound used for playback
    * @see Sounds#get(String)
    */
-  /**
-   * Initialize a SoundSource with the name of a sound which will then be fetched from the {@code
-   * Resources.sounds()}.
-   *
-   * @param name The name of the sound used for playback
-   * @see Sounds#get(String)
-   */
   public SoundSource(String name) {
-    super();
     this.setSound(name);
   }
 
