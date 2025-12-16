@@ -341,6 +341,10 @@ public class TileData {
   protected static List<Tile> parseCsvData(@Nullable String value)
       throws InvalidTileLayerException {
 
+    if (value == null) {
+      throw new InvalidTileLayerException("CSV data string is null");
+    }
+
     List<Tile> parsed = new ArrayList<>();
 
     // trim 'space', 'tab', 'newline'. pay attention to additional unicode chars
