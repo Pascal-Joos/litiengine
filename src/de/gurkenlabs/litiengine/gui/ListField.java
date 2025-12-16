@@ -156,9 +156,6 @@ public class ListField extends GuiComponent {
   }
 
   public HorizontalSlider getHorizontalSlider() {
-    if (this.horizontalSlider == null) {
-      throw new IllegalStateException("horizontalSlider is not initialized");
-    }
     return this.horizontalSlider;
   }
 
