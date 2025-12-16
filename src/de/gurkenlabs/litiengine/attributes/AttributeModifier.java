@@ -129,6 +129,6 @@ public class AttributeModifier<T extends Number> implements Comparable<Attribute
       return (T) Integer.valueOf(modValue.intValue());
     }
 
-    return null;
+    throw new IllegalArgumentException("Unsupported numeric type: " + originalValue.getClass());
   }
 }
