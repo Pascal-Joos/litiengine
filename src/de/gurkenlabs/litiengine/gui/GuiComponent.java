@@ -224,15 +224,7 @@ public abstract class GuiComponent
    *
    * @return the GuiComponent's font
    */
-  /**
-   * Gets the font of this GuiComponent's text.
-   *
-   * @return the GuiComponent's font
-   */
   public Font getFont() {
-    if (this.font == null) {
-      throw new IllegalStateException("Font has not been initialized");
-    }
     return this.font;
   }
 
