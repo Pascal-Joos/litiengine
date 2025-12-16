@@ -48,6 +48,9 @@ public class EmitterLoader {
   }
 
   public static EmitterData load(@Nullable EmitterData emitterData) {
+    if (emitterData == null) {
+      return null;
+    }
     if (loadedEmitters.containsKey(emitterData.getName())) {
       return loadedEmitters.get(emitterData.getName());
     }
