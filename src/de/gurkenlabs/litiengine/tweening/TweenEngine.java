@@ -150,6 +150,7 @@ public class TweenEngine implements IUpdateable, ILaunchable {
   }
 
   /** Updates all registered Tweens by applying the {@code TweenEquation}. */
+  /** Updates all registered Tweens by applying the {@code TweenEquation}. */
   @Override
   public void update() {
     for (final Tweenable target : this.getTweens().keySet()) {
@@ -163,10 +164,14 @@ public class TweenEngine implements IUpdateable, ILaunchable {
           continue;
         }
         final float[] currentValues = new float[tween.getTargetValues().length];
+        final TweenEquation equation = tween.getEquation();
+        if (equation == null) {
+          continue;
+        }
         for (int i = 0; i < tween.getTargetValues().length; i++) {
           currentValues[i] =
               tween.getStartValues()[i]
-                  + tween.getEquation().compute(elapsed / (float) tween.getDuration())
+                  + equation.compute(elapsed / (float) tween.getDuration())
                       * (tween.getTargetValues()[i] - tween.getStartValues()[i]);
         }
         tween.getTarget().setTweenValues(tween.getType(), currentValues);
