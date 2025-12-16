@@ -103,7 +103,6 @@ public class RenderComponent extends Canvas {
     }
     this.handleFade();
     Graphics2D g = null;
-    Screen currentScreen = null;
     do {
       try {
 
@@ -126,10 +125,7 @@ public class RenderComponent extends Canvas {
                 ? RenderingHints.VALUE_INTERPOLATION_BILINEAR
                 : RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        final Screens screens = Game.screens();
-        if (screens != null) {
-          currentScreen = screens.current();
-        }
+        final Screen currentScreen = Game.screens().current();
         if (currentScreen != null) {
           long renderStart = System.nanoTime();
           currentScreen.render(g);
