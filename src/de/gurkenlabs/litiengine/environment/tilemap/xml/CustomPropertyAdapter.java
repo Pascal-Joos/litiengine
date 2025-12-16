@@ -72,7 +72,7 @@ public class CustomPropertyAdapter
 
     @SuppressWarnings("unused")
     private void beforeMarshal(Marshaller m) throws URISyntaxException {
-      if (this.type != null && this.type.equals(PropertyType.STRING)) {
+      if (this.type.equals(PropertyType.STRING)) {
         this.type = null;
       }
       if (this.location != null) {
