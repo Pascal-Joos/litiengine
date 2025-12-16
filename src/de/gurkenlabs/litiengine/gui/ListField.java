@@ -251,6 +251,7 @@ public class ListField extends GuiComponent {
     return this.verticalLowerBound;
   }
 
+  @Nullable
   public VerticalSlider getVerticalSlider() {
     return this.verticalSlider;
   }
