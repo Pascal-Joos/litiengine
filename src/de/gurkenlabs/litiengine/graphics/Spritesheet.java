@@ -105,6 +105,9 @@ public final class Spritesheet implements Comparable<Spritesheet> {
   }
 
   public BufferedImage getImage() {
+    if (this.image == null) {
+      this.image = Imaging.getCompatibleImage(1, 1);
+    }
     return this.image;
   }
 
