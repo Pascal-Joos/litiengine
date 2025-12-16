@@ -265,11 +265,11 @@ public final class MapUtilities {
   }
 
   public static List<Point2D> getAbsolutePolyshapePoints(final IMapObject mapObject) {
-    if (mapObject.isPolygon() && mapObject.getPolygon() != null) {
+    if (mapObject.isPolygon()) {
       return mapObject.getPolygon().getAbsolutePoints(mapObject.getLocation());
     }
 
-    if (mapObject.isPolyline() && mapObject.getPolyline() != null) {
+    if (mapObject.isPolyline()) {
       return mapObject.getPolyline().getAbsolutePoints(mapObject.getLocation());
     }
 
