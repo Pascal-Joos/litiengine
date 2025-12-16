@@ -238,9 +238,6 @@ public final class GameWorld implements IUpdateable {
    * @see Environment
    */
   public Environment environment() {
-    if (this.environment == null) {
-      throw new IllegalStateException("Environment is not set");
-    }
     return this.environment;
   }
 
