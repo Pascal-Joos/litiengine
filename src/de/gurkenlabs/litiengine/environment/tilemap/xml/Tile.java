@@ -162,9 +162,6 @@ public class Tile extends CustomPropertyProvider implements ITile {
 
   @Override
   public ITilesetEntry getTilesetEntry() {
-    if (this.tilesetEntry == null) {
-      throw new IllegalStateException("tilesetEntry is null");
-    }
     return this.tilesetEntry;
   }
 
