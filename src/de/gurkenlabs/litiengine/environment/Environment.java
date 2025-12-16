@@ -1257,15 +1257,7 @@ public final class Environment implements IRenderable {
    *
    * @return The map of this environment.
    */
-  /**
-   * Gets the map on which this environment is based upon.
-   *
-   * @return The map of this environment.
-   */
   public IMap getMap() {
-    if (this.map == null) {
-      throw new IllegalStateException("map is not initialized");
-    }
     return this.map;
   }
 
