@@ -157,9 +157,6 @@ public class Creature extends CombatEntity implements IMobileEntity {
 
   @Override
   public Attribute<Float> getVelocity() {
-    if (this.velocity == null) {
-      this.velocity = new Attribute<>(0.0F);
-    }
     return this.velocity;
   }
 
