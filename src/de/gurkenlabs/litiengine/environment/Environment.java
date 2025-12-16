@@ -2303,14 +2303,9 @@ public final class Environment implements IRenderable {
     }
 
     // 3. Render entities
-    final Map<RenderType, Map<?, ?>> miscEntitiesLocal = this.miscEntities;
-    final Map<?, ?> entitiesForType =
-        miscEntitiesLocal == null ? null : miscEntitiesLocal.get(renderType);
     Game.graphics()
         .renderEntities(
-            g,
-            entitiesForType == null ? Collections.emptyList() : entitiesForType.values(),
-            renderType == RenderType.NORMAL);
+            g, this.miscEntities.get(renderType).values(), renderType == RenderType.NORMAL);
 
     // 4. fire event
     this.fireRenderEvent(g, renderType);
@@ -2327,8 +2322,7 @@ public final class Environment implements IRenderable {
                       .filter(m -> m.getRenderType() == renderType)
                       .count()),
               new GameMetrics.RenderInfo("renderables", this.getRenderables(renderType).size()),
-              new GameMetrics.RenderInfo(
-                  "entities", entitiesForType == null ? 0 : entitiesForType.size()));
+              new GameMetrics.RenderInfo("entities", this.miscEntities.get(renderType).size()));
     }
   }
 
