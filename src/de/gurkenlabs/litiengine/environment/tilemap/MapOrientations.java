@@ -101,7 +101,10 @@ public class MapOrientations {
     @Nullable
     @Override
     public Rectangle2D getBounds(Point tile, IMap map) {
-      return tile == null ? null : this.getBounds(tile.x, tile.y, map);
+      if (tile == null) {
+        return new Rectangle2D.Double();
+      }
+      return this.getBounds(tile.x, tile.y, map);
     }
 
     @Override
