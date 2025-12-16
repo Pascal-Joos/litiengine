@@ -47,18 +47,10 @@ public class IntroTrack implements Track {
    * @param intro The sound to be played as intro.
    * @param loop The sound to be looped.
    */
-  /**
-   * Initializes a new {@code IntroTrack} for the specified sound.
-   *
-   * @param intro The sound to be played as intro.
-   * @param loop The sound to be looped.
-   */
   public IntroTrack(Sound intro, Sound loop) {
     Objects.requireNonNull(intro);
     Objects.requireNonNull(loop);
-    if (intro.getFormat() == null
-        || loop.getFormat() == null
-        || !intro.getFormat().matches(loop.getFormat())) {
+    if (!intro.getFormat().matches(loop.getFormat())) {
       throw new IllegalArgumentException(intro.getFormat() + " does not match " + loop.getFormat());
     }
     this.intro = intro;
