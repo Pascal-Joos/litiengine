@@ -365,12 +365,6 @@ public final class Imaging {
    * @param img The image to be flipped.
    * @return The flipped image.
    */
-  /**
-   * Flips the specified image horizontally.
-   *
-   * @param img The image to be flipped.
-   * @return The flipped image.
-   */
   public static BufferedImage horizontalFlip(final BufferedImage img) {
     final int w = img.getWidth();
     final int h = img.getHeight();
@@ -379,9 +373,6 @@ public final class Imaging {
     }
 
     final BufferedImage dimg = getCompatibleImage(w, h);
-    if (dimg == null) {
-      return img;
-    }
     final Graphics2D g = dimg.createGraphics();
     g.drawImage(img, 0, 0, w, h, w, 0, 0, h, null);
     g.dispose();
