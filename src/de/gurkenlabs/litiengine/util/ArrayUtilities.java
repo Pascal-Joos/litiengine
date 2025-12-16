@@ -333,6 +333,9 @@ public final class ArrayUtilities {
    */
   @Nullable
   public static String join(@Nullable Collection<?> collection) {
+    if (collection == null) {
+      return "";
+    }
     return joinArray(collection.toArray(), DEFAULT_STRING_DELIMITER);
   }
 
