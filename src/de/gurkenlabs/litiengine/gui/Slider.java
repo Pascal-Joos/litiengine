@@ -70,9 +70,6 @@ public abstract class Slider extends GuiComponent {
   public abstract Point2D getRelativeSliderPosition();
 
   public ImageComponent getSliderComponent() {
-    if (this.sliderComponent == null) {
-      throw new IllegalStateException("sliderComponent is not initialized");
-    }
     return this.sliderComponent;
   }
 
