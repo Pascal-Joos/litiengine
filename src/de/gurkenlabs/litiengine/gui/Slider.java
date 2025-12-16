@@ -31,6 +31,9 @@ public abstract class Slider extends GuiComponent {
       final float maxValue,
       final float stepSize) {
     super(x, y, width, height);
+    this.button1 = new ImageComponent(0, 0, 0, 0);
+    this.button2 = new ImageComponent(0, 0, 0, 0);
+    this.sliderComponent = new ImageComponent(0, 0, 0, 0);
     this.changeConsumer = new CopyOnWriteArrayList<>();
     this.minValue = minValue;
     this.maxValue = maxValue;
