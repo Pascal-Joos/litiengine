@@ -410,6 +410,14 @@ public final class Environment implements IRenderable {
    * @see RenderEngine#renderEntity(Graphics2D, IEntity)
    */
   public void add(IRenderable renderable, RenderType renderType) {
+    if (renderType == null) {
+      return;
+    }
+
+    if (!this.renderables.containsKey(renderType)) {
+      this.renderables.put(renderType, new CopyOnWriteArrayList<>());
+    }
+
     this.renderables.get(renderType).add(renderable);
   }
 
