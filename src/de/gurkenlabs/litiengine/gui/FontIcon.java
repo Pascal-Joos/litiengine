@@ -36,6 +36,9 @@ public class FontIcon {
    * @return the font
    */
   public Font getFont() {
+    if (this.font == null) {
+      throw new IllegalStateException("Font has not been initialized");
+    }
     return this.font;
   }
 
