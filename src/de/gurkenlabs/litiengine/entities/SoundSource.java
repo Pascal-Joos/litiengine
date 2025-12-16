@@ -40,8 +40,6 @@ public class SoundSource extends Entity {
    * @param sound The sound used for playback
    */
   public SoundSource(Sound sound) {
-    this.sound = sound;
-    this.playback = null;
     this.setSound(sound);
   }
 
