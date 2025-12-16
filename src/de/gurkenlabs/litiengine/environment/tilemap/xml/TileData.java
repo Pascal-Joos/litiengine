@@ -147,11 +147,10 @@ public class TileData {
   @Initializer
   public void setValue(@Nullable String value) {
     this.value = value;
-    this.encoding = (this.encoding == null) ? "" : this.encoding;
-    this.chunks = (this.chunks == null) ? new ArrayList<>() : this.chunks;
     if (this.rawValue == null) {
       this.rawValue = new CopyOnWriteArrayList<>();
     }
+
     this.rawValue.add(0, value);
   }
 
