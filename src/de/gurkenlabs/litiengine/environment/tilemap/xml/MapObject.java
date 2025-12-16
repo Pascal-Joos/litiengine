@@ -210,9 +210,6 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   @Nullable
   @Override
   public IPolyShape getPolygon() {
-    if (this.polygon == null) {
-      return new PolyShape(new Point2D.Double[0]);
-    }
     return this.polygon;
   }
 
