@@ -37,17 +37,10 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
    *
    * @param original the original we want to copy
    */
-  /**
-   * Instantiates a new {@code MapImage} instance by copying the specified original.
-   *
-   * @param original the original we want to copy
-   */
   public MapImage(MapImage original) {
     super(original);
 
     if (original == null) {
-      this.transparentcolor = null;
-      this.absolutePath = null;
       return;
     }
 
@@ -59,8 +52,6 @@ public class MapImage extends CustomPropertyProvider implements IMapImage {
               original.getTransparentColor().getGreen(),
               original.getTransparentColor().getBlue(),
               original.getTransparentColor().getAlpha());
-    } else {
-      this.transparentcolor = null;
     }
     this.width = original.getWidth();
     this.height = original.getHeight();
