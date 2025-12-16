@@ -266,9 +266,6 @@ public final class Game {
    * @see GameWindow#cursor()
    */
   public static GameWindow window() {
-    if (gameWindow == null) {
-      throw new IllegalStateException("Game window has not been initialized");
-    }
     return gameWindow;
   }
 
