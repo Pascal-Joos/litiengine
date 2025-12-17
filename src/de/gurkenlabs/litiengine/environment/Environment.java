@@ -258,7 +258,10 @@ public final class Environment implements IRenderable {
    * @param listener The listener to add.
    */
   public void onRendered(RenderType renderType, EnvironmentRenderedListener listener) {
-    this.renderListeners.get(renderType).add(listener);
+    Collection<EnvironmentRenderedListener> listeners = this.renderListeners.get(renderType);
+    if (listeners != null) {
+      listeners.add(listener);
+    }
   }
 
   /**
