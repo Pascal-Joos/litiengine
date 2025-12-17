@@ -113,6 +113,9 @@ public abstract class ResourcesContainer<T> {
   }
 
   public void add(@Nullable URL resourceName, T resource) {
+    if (resourceName == null) {
+      return;
+    }
     this.add(resourceName.toString(), resource);
   }
 
