@@ -81,12 +81,14 @@ public class CreatureMapObjectLoader extends MapObjectLoader {
     // for each known custom creature type, check if it was registered for the specified
     // spriteSheetName
     // if so: create an instance of the custom class instead of the default Creature class
-    for (Class<? extends Creature> customCreature : customCreatureType) {
-      for (String prefix : EntityAnimationController.getDefaultSpritePrefixes(customCreature)) {
-        if (prefix != null && spriteSheet.equalsIgnoreCase(prefix)) {
-          Creature created = createCustomCreature(customCreature, spriteSheet);
-          if (created != null) {
-            return created;
+    if (spriteSheet != null) {
+      for (Class<? extends Creature> customCreature : customCreatureType) {
+        for (String prefix : EntityAnimationController.getDefaultSpritePrefixes(customCreature)) {
+          if (prefix != null && spriteSheet.equalsIgnoreCase(prefix)) {
+            Creature created = createCustomCreature(customCreature, spriteSheet);
+            if (created != null) {
+              return created;
+            }
           }
         }
       }
