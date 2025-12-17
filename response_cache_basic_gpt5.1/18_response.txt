@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public AStarNode getNode(final Point2D point) {
+    final AStarNode node = this.getNode(point.getX(), point.getY());
+    if (node == null) {
+      throw new IllegalStateException("No node found for point: " + point);
+    }
+    return node;
+  }
+  ```
+    ]]>
+  </code>
+</response>

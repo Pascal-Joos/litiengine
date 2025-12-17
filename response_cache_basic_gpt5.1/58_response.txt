@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public List<ITileAnimationFrame> getFrames() {
+    if (this.frames == null) {
+      this.frames = java.util.Collections.emptyList();
+    }
+    return this.frames;
+  }
+  ```
+    ]]>
+  </code>
+</response>

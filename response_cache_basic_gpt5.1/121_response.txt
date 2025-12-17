@@ -1,0 +1,39 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void fireCollisionEvents(
+      ICollisionEntity collider,  Intersection... intersections) {
+    // aggregate the involved entities of all intersections
+    ICollisionEntity[] involvedEntities = null;
+    for (Intersection inter : intersections) {
+      if (inter == null) {
+        continue;
+      }
+
+      if (involvedEntities == null) {
+        involvedEntities = inter.involvedEntities;
+        continue;
+      }
+
+      involvedEntities = ArrayUtilities.distinct(involvedEntities, inter.involvedEntities);
+    }
+
+    if (involvedEntities == null) {
+      return;
+    }
+
+    // 1. fire collision event on the collider with all the involved entities
+    CollisionEvent event = new CollisionEvent(collider, involvedEntities);
+    collider.fireCollisionEvent(event);
+
+    // 2. fire collision event on the involved entities with the collider entity
+    CollisionEvent colliderEvent = new CollisionEvent(collider);
+    for (ICollisionEntity involved : involvedEntities) {
+      involved.fireCollisionEvent(colliderEvent);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

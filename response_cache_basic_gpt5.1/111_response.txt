@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String getText() {
+    return this.fullText == null ? "" : this.fullText;
+  }
+  ```
+    ]]>
+  </code>
+</response>

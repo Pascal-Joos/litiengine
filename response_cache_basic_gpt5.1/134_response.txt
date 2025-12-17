@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public @Nullable T get(String resourceName) {
+    return this.get(this.getIdentifier(resourceName), false);
+  }
+  ```
+    ]]>
+  </code>
+</response>

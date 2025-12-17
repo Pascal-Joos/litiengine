@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    Sound localSound = this.sound;
+    return super.toString() + "[sound=" + (localSound != null ? localSound.getName() : "null") + "]";
+  }
+  ```
+    ]]>
+  </code>
+</response>

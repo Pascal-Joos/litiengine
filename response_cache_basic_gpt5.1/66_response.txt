@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** Instantiates a new {@code TilesetEntry}. */
+  public TilesetEntry() {
+    this.tileset = new Tileset();
+  }
+  ```
+    ]]>
+  </code>
+</response>

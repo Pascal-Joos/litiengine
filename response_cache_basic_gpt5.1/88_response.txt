@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Point2D getLocation() {
+    return this.hasDynamicLocation() && this.getEntity() != null ? this.getEntity().getLocation() : super.getLocation();
+  }
+  ```
+    ]]>
+  </code>
+</response>

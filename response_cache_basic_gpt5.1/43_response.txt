@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void setValue(Color value) {
+    Objects.requireNonNull(value);
+    this.value = ColorHelper.encode(value);
+    this.location = null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

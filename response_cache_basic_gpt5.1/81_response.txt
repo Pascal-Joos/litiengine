@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public BufferedImage getImage() {
+    if (this.image == null) {
+      this.image = Imaging.getCompatibleImage(1, 1);
+    }
+    return this.image;
+  }
+  ```
+    ]]>
+  </code>
+</response>

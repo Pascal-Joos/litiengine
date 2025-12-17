@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void update() {
+    if (this.currentState == null) {
+      return;
+    }
+
+    this.currentState.perform();
+    final List<Transition> transitions = this.currentState.getTransitions();
+    Collections.sort(transitions);
+
+    for (final Transition transition : transitions) {
+      if (transition.conditionsFullfilled()) {
+        this.currentState.exit();
+        final State nextState = transition.getNextState();
+        if (nextState == null) {
+          return;
+        }
+        this.currentState = nextState;
+        this.currentState.enter();
+        return;
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

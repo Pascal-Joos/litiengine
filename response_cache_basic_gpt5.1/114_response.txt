@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * Gets the keyboard input device.
+   *
+   * @return The keyboard input device.
+   */
+  public static IKeyboard keyboard() {
+    if (keyboard == null) {
+      throw new IllegalStateException("Keyboard input device is not initialized.");
+    }
+    return keyboard;
+  }
+  ```
+    ]]>
+  </code>
+</response>

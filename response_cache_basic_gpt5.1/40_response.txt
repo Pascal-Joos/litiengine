@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static IMapOrientation forName(String name) {
+    if ("orthogonal".equals(name)) {
+      return ORTHOGONAL;
+    } else if ("isometric".equals(name)) {
+      return ISOMETRIC;
+    } else if ("staggered".equals(name)) {
+      return ISOMETRIC_STAGGERED;
+    } else if ("hexagonal".equals(name)) {
+      return HEXAGONAL;
+    } else {
+      throw new IllegalArgumentException("Unknown map orientation: " + name);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

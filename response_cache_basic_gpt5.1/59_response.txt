@@ -1,0 +1,66 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected static List<Tile> parseBase64Data(String value, String compression)
+      throws InvalidTileLayerException {
+    if (value == null) {
+      throw new InvalidTileLayerException("value must not be null");
+    }
+
+    List<Tile> parsed = new ArrayList<>();
+
+    String enc = value.trim();
+    byte[] dec;
+    try {
+      dec = DatatypeConverter.parseBase64Binary(enc);
+    } catch (IllegalArgumentException e) {
+      throw new InvalidTileLayerException("invalid base64 string", e);
+    }
+    try (ByteArrayInputStream bais = new ByteArrayInputStream(dec)) {
+      InputStream is;
+
+      if (compression == null || compression.isEmpty()) {
+        is = bais;
+      } else if (compression.equals(Compression.GZIP)) {
+        is = new GZIPInputStream(bais, dec.length);
+      } else if (compression.equals(Compression.ZLIB)) {
+        is = new InflaterInputStream(bais);
+      } else {
+        throw new IllegalArgumentException(
+            "Unsupported tile layer compression method " + compression);
+      }
+
+      int read;
+
+      while ((read = is.read()) != -1) {
+        int tileId = 0;
+        tileId |= read;
+
+        read = is.read();
+        int flags = read << Byte.SIZE;
+
+        read = is.read();
+        flags |= read << Byte.SIZE * 2;
+
+        read = is.read();
+        flags |= read << Byte.SIZE * 3;
+        tileId |= flags;
+
+        if (tileId == Tile.NONE) {
+          parsed.add(Tile.EMPTY);
+        } else {
+          parsed.add(new Tile(tileId));
+        }
+      }
+
+    } catch (IOException e) {
+      throw new InvalidTileLayerException(e);
+    }
+
+    return parsed;
+  }
+  ```
+    ]]>
+  </code>
+</response>

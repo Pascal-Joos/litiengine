@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+    @SuppressWarnings("unused")
+    private void beforeMarshal(Marshaller m) throws URISyntaxException {
+      if (this.type != null && this.type.equals(PropertyType.STRING)) {
+        this.type = null;
+      }
+      if (this.location != null) {
+        this.value = m.getAdapter(URLAdapter.class).marshal(this.location);
+      }
+    }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Initializer
+  public void setValue(String value) {
+    this.value = value;
+    this.encoding = (this.encoding == null) ? "" : this.encoding;
+    this.chunks = (this.chunks == null) ? new ArrayList<>() : this.chunks;
+    if (this.rawValue == null) {
+      this.rawValue = new CopyOnWriteArrayList<>();
+    }
+    this.rawValue.add(0, value);
+  }
+  ```
+    ]]>
+  </code>
+</response>

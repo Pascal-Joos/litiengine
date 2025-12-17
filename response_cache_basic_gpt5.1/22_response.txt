@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public List<Spawnpoint> getSpawnPoints() {
+    if (this.spawnpoints == null) {
+      return java.util.Collections.emptyList();
+    }
+    return this.spawnpoints;
+  }
+  ```
+    ]]>
+  </code>
+</response>

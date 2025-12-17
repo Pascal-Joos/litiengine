@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Environment getEnvironment() {
+    if (this.environment == null) {
+      throw new IllegalStateException("Environment has not been initialized");
+    }
+    return this.environment;
+  }
+  ```
+    ]]>
+  </code>
+</response>

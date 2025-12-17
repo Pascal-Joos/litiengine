@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void fireRenderEvent(Graphics2D g, RenderType type) {
+    Collection<EnvironmentRenderedListener> listenersForType = this.renderListeners.get(type);
+    if (listenersForType == null) {
+      return;
+    }
+    for (EnvironmentRenderedListener listener : listenersForType) {
+      listener.rendered(g, type);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

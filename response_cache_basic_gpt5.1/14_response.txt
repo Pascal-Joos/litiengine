@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public SoundSource(Sound sound) {
+    this.sound = sound;
+    this.playback = null;
+    this.setSound(sound);
+  }
+  ```
+    ]]>
+  </code>
+</response>

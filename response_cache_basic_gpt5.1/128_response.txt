@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+    public IMapObject add(IMapObjectLayer layer, IMapObject mapObject) {
+      if (layer == null) {
+        return mapObject;
+      }
+      layer.addMapObject(mapObject);
+      return mapObject;
+    }
+  ```
+    ]]>
+  </code>
+</response>

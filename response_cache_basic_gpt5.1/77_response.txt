@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public BufferedImage apply(final BufferedImage image) {
+    final BufferedImage bimage =
+        Imaging.getCompatibleImage(image.getWidth(null), image.getHeight(null));
+
+    if (bimage == null) {
+      return image;
+    }
+
+    // Draw the image on to the buffered image
+    final Graphics2D bGr = bimage.createGraphics();
+    bGr.drawImage(image, 0, 0, null);
+    bGr.drawImage(Imaging.flashVisiblePixels(image, this.color), 0, 0, null);
+    bGr.dispose();
+
+    return bimage;
+  }
+  ```
+    ]]>
+  </code>
+</response>

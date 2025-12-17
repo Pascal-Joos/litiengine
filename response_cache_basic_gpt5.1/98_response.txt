@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public VerticalSlider getVerticalSlider() {
+    return this.verticalSlider;
+  }
+  ```
+    ]]>
+  </code>
+</response>

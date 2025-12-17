@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  static synchronized void terminate() {
+    if (!initialized) {
+      return;
+    }
+
+    hasStarted = false;
+    initialized = false;
+
+    config().save();
+    gameLoop.terminate();
+    tweenEngine.terminate();
+    soundEngine.terminate();
+
+    world().clear();
+
+    for (final GameListener listener : gameListeners) {
+      try {
+        listener.terminated();
+      } catch (Exception e) {
+        log().log(Level.WARNING, "game listener threw an exception during shutdown", e);
+      }
+    }
+
+    gameLoop = new GameLoop();
+    screenManager = null;
+    gameWindow = null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

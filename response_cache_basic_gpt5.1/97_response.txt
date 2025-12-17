@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public HorizontalSlider getHorizontalSlider() {
+    if (this.horizontalSlider == null) {
+      throw new IllegalStateException("horizontalSlider is not initialized");
+    }
+    return this.horizontalSlider;
+  }
+  ```
+    ]]>
+  </code>
+</response>

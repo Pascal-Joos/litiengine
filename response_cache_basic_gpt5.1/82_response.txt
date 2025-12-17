@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean isLoaded() {
+    if (!Resources.spritesheets().contains(this.getName())) {
+      return false;
+    }
+    SpriteSheet sheet = Resources.spritesheets().get(this.getName());
+    return sheet != null && sheet.equals(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

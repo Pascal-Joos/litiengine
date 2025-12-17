@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** An empty constructor that just calls the super constructor of {@link Entity}. */
+  public SoundSource() {
+    super();
+    this.sound = Sounds.get("");
+    this.playback = SoundEngine.play(this.sound, false);
+  }
+  ```
+    ]]>
+  </code>
+</response>

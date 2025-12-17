@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static GamepadManager gamepads() {
+    if (!Game.config().input().isGamepadSupport()) {
+      log.log(
+          Level.SEVERE,
+          "Cannot access gamepads because gamepad support is disabled in the configuration.");
+      return null;
+    }
+
+    return gamePadManager;
+  }
+  ```
+    ]]>
+  </code>
+</response>

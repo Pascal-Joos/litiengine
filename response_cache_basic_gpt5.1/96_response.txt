@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * Gets the name of this GuiComponent.
+   *
+   * @return the name
+   */
+  public String getName() {
+    if (this.name == null) {
+      return "";
+    }
+    return this.name;
+  }
+  ```
+    ]]>
+  </code>
+</response>

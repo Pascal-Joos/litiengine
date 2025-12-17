@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * Removes the specified entity from any collision processing. Typically this method is implicitly
+   * called when an entity is removed from the current environment.
+   *
+   * @param entity The entity that is about to be removed.
+   */
+  public void remove(final ICollisionEntity entity) {
+    if (entity.getCollisionType() == null) {
+      return;
+    }
+
+    switch (entity.getCollisionType()) {
+      case DYNAMIC:
+      case STATIC:
+        final Collection<ICollisionEntity> entitiesByType = this.collisionEntities.get(entity.getCollisionType());
+        if (entitiesByType != null) {
+          entitiesByType.remove(entity);
+        }
+        break;
+      default:
+        return;
+    }
+
+    final Collection<ICollisionEntity> anyEntities = this.collisionEntities.get(Collision.ANY);
+    if (anyEntities != null) {
+      anyEntities.remove(entity);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

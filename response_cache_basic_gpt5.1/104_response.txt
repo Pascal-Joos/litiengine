@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public BigDecimal getCurrentValue() {
+    if (this.currentValue == null) {
+      throw new IllegalStateException("currentValue is not initialized");
+    }
+    return this.currentValue;
+  }
+  ```
+    ]]>
+  </code>
+</response>

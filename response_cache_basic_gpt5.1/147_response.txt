@@ -1,0 +1,63 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static BufferedImage scale(
+       final BufferedImage image,
+      final int width,
+      final int height,
+      final boolean keepRatio,
+      final boolean fill) {
+    if (width == 0 || height == 0 || image == null) {
+      return null;
+    }
+
+    final int imageWidth = image.getWidth();
+    final int imageHeight = image.getHeight();
+    double newWidth = width;
+    double newHeight = height;
+    if (keepRatio) {
+      final double ratioWidth = image.getWidth() / (double) image.getHeight();
+      final double ratioHeight = image.getHeight() / (double) image.getWidth();
+
+      newHeight = newWidth * ratioHeight;
+      if (newHeight > height) {
+        newHeight = height;
+        newWidth = newHeight * ratioWidth;
+      }
+    }
+
+    final double scaleX = newWidth / imageWidth;
+    final double scaleY = newHeight / imageHeight;
+    final AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+    final AffineTransformOp bilinearScaleOp =
+        new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+    final BufferedImage scaled =
+        bilinearScaleOp.filter(image, getCompatibleImage((int) newWidth, (int) newHeight));
+    final BufferedImage newImg = getCompatibleImage((int) newWidth, (int) newHeight);
+    if (newImg == null) {
+      return image;
+    }
+
+    final Graphics2D g = (Graphics2D) newImg.getGraphics();
+    g.drawImage(scaled, 0, 0, null);
+    g.dispose();
+
+    if (fill && (newWidth != width || newHeight != height)) {
+      final BufferedImage wrapperImage = getCompatibleImage(width, height);
+      if (wrapperImage == null) {
+        return newImg;
+      }
+      final Graphics2D g2 = (Graphics2D) wrapperImage.getGraphics();
+      g2.drawImage(
+          newImg, (int) ((width - newWidth) / 2.0), (int) ((height - newHeight) / 2.0), null);
+      g2.dispose();
+      return wrapperImage;
+    }
+
+    return newImg;
+  }
+  ```
+    ]]>
+  </code>
+</response>

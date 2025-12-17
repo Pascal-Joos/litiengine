@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void clear() {
+    for (Collision type : Collision.values()) {
+      if (type == Collision.NONE) {
+        continue;
+      }
+
+      Collection<?> entities = this.collisionEntities.get(type);
+      if (entities != null) {
+        entities.clear();
+      }
+
+      Collection<Rectangle2D> boxes = this.collisionBoxes.get(type);
+      if (boxes != null) {
+        boxes.clear();
+      }
+    }
+
+    this.setBounds(null);
+  }
+  ```
+    ]]>
+  </code>
+</response>

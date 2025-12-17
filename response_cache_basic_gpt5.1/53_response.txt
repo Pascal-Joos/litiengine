@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IMapObjectLayer getLayer() {
+    if (this.layer == null) {
+      throw new IllegalStateException("Layer is not initialized");
+    }
+    return this.layer;
+  }
+  ```
+    ]]>
+  </code>
+</response>

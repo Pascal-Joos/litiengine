@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Gamepad get(final int index) {
+    if (this.gamePads.isEmpty()) {
+      throw new IllegalStateException("No gamepads are currently available");
+    }
+
+    return this.gamePads.get(index);
+  }
+  ```
+    ]]>
+  </code>
+</response>

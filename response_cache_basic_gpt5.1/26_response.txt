@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void addGravityForce(IMobileEntity entity) {
+    IMovementController mvmtControl = entity.movement();
+    if (mvmtControl != null) {
+      GravityForce force = new GravityForce(entity, this.getGravity(), Direction.DOWN);
+      force.setIdentifier(GRAVITY_IDENTIFIER);
+      mvmtControl.apply(force);
+      this.gravityForces.put(entity.getMapId(), force);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

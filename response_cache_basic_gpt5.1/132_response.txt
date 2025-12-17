@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static InputStream getResource(final URL file) {
+    if (file == null) {
+      return null;
+    }
+    try {
+      return file.openStream();
+    } catch (IOException e) {
+      return null;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

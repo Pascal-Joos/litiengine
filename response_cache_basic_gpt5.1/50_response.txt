@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public IMap getMap() {
+    if (this.parentMap == null) {
+      throw new IllegalStateException("parentMap is not initialized");
+    }
+    return this.parentMap;
+  }
+  ```
+    ]]>
+  </code>
+</response>

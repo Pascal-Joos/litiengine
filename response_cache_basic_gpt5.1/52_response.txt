@@ -1,0 +1,37 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /**
+   * Instantiates a new {@code MapImage} instance by copying the specified original.
+   *
+   * @param original the original we want to copy
+   */
+  public MapImage(MapImage original) {
+    super(original);
+
+    if (original == null) {
+      this.transparentcolor = null;
+      this.absolutePath = null;
+      return;
+    }
+
+    this.source = original.getSource();
+    if (original.getTransparentColor() != null) {
+      this.transparentcolor =
+          new Color(
+              original.getTransparentColor().getRed(),
+              original.getTransparentColor().getGreen(),
+              original.getTransparentColor().getBlue(),
+              original.getTransparentColor().getAlpha());
+    } else {
+      this.transparentcolor = null;
+    }
+    this.width = original.getWidth();
+    this.height = original.getHeight();
+    this.absolutePath = original.getAbsoluteSourcePath();
+  }
+  ```
+    ]]>
+  </code>
+</response>

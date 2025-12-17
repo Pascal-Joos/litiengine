@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void add(final ICollisionEntity entity) {
+    if (entity.getCollisionType() == null) {
+      return;
+    }
+
+    switch (entity.getCollisionType()) {
+      case DYNAMIC:
+      case STATIC:
+        this.collisionEntities.get(entity.getCollisionType()).add(entity);
+        break;
+      default:
+        return;
+    }
+
+    final Collection<ICollisionEntity> anyCollisionEntities = this.collisionEntities.get(Collision.ANY);
+    if (anyCollisionEntities == null) {
+      return;
+    }
+
+    anyCollisionEntities.add(entity);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public ImageComponent getSliderComponent() {
+    if (this.sliderComponent == null) {
+      throw new IllegalStateException("sliderComponent is not initialized");
+    }
+    return this.sliderComponent;
+  }
+  ```
+    ]]>
+  </code>
+</response>

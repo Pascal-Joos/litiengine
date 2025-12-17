@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Color getColor() {
+    if (this.color == null) {
+      return Color.BLACK;
+    }
+    return this.color;
+  }
+  ```
+    ]]>
+  </code>
+</response>

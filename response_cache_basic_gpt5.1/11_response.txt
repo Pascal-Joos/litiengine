@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void removeTag(String tag) {
+    this.getTags().remove(tag);
+    if (Game.world().environment() == null || this.getEnvironment() == null) {
+      return;
+    }
+    List<Entity> taggedEntities = this.getEnvironment().getEntitiesByTag().get(tag);
+    if (taggedEntities == null) {
+      return;
+    }
+    taggedEntities.remove(this);
+    if (taggedEntities.isEmpty()) {
+      this.getEnvironment().getEntitiesByTag().remove(tag);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

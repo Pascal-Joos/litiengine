@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public ITile getTileByLocation(final Point2D location) {
+    final Optional<ITile> tile =
+        this.getTiles().stream()
+            .filter(x -> x != null && x.getTileCoordinate() != null && x.getTileCoordinate().equals(location))
+            .findFirst();
+    return tile.isPresent() ? tile.get() : null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

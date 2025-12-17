@@ -1,0 +1,60 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  /** Clears all loaded entities and renderable instances from this environment. */
+  public void clear() {
+    Game.physics().clear();
+
+    this.combatEntities.clear();
+    this.mobileEntities.clear();
+    this.gravityForces.clear();
+    this.layerEntities.clear();
+    this.entitiesByTag.clear();
+    this.allEntities.clear();
+
+    for (RenderType renderType : RenderType.values()) {
+      Map<Integer, IEntity> miscMap = this.miscEntities.get(renderType);
+      if (miscMap != null) {
+        miscMap.clear();
+      }
+      Collection<IRenderListener> listeners = this.renderListeners.get(renderType);
+      if (listeners != null) {
+        listeners.clear();
+      }
+      Collection<IRenderable> renderableCollection = this.renderables.get(renderType);
+      if (renderableCollection != null) {
+        renderableCollection.clear();
+      }
+    }
+
+    dispose(this.allEntities.values());
+    dispose(this.triggers);
+    this.emitters.clear();
+    this.colliders.clear();
+    this.props.clear();
+    this.creatures.clear();
+    this.staticShadows.clear();
+    this.combatEntities.clear();
+    this.mobileEntities.clear();
+    this.lightSources.clear();
+    this.spawnPoints.clear();
+    this.soundSources.clear();
+    this.mapAreas.clear();
+    this.triggers.clear();
+
+    this.ambientLight = null;
+    this.staticShadowLayer = null;
+
+    for (Map<Integer, IEntity> type : this.miscEntities.values()) {
+      type.clear();
+    }
+
+    this.initialized = false;
+
+    this.fireEvent(l -> l.cleared(this));
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public SpriteParticle(final Spritesheet spritesheet) {
+    super(0, 0);
+    this.spritesheet = spritesheet;
+    if (spritesheet == null) {
+      this.animation = new AnimationController(null);
+      return;
+    }
+    this.setWidth(spritesheet.getSpriteWidth());
+    this.setHeight(spritesheet.getSpriteHeight());
+    this.animation = new AnimationController(this.spritesheet);
+  }
+  ```
+    ]]>
+  </code>
+</response>

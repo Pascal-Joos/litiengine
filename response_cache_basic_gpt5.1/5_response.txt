@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Dimension getResolution() {
+    if (this.resolution == null) {
+      return new Dimension();
+    }
+    return this.resolution;
+  }
+  ```
+    ]]>
+  </code>
+</response>

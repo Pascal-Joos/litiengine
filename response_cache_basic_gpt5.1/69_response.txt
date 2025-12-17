@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public BufferedImage getImage() {
+    BufferedImage image = null;
+    if (this.animation == null) {
+      image = this.getBasicImage();
+    } else {
+      image = this.tileset.getTile(this.animation.getCurrentFrame().getTileId()).getBasicImage();
+    }
+    if (image == null) {
+      image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    }
+    return image;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void onRendered(RenderType renderType, EnvironmentRenderedListener listener) {
+    Collection<EnvironmentRenderedListener> listeners = this.renderListeners.get(renderType);
+    if (listeners != null) {
+      listeners.add(listener);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public <T extends Enum<T>> T getEnumValue(String propertyName, Class<T> enumType) {
+    return this.getEnumValue(propertyName, enumType, enumType.getEnumConstants()[0]);
+  }
+  ```
+    ]]>
+  </code>
+</response>
