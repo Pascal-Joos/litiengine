@@ -454,6 +454,7 @@ public final class Environment implements IRenderable {
   }
 
   /** Clears all loaded entities and renderable instances from this environment. */
+  /** Clears all loaded entities and renderable instances from this environment. */
   public void clear() {
     Game.physics().clear();
 
@@ -465,9 +466,18 @@ public final class Environment implements IRenderable {
     this.allEntities.clear();
 
     for (RenderType renderType : RenderType.values()) {
-      this.miscEntities.get(renderType).clear();
-      this.renderListeners.get(renderType).clear();
-      this.renderables.get(renderType).clear();
+      Map<Integer, IEntity> misc = this.miscEntities.get(renderType);
+      if (misc != null) {
+        misc.clear();
+      }
+      Collection<?> listeners = this.renderListeners.get(renderType);
+      if (listeners != null) {
+        listeners.clear();
+      }
+      Collection<?> renderableCollection = this.renderables.get(renderType);
+      if (renderableCollection != null) {
+        renderableCollection.clear();
+      }
     }
 
     dispose(this.allEntities.values());
