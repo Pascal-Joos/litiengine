@@ -337,7 +337,8 @@ public class MapObject extends CustomPropertyProvider implements IMapObject {
   public float getY() {
     if (this.isInfiniteMap()) {
       TmxMap map = (TmxMap) this.getLayer().getMap();
-      return this.y - map.getChunkOffsetY() * map.getTileHeight();
+      float localY = this.y == null ? 0 : this.y;
+      return localY - map.getChunkOffsetY() * map.getTileHeight();
     }
 
     return this.y == null ? 0 : this.y;
