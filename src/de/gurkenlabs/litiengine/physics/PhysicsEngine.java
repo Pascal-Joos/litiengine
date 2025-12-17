@@ -726,6 +726,10 @@ public final class PhysicsEngine implements IUpdateable {
    * Clears all collision boxes registered on the {@code PhysicsEngine} once per tick and re-adds
    * them with their updated positions.
    */
+  /**
+   * Clears all collision boxes registered on the {@code PhysicsEngine} once per tick and re-adds
+   * them with their updated positions.
+   */
   @Override
   public void update() {
     // retrieve all collision box rectangles once per update
@@ -734,13 +738,16 @@ public final class PhysicsEngine implements IUpdateable {
         continue;
       }
 
-      this.collisionBoxes.get(type).clear();
-      this.collisionBoxes
-          .get(type)
-          .addAll(
-              this.collisionEntities.get(type).stream()
-                  .map(ICollisionEntity::getCollisionBox)
-                  .collect(Collectors.toList()));
+      final List<Rectangle2D> boxes = this.collisionBoxes.get(type);
+      if (boxes == null) {
+        continue;
+      }
+
+      boxes.clear();
+      boxes.addAll(
+          this.collisionEntities.get(type).stream()
+              .map(ICollisionEntity::getCollisionBox)
+              .collect(Collectors.toList()));
     }
   }
 
