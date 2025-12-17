@@ -190,7 +190,11 @@ public abstract class ResourcesContainer<T> {
    * @return The resource with the specified name or null if not found.
    */
   public T get(@Nullable String resourceName) {
-    return this.get(this.getIdentifier(resourceName), false);
+    T resource = this.get(this.getIdentifier(resourceName), false);
+    if (resource == null) {
+      throw new IllegalStateException("Resource not found: " + resourceName);
+    }
+    return resource;
   }
 
   @Nullable
