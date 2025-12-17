@@ -205,7 +205,15 @@ public final class GameWindow {
    *
    * @return The {@code GameWindow}'s internal resolution as a {@link Dimension}.
    */
+  /**
+   * Gets the window resolution wrapped in a {@code Dimension} object.
+   *
+   * @return The {@code GameWindow}'s internal resolution as a {@link Dimension}.
+   */
   public Dimension getResolution() {
+    if (this.resolution == null) {
+      this.resolution = new Dimension();
+    }
     return this.resolution;
   }
 
