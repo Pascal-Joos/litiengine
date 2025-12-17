@@ -246,7 +246,16 @@ public final class GameWorld implements IUpdateable {
    * @return The currently active environment.
    * @see Environment
    */
+  /**
+   * Gets the game's current {@code Environment}.
+   *
+   * @return The currently active environment.
+   * @see Environment
+   */
   public Environment environment() {
+    if (this.environment == null) {
+      throw new IllegalStateException("Environment has not been initialized");
+    }
     return this.environment;
   }
 
