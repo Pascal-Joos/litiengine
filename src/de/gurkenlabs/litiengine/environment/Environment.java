@@ -2394,7 +2394,7 @@ public final class Environment implements IRenderable {
     if (mvmtControl != null) {
       GravityForce force = new GravityForce(entity, this.getGravity(), Direction.DOWN);
       force.setIdentifier(GRAVITY_IDENTIFIER);
-      entity.movement().apply(force);
+      mvmtControl.apply(force);
       this.gravityForces.put(entity.getMapId(), force);
     }
   }
