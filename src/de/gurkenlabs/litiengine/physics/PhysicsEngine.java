@@ -134,14 +134,22 @@ public final class PhysicsEngine implements IUpdateable {
    * Clears all previously registered participants in the collision process from this instance. This
    * includes all entities, static collision boxes and the map boundaries.
    */
+  /**
+   * Clears all previously registered participants in the collision process from this instance. This
+   * includes all entities, static collision boxes and the map boundaries.
+   */
   public void clear() {
     for (Collision type : Collision.values()) {
       if (type == Collision.NONE) {
         continue;
       }
 
-      this.collisionEntities.get(type).clear();
-      this.collisionBoxes.get(type).clear();
+      if (this.collisionEntities.get(type) != null) {
+        this.collisionEntities.get(type).clear();
+      }
+      if (this.collisionBoxes.get(type) != null) {
+        this.collisionBoxes.get(type).clear();
+      }
     }
 
     this.setBounds(null);
