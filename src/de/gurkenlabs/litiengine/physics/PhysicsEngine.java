@@ -937,6 +937,10 @@ public final class PhysicsEngine implements IUpdateable {
       involvedEntities = ArrayUtilities.distinct(involvedEntities, inter.involvedEntities);
     }
 
+    if (involvedEntities == null || involvedEntities.length == 0) {
+      return;
+    }
+
     // 1. fire collision event on the collider with all the involved entities
     CollisionEvent event = new CollisionEvent(collider, involvedEntities);
     collider.fireCollisionEvent(event);
