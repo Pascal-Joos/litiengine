@@ -161,7 +161,7 @@ public final class GamepadManager extends GamepadEvents implements ILaunchable {
    */
   public Gamepad get(final int index) {
     if (this.gamePads.isEmpty()) {
-      return null;
+      throw new IllegalStateException("No gamepads are currently available");
     }
 
     return this.gamePads.get(index);
