@@ -255,6 +255,9 @@ public class ListField extends GuiComponent {
   }
 
   public VerticalSlider getVerticalSlider() {
+    if (this.verticalSlider == null) {
+      throw new IllegalStateException("verticalSlider is not initialized");
+    }
     return this.verticalSlider;
   }
 
