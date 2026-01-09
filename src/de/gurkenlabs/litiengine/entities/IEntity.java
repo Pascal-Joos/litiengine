@@ -222,6 +222,7 @@ public interface IEntity {
    *
    * @return The entity's environment.
    */
+  @Nullable
   Environment getEnvironment();
 
   /**
