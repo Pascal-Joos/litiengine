@@ -35,6 +35,7 @@ public interface IMap extends ILayerList, Comparable<IMap> {
    *
    * @return the renderorder
    */
+  @Nullable
   public RenderOrder getRenderOrder();
 
   /**
