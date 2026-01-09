@@ -10,6 +10,7 @@ public interface IImageLayer extends ICustomPropertyProvider, ILayer {
    *
    * @return the image
    */
+  @Nullable
   public IMapImage getImage();
 
   /**
