@@ -68,7 +68,6 @@ public class MapOrientations {
    * @param name The name of the orientation, as stored in the TMX file
    * @return The {@code IMapOrientation} by the given name
    */
-  @Nullable
   public static IMapOrientation forName(String name) {
     if ("orthogonal".equals(name)) {
       return ORTHOGONAL;

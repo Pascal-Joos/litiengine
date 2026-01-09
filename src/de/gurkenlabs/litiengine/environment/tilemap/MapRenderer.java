@@ -160,9 +160,6 @@ public class MapRenderer {
     if (tile == null) {
       return;
     }
-    if (map == null || map.getOrientation() == null) {
-      return;
-    }
     BufferedImage image = tile.getImage();
     if (image != null) {
       Point p = map.getOrientation().getLocation(x, y, map);

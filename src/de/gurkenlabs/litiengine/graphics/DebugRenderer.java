@@ -170,10 +170,6 @@ public final class DebugRenderer {
 
   private static void drawTileBoundingBox(
       final Graphics2D g, final IMap map, final Point2D location) {
-    if (map == null || map.getOrientation() == null) {
-      return;
-    }
-
     final Rectangle2D playerTile =
         map.getOrientation().getEnclosingTileShape(location, map).getBounds2D();
 
