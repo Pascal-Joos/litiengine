@@ -224,7 +224,7 @@ public class Camera implements ICamera {
       if (--this.panTime <= 0) {
         this.setFocus(this.targetFocus);
         this.targetFocus = null;
-      } else {
+      } else if (this.targetFocus != null) {
         double diff = this.panTime / (this.panTime + 1.0);
         this.focus =
             new Point2D.Double(
