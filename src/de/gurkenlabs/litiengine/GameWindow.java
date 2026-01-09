@@ -71,7 +71,10 @@ public final class GameWindow {
 
       this.initializeEventListeners();
 
-      this.hostControl.setTitle(Game.info().getTitle());
+      GameInfo info = Game.info();
+      if (info != null) {
+        this.hostControl.setTitle(info.getTitle());
+      }
       this.hostControl.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
       initializeWindowEventListeners(this.hostControl);
     }
