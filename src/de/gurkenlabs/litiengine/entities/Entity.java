@@ -239,6 +239,7 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
     return this.height;
   }
 
+  @Nullable
   @Override
   public Point2D getLocation() {
     return this.mapLocation;

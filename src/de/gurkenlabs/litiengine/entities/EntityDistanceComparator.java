@@ -1,5 +1,7 @@
 package de.gurkenlabs.litiengine.entities;
 
+import edu.ucr.cs.riple.annotator.util.Nullability;
+
 public class EntityDistanceComparator extends RelativeEntityComparator {
 
   /**
@@ -17,8 +19,12 @@ public class EntityDistanceComparator extends RelativeEntityComparator {
       return 0;
     }
 
-    final double distance1 = entity1.getLocation().distance(this.getRelativeEntity().getLocation());
-    final double distance2 = entity2.getLocation().distance(this.getRelativeEntity().getLocation());
+    final double distance1 =
+        Nullability.castToNonnull(entity1.getLocation())
+            .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+    final double distance2 =
+        Nullability.castToNonnull(entity2.getLocation())
+            .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
     if (distance1 < distance2) {
       return -1;
     }
