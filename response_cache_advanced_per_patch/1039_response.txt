@@ -1,0 +1,49 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  void beforeMarshal(Marshaller m) {
+    List<SpritesheetResource> distinctList = new ArrayList<>();
+    for (SpritesheetResource sprite : this.getSpriteSheets()) {
+      if (sprite == null || sprite.getName() == null || sprite.getImage() == null) {
+        continue;
+      }
+      if (distinctList.stream()
+          .anyMatch(
+              x ->
+                  x != null
+                      && x.getName() != null
+                      && x.getImage() != null
+                      && x.getName().equals(sprite.getName())
+                      && x.getImage().equals(sprite.getImage()))) {
+        continue;
+      }
+
+      distinctList.add(sprite);
+    }
+
+    this.spriteSheets = distinctList;
+
+    List<Tileset> distinctTilesets = new ArrayList<>();
+    for (Tileset tileset : this.getTilesets()) {
+      if (tileset == null || tileset.getName() == null) {
+        continue;
+      }
+      if (distinctTilesets.stream()
+          .anyMatch(x -> x != null && x.getName() != null && x.getName().equals(tileset.getName()))) {
+        continue;
+      }
+
+      distinctTilesets.add(tileset);
+    }
+
+    this.tilesets = distinctTilesets;
+
+    if (this.version == 0) {
+      this.version = CURRENT_VERSION;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void increment() {
+      BigDecimal current = this.getCurrentValue();
+      if (current != null) {
+          this.setCurrentValue(current.add(this.getStepSize()));
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public PlatformingMovementController(T entity, final int jump) {
+      super(entity);
+      this.getUpKeys().clear();
+      this.getDownKeys().clear();
+      this.jump = new ArrayList<>();
+      this.addJumpKey(jump);
+      IKeyboard keyboard = Input.keyboard();
+      if (keyboard != null) {
+          keyboard.onKeyPressed(this::handlePressedKey);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

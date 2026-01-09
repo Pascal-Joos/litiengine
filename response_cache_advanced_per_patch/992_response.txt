@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void setValueRelativeToMousePosition() {
+    final IMouse mouse = Input.mouse();
+    if (mouse == null || mouse.getLocation() == null) {
+      return;
+    }
+    final double mouseY = mouse.getLocation().getY();
+    if (mouseY >= this.minSliderY && mouseY <= this.maxSliderY) {
+      final double relativeMouseX = mouseY - this.minSliderY;
+      final double percentage = relativeMouseX / (this.maxSliderY - this.minSliderY);
+      this.setCurrentValue(
+          (float) (this.getMinValue() + percentage * (this.getMaxValue() - this.getMinValue())));
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

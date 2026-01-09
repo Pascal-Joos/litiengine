@@ -1,0 +1,11 @@
+<response>
+  <reason><![CDATA[I only see the method signature:
+
+public List<ILayer> getRenderLayers()
+
+but not its body or any internal logic. Without the implementation (including any other methods it may call), I cannot determine whether any return path may yield null. To analyze nullability correctly, I must see the full method body and any methods it directly uses to compute the return value.]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Please provide the full body of de.gurkenlabs.litiengine.environment.tilemap.ILayerList#getRenderLayers, including all its return statements.]]></request>
+  </requests>
+</response>

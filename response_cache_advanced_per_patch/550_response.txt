@@ -1,0 +1,43 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+TmxMap map = (TmxMap) this.getLayer().getMap();
+```
+
+inside `MapObject`, this call is always guarded by `if (this.isInfiniteMap())`.
+
+The implementation of `isInfiniteMap()` is:
+
+```java
+private boolean isInfiniteMap() {
+  return this.getLayer() != null
+      && this.getLayer().getMap() != null
+      && this.getLayer().getMap().isInfinite()
+      && this.getLayer().getMap() instanceof TmxMap;
+}
+```
+
+For `isInfiniteMap()` to evaluate to `true`, all of the following must hold:
+
+1. `this.getLayer() != null`
+2. `this.getLayer().getMap() != null`
+3. `this.getLayer().getMap().isInfinite()` is true
+4. `this.getLayer().getMap() instanceof TmxMap` is true
+
+The call site in question only occurs in branches like:
+
+```java
+if (this.isInfiniteMap()) {
+  TmxMap map = (TmxMap) this.getLayer().getMap();
+  ...
+}
+```
+
+Because condition (2) explicitly requires `this.getLayer().getMap() != null` for the `if` body to execute, the expression `this.getLayer().getMap()` at that specific call site cannot be null: if it were null, `isInfiniteMap()` would return `false` and the code containing the call would not run.
+
+Therefore, at this specific call site, `getMap()` cannot return null.
+  ]]></reason>
+  <value>NO</value>
+</response>

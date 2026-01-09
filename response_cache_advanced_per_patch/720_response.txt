@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static Animation flipAnimation(Animation anim, String newSpriteName) {
+      if (anim == null || anim.getSpritesheet() == null) {
+        return anim;
+      }
+
+      final BufferedImage flippedImage = Imaging.flipSpritesHorizontally(anim.getSpritesheet());
+      Spritesheet flippedSpritesheet =
+          Resources.spritesheets()
+              .load(
+                  flippedImage,
+                  newSpriteName,
+                  anim.getSpritesheet().getSpriteWidth(),
+                  anim.getSpritesheet().getSpriteHeight());
+      return new Animation(flippedSpritesheet, anim.isLooping(), anim.getKeyFrameDurations());
+  }
+  ```
+    ]]>
+  </code>
+</response>

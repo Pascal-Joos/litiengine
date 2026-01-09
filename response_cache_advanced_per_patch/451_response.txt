@@ -1,0 +1,31 @@
+<response>
+  <reason><![CDATA[
+The provided declaration:
+
+```java
+public IMapOrientation getOrientation()
+}
+```
+
+and the additional context:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public IMapOrientation getOrientation()
+}
+}
+```
+
+do not include any method body or implementation details. There are also no other methods shown whose return values or side effects determine this method’s return value. Without the body, it is impossible to determine:
+
+- Whether it always returns a non-null constant or field.
+- Whether it conditionally returns `null`.
+- Whether it delegates to another method that might return `null`.
+
+Since the analysis must be based on the method body and all relevant influencing methods, and that body is not provided at all, I cannot safely conclude whether `null` is possible. To proceed, I need the full implementation of `getOrientation()` in the relevant class or interface where it is implemented (not just its signature).
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Please provide the full implementation (method body) of de.gurkenlabs.litiengine.environment.tilemap.IMap.getOrientation().]]></request>
+  </requests>
+</response>

@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method, there are no null checks or guarantees around `Input.mouse()` or its state. The method:
+
+    drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
+
+assumes:
+1. `Input.mouse()` returns a non-null object.
+2. The returned object’s `getMapLocation()` method itself returns a non-null value.
+
+The snippet you provided does not show:
+- The implementation or contract of `Input.mouse()`.
+- Whether `Input.mouse()` can ever return null (e.g., before initialization, on headless systems, or when input is disabled).
+- Whether the mouse object may be in a state where `getMapLocation()` returns null (e.g., mouse not yet moved over the map, no active map, or lost focus).
+
+Without that information, there is no visible guard (like `if (Input.mouse() != null)`) or configuration guarantee in this method that would preclude `Input.mouse()` from being null. Therefore, from this method alone, we cannot prove that `Input.mouse()` is always non-null, nor can we prove it can be null.
+
+A definitive answer requires knowing the contract and implementation details of `Input.mouse()` and its initialization lifecycle (e.g., whether it is a singleton always created at startup and never cleared to null, or whether it can be absent in certain modes).
+
+Because that information is missing, the nullability of `Input.mouse()` cannot be determined from this snippet alone.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or API contract of Input.mouse() (static method): how and when the underlying mouse object is created, and whether it can ever be null.]]></request>
+        <request><![CDATA[Provide the implementation or documentation for getMapLocation(): does it guarantee a non-null return value under all circumstances, or can it return null (e.g., when the mouse is off-map)?]]></request>
+    </requests>
+</response>
+```

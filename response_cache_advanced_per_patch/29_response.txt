@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void attach() {
+    if (Game.loop() != null) {
+      Game.loop().attach(this);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

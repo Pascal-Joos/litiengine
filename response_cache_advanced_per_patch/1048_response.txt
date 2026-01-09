@@ -1,0 +1,48 @@
+<response>
+    <reason><![CDATA[
+The parameter `resourceName` of `ResourcesContainer.add(URL resourceName, T resource)` is directly the `URL resource` passed from `Maps$MapGenerator.close()`:
+
+```java
+URL resource = Resources.getLocation(map.getName() + "." + TmxMap.FILE_EXTENSION);
+this.map.finish(resource);
+Maps.this.add(resource, this.map);
+```
+
+`Resources.getLocation(String name)` is fully provided and has an execution path that returns `null`:
+
+```java
+public static URL getLocation(String name) {
+  URL fromClass = ClassLoader.getSystemResource(name);
+  if (fromClass != null) {
+    return fromClass;
+  }
+  try {
+    return new URL(name);
+  } catch (MalformedURLException e) {
+    try {
+      return (new File(name)).toURI().toURL();
+    } catch (MalformedURLException e1) {
+      return null; // <--- explicit null return
+    }
+  }
+}
+```
+
+If:
+- `ClassLoader.getSystemResource(name)` returns `null`,
+- `new URL(name)` throws `MalformedURLException`, and
+- `(new File(name)).toURI().toURL()` also throws `MalformedURLException`,
+
+then `getLocation` returns `null`. That `null` is assigned to `resource` and passed unchanged to `Maps.this.add(resource, this.map)`, which is the `add(URL resourceName, T resource)` in `ResourcesContainer`.
+
+Inside `add(URL resourceName, T resource)`:
+
+```java
+this.add(resourceName.toString(), resource);
+```
+
+`resourceName` is dereferenced with `toString()` and there is no null-check or reassignment beforehand. Therefore, if `getLocation` returns `null`, `resourceName` will indeed be `null` at this call, causing a potential `NullPointerException`.
+
+Since no further methods are involved in modifying or validating `resourceName` between its creation and use in `add`, the parameter can be null in this method based on the supplied call chain.]]></reason>
+    <value>YES</value>
+</response>

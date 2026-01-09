@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void handleNormalTyping(KeyEvent event) {
+      if (this.getMaxLength() > 0 && String.valueOf(this.getText()).length() >= this.getMaxLength()) {
+        return;
+      }
+  
+      final char text = event.getKeyChar();
+      if (text == KeyEvent.CHAR_UNDEFINED) {
+        return;
+      }
+  
+      // regex check to ensure certain formats
+      if (this.getFormat() != null && !this.getFormat().isEmpty()) {
+        final Pattern pat = Pattern.compile(this.getFormat());
+        final Matcher mat = pat.matcher(String.valueOf(this.getText()) + text);
+        if (!mat.matches()) {
+          return;
+        }
+      }
+  
+      final String currentText = String.valueOf(this.getText());
+      if (this.isKnownNumericFormat() && "0".equals(currentText)) {
+        this.setText("");
+      }
+  
+      this.setText(currentText + text);
+  }
+  ```
+    ]]>
+  </code>
+</response>

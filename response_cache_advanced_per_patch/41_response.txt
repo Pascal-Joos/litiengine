@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public long now() {
+      return Game.loop() != null ? Game.loop().getTicks() : 0L;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,54 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public static void renderEntityDebugInfo(final Graphics2D g, final IEntity entity) {
+    if (!Game.config().debug().isDebugEnabled()) {
+      return;
+    }
+
+    if (Game.config().debug().renderEntityNames()) {
+      drawMapId(g, entity);
+    }
+
+    if (Game.config().debug().renderHitBoxes() && entity instanceof ICombatEntity) {
+      g.setColor(Color.RED);
+      Game.graphics().renderOutline(g, ((ICombatEntity) entity).getHitBox());
+    }
+
+    if (Game.config().debug().renderBoundingBoxes()) {
+      g.setColor(Color.RED);
+      Game.graphics().renderOutline(g, entity.getBoundingBox());
+
+      if (entity instanceof SoundSource) {
+        final int range = ((SoundSource) entity).getRange();
+        final float[] dash1 = {10f};
+        final BasicStroke dashed =
+            new BasicStroke(.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+        Game.graphics()
+            .renderOutline(
+                g,
+                new Ellipse2D.Double(
+                    entity.getBoundingBox().getCenterX() - range,
+                    entity.getBoundingBox().getCenterY() - range,
+                    range * 2d,
+                    range * 2d),
+                dashed);
+      }
+    }
+
+    if (Game.config().debug().renderCollisionBoxes() && entity instanceof ICollisionEntity) {
+      final ICollisionEntity collisionEntity = (ICollisionEntity) entity;
+      g.setColor(collisionEntity.hasCollision() ? Color.RED : Color.ORANGE);
+      Game.graphics().renderOutline(g, Nullability.castToNonnull(collisionEntity.getCollisionBox()));
+    }
+
+    final EntityRenderEvent event = new EntityRenderEvent(g, entity);
+    for (EntityRenderedListener listener : entityDebugListeners) {
+      listener.rendered(event);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

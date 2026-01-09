@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private List<IEntity> getEntitiesInCollisionBox() {
+      final List<IEntity> collEntities = new CopyOnWriteArrayList<>();
+      for (final ICollisionEntity coll : Game.physics().getCollisionEntities()) {
+        if (coll == this
+            || !this.activators.isEmpty() && !this.activators.contains(coll.getMapId())) {
+          continue;
+        }
+
+        Rectangle2D collisionBox = coll.getCollisionBox();
+        if (collisionBox == null) {
+          continue;
+        }
+
+        if (collisionBox.intersects(this.getCollisionBox())) {
+          collEntities.add(coll);
+        }
+      }
+
+      return collEntities;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,43 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  void beforeMarshal(Marshaller m) {
+    List<SpritesheetResource> distinctList = new ArrayList<>();
+    for (SpritesheetResource sprite : this.getSpriteSheets()) {
+      if (sprite.getImage() == null || sprite.getImage().isEmpty()) {
+        continue;
+      }
+      if (distinctList.stream()
+          .anyMatch(
+              x ->
+                  x.getName().equals(sprite.getName())
+                      && x.getImage() != null
+                      && x.getImage().equals(sprite.getImage()))) {
+        continue;
+      }
+
+      distinctList.add(sprite);
+    }
+
+    this.spriteSheets = distinctList;
+
+    List<Tileset> distinctTilesets = new ArrayList<>();
+    for (Tileset tileset : this.getTilesets()) {
+      if (distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))) {
+        continue;
+      }
+
+      distinctTilesets.add(tileset);
+    }
+
+    this.tilesets = distinctTilesets;
+
+    if (this.version == 0) {
+      this.version = CURRENT_VERSION;
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

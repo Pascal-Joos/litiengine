@@ -1,0 +1,23 @@
+<response>
+  <reason><![CDATA[
+The potential nullness at the call site
+
+  this.collisionEntities.get(entity.getCollisionType())
+
+depends entirely on how `collisionEntities` is initialized and what `get` returns for a given key. From the provided code, we only know:
+
+- `entity.getCollisionType()` is checked against `null` at the top of `add`, so at the call site it is *not* `null`.
+- The `switch` restricts usage here to `Collision.DYNAMIC` or `Collision.STATIC` (other values return early).
+- However, we have **no information** about:
+  - The type of `collisionEntities` (e.g. `Map<Collision, Collection<ICollisionEntity>>` or something else),
+  - How `collisionEntities` is populated,
+  - Whether `collisionEntities.get(key)` is guaranteed to return a non-null collection for all valid `Collision` enum values, or might return `null` if the key is absent or the map is partially initialized.
+
+Because of these missing pieces, we cannot infer that `collisionEntities.get(entity.getCollisionType())` is non-null, nor can we assert it is possibly null, without seeing the declaration and initialization logic behind the `get` call.
+
+To make a confident determination, we need the declaration (and semantics) of the `get` method that is invoked on `collisionEntities`.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>get</method>
+  </methods>
+</response>

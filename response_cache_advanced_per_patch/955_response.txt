@@ -1,0 +1,17 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+There is no assignment, initialization, or invariant for the `mouse` field shown anywhere in the provided call chain. None of the supplied code writes to `Input.mouse` or otherwise guarantees that it is non-null before any of the many call sites use it (e.g., in `GameLoop.updateInvariableEngineComponents`, `GuiComponent.prepare`, `MouseCursor.render`, etc.).
+
+Because the analysis rules forbid assuming behavior of code that is not shown, and because the value returned by `Input.mouse()` is exactly whatever the static field `mouse` currently holds, it is entirely possible (and not ruled out by the provided code) that `mouse` is still `null` at the moments where `Input.mouse()` is called.
+
+Therefore, at this specific call site, the invocation `Input.mouse()` can evaluate to `null`.]]></reason>
+  <value>YES</value>
+</response>

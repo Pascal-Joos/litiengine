@@ -1,0 +1,35 @@
+<response>
+  <reason><![CDATA[
+The only information provided about `IMap.getRenderOrder()` is its signature:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public RenderOrder getRenderOrder()
+}
+```
+
+No implementation or additional constraints (such as annotations, documentation, or field initialization guarantees) are shown. The call site:
+
+```java
+if (map.getRenderOrder().rtl) {
+    ...
+}
+```
+
+and
+
+```java
+if (map.getRenderOrder().btt) {
+    ...
+}
+```
+
+uses the result immediately to access fields (`rtl`, `btt`), which would throw a `NullPointerException` if `getRenderOrder()` returned null, but this does not prove that null is impossible—it only shows that the code *assumes* a non-null value. Without the body of `getRenderOrder()` or information about how its return value is derived, we cannot rule out that it might return null at runtime.
+
+To determine definitively whether `map.getRenderOrder()` can be null at this specific call site, we need to see the actual implementation of `getRenderOrder()`. No other methods influence the return value directly here, so no additional declarations are required.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getRenderOrder</method>
+  </methods>
+</response>

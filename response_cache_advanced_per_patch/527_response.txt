@@ -1,0 +1,23 @@
+<response>
+  <reason><![CDATA[
+The provided declaration:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IImageLayer {
+  public IMapImage getImage()
+}
+```
+
+does not include the method body of `getImage()`. Without the implementation, it is impossible to determine:
+
+- Whether any return statements explicitly return `null`.
+- Whether all code paths construct or obtain a non-null `IMapImage`.
+- Whether the method delegates to other methods whose return values might be null.
+
+To analyze nullability according to your rules, I must see the *full body* of `getImage()`, and also the bodies of any methods it calls that influence its return value. Since no method body is currently available, I cannot conclude whether it may return null.
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Please provide the full method body of de.gurkenlabs.litiengine.environment.tilemap.IImageLayer.getImage (including all its return statements).]]></request>
+  </requests>
+</response>

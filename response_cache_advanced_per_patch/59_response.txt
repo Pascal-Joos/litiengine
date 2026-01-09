@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  default float getRenderScale() {
+      return Game.graphics().getBaseRenderScale()
+          * Nullability.castToNonnull(Game.window()).getResolutionScale()
+          * this.getZoom();
+  }
+  ```
+    ]]>
+  </code>
+</response>

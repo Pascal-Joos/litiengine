@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setToMax() {
+      this.setBaseValue(Nullability.castToNonnull(this.getMax()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

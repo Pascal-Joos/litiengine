@@ -1,0 +1,91 @@
+<response>
+  <reason><![CDATA[
+At this call site, the relevant expression is:
+
+this.getVerticalSlider()
+    .getSliderComponent()
+
+We only need to determine whether `getSliderComponent()` can return null, *given that* `this.getVerticalSlider()` is non‑null at each place it is used.
+
+From the provided code:
+
+```java
+class de.gurkenlabs.litiengine.gui.Slider {
+  public ImageComponent getSliderComponent() {
+    return this.sliderComponent;
+  }
+
+  protected void setSliderComponent(final ImageComponent slider) {
+    this.sliderComponent = slider;
+    this.sliderComponent.onMousePressed(e -> this.isDragging = true);
+    Input.mouse().onDragged(...);
+    Input.mouse().onReleased(...);
+    this.getComponents().add(this.getSliderComponent());
+  }
+}
+```
+
+For `VerticalSlider`:
+
+```java
+class de.gurkenlabs.litiengine.gui.VerticalSlider {
+  @Override
+  protected void initializeComponents() {
+    super.initializeComponents();
+    ...
+    final double sliderHeight = (this.getHeight() - this.getWidth() * 2) * 1 / 6.0;
+    this.minSliderY = this.getY() + this.getWidth();
+    this.maxSliderY = this.getY() + this.getHeight() - (this.getWidth() + sliderHeight);
+    this.setSliderComponent(
+        new ImageComponent(
+            this.getRelativeSliderPosition().getX(),
+            this.getRelativeSliderPosition().getY(),
+            this.getWidth(),
+            sliderHeight,
+            this.getSliderSpritesheet(),
+            "",
+            null));
+    Nullability.castToNonnull(this.getSliderComponent()).setSpriteSheet(this.getSliderSpritesheet());
+  }
+}
+```
+
+And in `ListField.initContentList()`:
+
+- Calls like:
+  ```java
+  if (this.getVerticalSlider() != null) {
+    this.getVerticalSlider()
+        .onChange(
+            sliderValue -> {
+              this.setVerticalLowerBound(sliderValue.intValue());
+              Nullability.castToNonnull(this.getVerticalSlider()
+                  .getSliderComponent())
+                  .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
+              this.refresh();
+            });
+  }
+  ```
+  and similar uses inside `this.onChange(...)`.
+
+In `VerticalSlider.initializeComponents()`:
+
+- `setSliderComponent` is always called with `new ImageComponent(...)`, which is non-null.
+- Immediately after that, `getSliderComponent()` is dereferenced via `Nullability.castToNonnull(this.getSliderComponent()).setSpriteSheet(...)`. If `sliderComponent` were null at that point, this would throw, so the intended contract is that the slider component is non-null once initialization is done.
+
+Within `Slider.setSliderComponent(...)`:
+
+- `this.sliderComponent` is set directly from the non-null `ImageComponent` argument.
+- The method then calls `this.sliderComponent.onMousePressed(...)` and adds `this.getSliderComponent()` to `this.getComponents()`. All of these rely on `sliderComponent` being non-null at that point.
+
+For the specific call site inside `ListField.initContentList()`:
+
+- All uses of `this.getVerticalSlider().getSliderComponent()` are guarded by `if (this.getVerticalSlider() != null)`, so the receiver is a fully constructed `VerticalSlider`.
+- For a constructed `VerticalSlider`, `initializeComponents()` sets `sliderComponent` exactly once to a new `ImageComponent`, with no intervening code shown that can reset it to null.
+- No alternative code path is provided where a `VerticalSlider` is created without calling `initializeComponents()` or where `sliderComponent` is cleared.
+
+Given only the provided code, once a `VerticalSlider` exists (non-null) at these call sites, `setSliderComponent` has been called with a non-null argument, and `sliderComponent` remains that value. Thus, `getSliderComponent()` does not return null at this specific call site under the shown design.
+
+]]></reason>
+  <value>NO</value>
+</response>

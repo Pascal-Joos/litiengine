@@ -1,0 +1,56 @@
+<response>
+  <reason><![CDATA[
+At the shown call site, `this.getProperty(propertyName)` is invoked inside multiple methods such as:
+
+```java
+public double getDoubleValue(String propertyName, double defaultValue) {
+  ICustomProperty property = this.getProperty(propertyName);
+  if (property == null) {
+    return defaultValue;
+  }
+  return property.getAsDouble();
+}
+```
+
+and similarly in all other `get*Value(...)` overloads at depth 1.
+
+The implementation of `getProperty` is:
+
+```java
+@Override
+public ICustomProperty getProperty(String propertyName) {
+  return this.getProperties().get(propertyName);
+}
+```
+
+Here:
+
+- `this.getProperties()` returns some kind of map-like structure.
+- `.get(propertyName)` on a map-type API can return `null` when there is no entry associated with the given key, or when the stored value itself is `null`.
+
+Because the full declaration of `getProperties()` is not provided, we must not assume it never returns `null` or that its `get` method never returns `null`. The calling methods explicitly check:
+
+```java
+ICustomProperty property = this.getProperty(propertyName);
+if (property == null) {
+  return defaultValue;
+}
+```
+
+and in one case:
+
+```java
+public String getTypeOfProperty(String propertyName) {
+  ICustomProperty property = this.getProperty(propertyName);
+  if (property == null) {
+    return null;
+  }
+  return property.getType();
+}
+```
+
+These null checks demonstrate that the code is written with the expectation that `this.getProperty(propertyName)` may in fact evaluate to `null` for the given `propertyName`. The specific call site you highlight is exactly this pattern (`this.getProperty(propertyName)`); there is no additional constraint (such as a prior non-null guarantee) at this site that would rule out `null`.
+
+Therefore, at this specific call site, `this.getProperty(propertyName)` can evaluate to `null`.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,47 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private static void renderLayers(
+      final Graphics2D g,
+      final IMap map,
+      ILayerList layers,
+      final Rectangle2D viewport,
+       Environment env,
+      RenderType[] renderTypes,
+      float opacity) {
+    final List<ILayer> renderLayers = layers == null ? null : layers.getRenderLayers();
+    if (renderLayers == null) {
+      return;
+    }
+    for (final ILayer layer : renderLayers) {
+      if (layer == null || !shouldBeRendered(g, map, layer, renderTypes)) {
+        continue;
+      }
+
+      float layerOpacity = layer.getOpacity() * opacity;
+
+      if (layer instanceof ITileLayer) {
+        renderTileLayer(g, (ITileLayer) layer, map, viewport, layerOpacity);
+      }
+
+      if (env != null && layer instanceof IMapObjectLayer) {
+        Collection<IEntity> entities = env.getEntities((IMapObjectLayer) layer);
+        if (entities != null) {
+          Game.graphics().renderEntities(g, entities, layer.getRenderType() == RenderType.NORMAL);
+        }
+      }
+
+      if (layer instanceof IImageLayer) {
+        renderImageLayer(g, (IImageLayer) layer, map, viewport, layerOpacity);
+      }
+
+      if (layer instanceof IGroupLayer) {
+        renderLayers(g, map, (IGroupLayer) layer, viewport, env, renderTypes, layerOpacity);
+      }
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

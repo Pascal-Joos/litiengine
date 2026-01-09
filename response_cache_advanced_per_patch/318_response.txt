@@ -1,0 +1,30 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no information about:
+
+- How `getStaticShadowLayer()` is implemented
+- When or how the underlying field (if any) is initialized
+- Whether `getStaticShadowLayer()` is allowed by contract to return `null`
+- Whether `getStaticShadows()` being non-empty or containing non-NONE types implies that `getStaticShadowLayer()` is also non-null
+
+The only relevant guard is:
+
+    if (this.getStaticShadows().stream()
+        .anyMatch(x -> x.getShadowType() != StaticShadowType.NONE)) {
+      this.getStaticShadowLayer().render(g);
+    }
+
+This `if` condition checks *only* properties of `getStaticShadows()`. It does not perform any null check on `getStaticShadowLayer()` nor does it logically guarantee that `getStaticShadowLayer()` is non-null. Unless there is an external invariant or contract (e.g., "if any static shadow has type != NONE, getStaticShadowLayer() is always non-null") that is enforced elsewhere in the class or system, then from this snippet alone we cannot conclude non-nullness.
+
+Because the implementation and invariants of `getStaticShadowLayer()` and the initialization of whatever it returns are not shown, we cannot definitively assert that `this.getStaticShadowLayer()` can never be null, nor can we show a concrete path in this method that forces it to be null.
+
+Therefore, with only this method and without the surrounding class/initialization/contract details, the nullability of `this.getStaticShadowLayer()` at the call site is indeterminate.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or field definition and initialization) of getStaticShadowLayer() and any related initialization code.]]></request>
+        <request><![CDATA[Provide the definition/initialization of the collection returned by getStaticShadows(), and any documented contract that links it to the existence of a static shadow layer.]]></request>
+    </requests>
+</response>
+```

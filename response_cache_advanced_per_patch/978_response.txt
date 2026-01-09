@@ -1,0 +1,38 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the shown method, the call site in question is:
+
+ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, Input.mouse().getLocation());
+
+This occurs inside the block:
+
+if (Game.config().debug().isRenderDebugMouse()) {
+    final IMouse mouse = Input.mouse();
+    if (mouse != null) {
+        ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, mouse.getLocation());
+    }
+}
+
+So there are two relevant facts:
+
+1. The method does NOT directly use the local variable `mouse` in the line you marked; instead, it calls `Input.mouse()` again.
+2. The only null check performed is on the locally stored `mouse` variable, not on the new `Input.mouse()` call in the line "ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, Input.mouse().getLocation());".
+
+From the code shown alone, there is no guarantee that:
+- `Input.mouse()` always returns a non-null IMouse, or
+- The second call to `Input.mouse()` returns the same instance/value as the one checked in `if (mouse != null)`, or
+- `Input.mouse()` is stable (e.g., cannot change or become null between calls).
+
+Unless there is an external API/contract that *formally guarantees* that `Input.mouse()` can never return null (or that once non-null it stays non-null for the duration of the render call), the expression `Input.mouse()` at that line can be null.
+
+Because that guarantee is not present in the snippet, and we do not see the implementation or contract of `Input.mouse()`, we cannot conclude non-nullity purely from the provided code. The defensive null check done on `mouse` does not protect the second, independent call to `Input.mouse()`.
+
+Therefore, based only on the given method, `Input.mouse()` at the marked line must be considered potentially null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the implementation or documented contract of Input.mouse() (or the Input class) to determine whether it can return null and whether its return value may change during a single render call.]]></request>
+    </requests>
+</response>
+```

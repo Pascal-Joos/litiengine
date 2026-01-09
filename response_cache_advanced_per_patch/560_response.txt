@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean equals(Object anObject) {
+    if (!(anObject instanceof IMapImage)) {
+      return false;
+    }
+
+    if (this == anObject) {
+      return true;
+    }
+
+    IMapImage other = (IMapImage) anObject;
+    return (this.getTransparentColor() == null ? other.getTransparentColor() == null
+            : this.getTransparentColor().equals(other.getTransparentColor()))
+        && (this.getAbsoluteSourcePath() == null ? other.getAbsoluteSourcePath() == null
+            : this.getAbsoluteSourcePath().equals(other.getAbsoluteSourcePath()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public float[] getTweenValues(TweenType tweenType) {
+    switch (tweenType) {
+      case VELOCITY:
+        Attribute<Float> velocity = this.getVelocity();
+        return new float[] {velocity == null ? 0f : velocity.get()};
+      default:
+        return super.getTweenValues(tweenType);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,36 @@
+<response>
+  <reason><![CDATA[At the MapRenderer.drawTile call site, tile.getTilesetEntry() is used without any prior null check:
+
+```java
+ITileOffset offset = tile.getTilesetEntry().getTileset().getTileOffset();
+```
+
+To determine whether this can be null, we need to know how ITile.getTilesetEntry() is implemented. The provided code only shows the interface / method signature:
+
+```java
+public ITilesetEntry getTilesetEntry()
+```
+
+and one usage in Tileset.containsTile:
+
+```java
+ITilesetEntry entry = tile.getTilesetEntry();
+return entry == null
+    ? this.containsTile(tile.getGridId())
+    : this.containsTile(Nullability.castToNonnull(tile.getTilesetEntry()));
+```
+
+This usage explicitly checks for `entry == null`, which strongly suggests that, in at least some circumstances, `getTilesetEntry()` may return null. However, this does not prove that it *can* be null at the specific MapRenderer.drawTile call site, because that depends on the concrete ITile implementation in use when rendering and its internal logic.
+
+The return value of getTilesetEntry() may depend on internal state or other methods not shown. Without the actual implementation of getTilesetEntry(), we cannot rule out either possibility (always non-null during rendering vs. sometimes null). The guidelines state we must not assume behavior of methods whose declarations are not provided.
+
+Therefore, to make a confident determination for this specific call site, we need the concrete implementation of:
+
+- ITile.getTilesetEntry()
+
+Once that method's body is known, we can trace all return paths and determine whether null is possible in the rendering context.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getTilesetEntry</method>
+  </methods>
+</response>

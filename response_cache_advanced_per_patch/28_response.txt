@@ -1,0 +1,111 @@
+<response>
+  <reason><![CDATA[
+Game.loop() simply returns the static field Game.gameLoop:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided Game class:
+
+- In `init(...)`, `gameLoop` is initialized:
+  ```java
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  if (loop() != null) {
+    loop().attach(physics());
+    loop().attach(world());
+  }
+  ...
+  initialized = true;
+  ```
+
+- In `terminate()`:
+  ```java
+  gameLoop.terminate();
+  ...
+  gameLoop = null;
+  ...
+  initialized = false;
+  ```
+
+So `gameLoop` can be:
+- non‑null after successful `Game.init(...)` and before `Game.terminate()` sets it to null, or
+- null before initialization or after termination.
+
+Across the call sites you provided, some code clearly *guards* against `null`:
+
+- `if (Game.loop() != null) { this.lastScreenChange = Game.loop().getTicks(); }`
+- `if (this.getActiveAppliances().isEmpty() && Game.loop() != null) { Game.loop().detach(this); }`
+- `if (emitter.isActivateOnInit()) { emitter.activate(); }` where `activate()` calls `Game.loop().attach(this)` unguarded
+- `if (Game.world().environment() != null && Game.world().environment().isLoaded() && Game.loop() != null) { Game.loop().attach(controller); }`
+- In `FreeFlightCamera.handleFreeFlightCamera()`:
+  ```java
+  if (Game.loop() == null) {
+    return;
+  }
+  ...
+  this.getVelocity() / (double) Game.loop().getTickRate() ...
+  ```
+
+However, there are also multiple *unguarded* uses of `Game.loop()`:
+
+- `EntityNavigator` constructor:
+  ```java
+  Game.loop().attach(this);
+  ```
+- `Emitter.activate()` / `Emitter.deactivate()`:
+  ```java
+  Game.loop().attach(this);
+  Game.loop().detach(this);
+  ```
+- `MovementController.attach()` / `detach()` / `handleMovement()`:
+  ```java
+  Game.loop().attach(this);
+  Game.loop().detach(this);
+  final double deltaTime = Game.loop().getDeltaTime() * Game.loop().getTimeScale();
+  ```
+- `GameTime` methods:
+  ```java
+  public long now() { return Game.loop().getTicks(); }
+  public long since(final long tick) { return toMilliseconds(Game.loop().getTicks() - tick); }
+  ```
+- `Animation.update()`:
+  ```java
+  this.lastFrameUpdate = Game.loop().getTicks();
+  ```
+- `Camera.setZoom(..., delay)`:
+  ```java
+  final double tickduration = 1000 / (double) Game.loop().getTickRate();
+  ```
+
+None of these sites is protected by checks like `initialized` / `hasStarted` or by a `Game.loop() != null` test. Whether `Game.loop()` is null at runtime depends entirely on whether:
+
+- `Game.init(...)` has already executed to completion (setting `gameLoop` non‑null), and
+- `Game.terminate()` has not yet been called (which sets `gameLoop` back to null).
+
+The provided code does not enforce that all unguarded call sites only execute in the window between successful init and terminate. For instance:
+
+- `EntityNavigator` can be constructed whenever game code chooses; its constructor directly calls `Game.loop().attach(this)` without any guard.
+- `Emitter.activate()` can be invoked from environment loading logic (`loadUpdatableOrEmitterEntity`) and from user code, again with no guarantee that the game has been initialized and not terminated.
+
+Because `Game.terminate()` explicitly sets:
+
+```java
+gameLoop = null;
+initialized = false;
+hasStarted = false;
+```
+
+and there is no global protection in those classes preventing `Game.loop()` from being called after `terminate()`, or before `init()`, the field `gameLoop` can indeed be null at *some* executions of these call sites.
+
+You asked about the specific call site `Game.loop()` in general (no extra constraints such as "only after init has completed and before terminate is called"). Under the semantics visible in this code, `Game.loop()` may observe `gameLoop` as `null`:
+
+- before `Game.init(...)` is called,
+- if `Game.init(...)` is never called,
+- or after `Game.terminate()` has been called (including via the shutdown hook).
+
+Thus, at this call site, the method `loop()` can return `null`.]]></reason>
+  <value>YES</value>
+</response>

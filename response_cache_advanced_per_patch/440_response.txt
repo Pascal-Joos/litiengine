@@ -1,0 +1,27 @@
+<response>
+  <reason><![CDATA[
+The provided declaration:
+
+  public String getType()
+}
+
+and the class:
+
+class de.gurkenlabs.litiengine.environment.tilemap.IMapObject {
+
+  public String getType()
+}
+}
+
+do not include any method body at all—only signatures. Without the body of getType(), there is no information about:
+- what it returns in any branch, or
+- whether it calls any other methods that might affect its return value.
+
+Since the return value is not shown and no implementation details are available, it is impossible to determine whether this method can or cannot return null based solely on its body.
+
+To proceed, the full declaration (including the method body) of IMapObject.getType is required.]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Please provide the full method body (implementation) of de.gurkenlabs.litiengine.environment.tilemap.IMapObject#getType.]]></request>
+  </requests>
+</response>

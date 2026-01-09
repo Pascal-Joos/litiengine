@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected T applyMinModifiers(final T maxValue) {
+    T currentValue = maxValue;
+    for (final AttributeModifier<T> modifier : this.getMinModifiers()) {
+      currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
+    }
+
+    return currentValue;
+  }
+  ```
+    ]]>
+  </code>
+</response>

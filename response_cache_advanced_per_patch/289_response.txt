@@ -1,0 +1,13 @@
+<response>
+  <success>false</success>
+  <methods>
+    <method>getSpawnPoints</method>
+    <method>getSpawnMode</method>
+    <method>getSpawnDelay</method>
+    <method>getSpawnAmount</method>
+    <method>getCustomSpawnpoints</method>
+    <method>shouldSpawn</method>
+    <method>perform</method>
+    <method>choose</method>
+  </methods>
+</response>

@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean loadFromMap(final int mapId) {
+    if (this.getMap() == null) {
+      return false;
+    }
+
+    for (final IMapObjectLayer layer : this.getMap().getMapObjectLayers()) {
+      Optional<IMapObject> opt =
+          layer.getMapObjects().stream()
+              .filter(
+                  mapObject ->
+                      mapObject.getType() != null
+                          && !mapObject.getType().isEmpty()
+                          && mapObject.getId() == mapId)
+              .findFirst();
+      if (opt.isPresent()) {
+        return !this.load(opt.get()).isEmpty();
+      }
+    }
+
+    return false;
+  }
+  ```
+    ]]>
+  </code>
+</response>

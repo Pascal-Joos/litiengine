@@ -1,0 +1,71 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+Nowhere in the provided code is `mouse` written to or guaranteed non-null. By contrast, many call sites explicitly defensively check for null before using it:
+
+```java
+final IMouse mouse = Input.mouse();
+if (mouse != null) {
+  ...
+}
+```
+
+Examples include:
+- `Slider.setSliderComponent`
+- `TextFieldComponent` constructor
+- `GuiComponent.prepare` / `GuiComponent.suspend`
+- `MouseCursor.render`
+- `GameLoop.updateInvariableEngineComponents` (`if (Input.mouse() != null) { ... }`)
+
+These checks would be unnecessary if `Input.mouse()` were statically guaranteed non-null.
+
+At several other call sites, however, `Input.mouse()` is used without a null check, e.g.:
+
+```java
+this.navigating = Input.mouse().isRightButtonPressed();
+```
+(`MousePathController.update`)
+
+```java
+final Point2D mouseLocation = Input.mouse().getLocation();
+```
+(`FreeFlightCamera.handleFreeFlightCamera`)
+
+```java
+final double mouseX = Input.mouse().getLocation().getX();
+```
+(`HorizontalSlider.setValueRelativeToMousePosition`)
+
+```java
+drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
+```
+(`DebugRenderer.renderMapDebugInfo`)
+  
+```java
+if (!Input.mouse().isGrabMouse()) {
+  showDefaultCursor();
+}
+```
+(`MouseCursor.set`)
+
+The presence of both guarded and unguarded usages shows only that some code *assumes* it’s initialized by the time those paths run, not that it is *guaranteed* non-null by construction. From the given snippets:
+- There is no initialization method or static block shown that assigns a non-null value to `mouse`.
+- There is no invariant or contract shown that would prevent `mouse` from being null (e.g., no `Objects.requireNonNull`, no `@NonNull` enforcement, no constructor tying engine start-up directly to mouse initialization in a way visible here).
+
+Since the field `mouse` could be:
+- never initialized,
+- initialized only under certain runtime conditions (e.g., only when not in “no GUI mode”), or
+- cleared at some point,
+
+and no code is provided that rules those possibilities out, the static analysis must treat `mouse` as potentially null at the time `Input.mouse()` is called.
+
+Therefore, at the specific call site `Input.mouse()` (for all the unguarded uses listed), the method result can be null.]]></reason>
+  <value>YES</value>
+</response>

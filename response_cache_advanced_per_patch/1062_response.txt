@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  @Override
+  public AudioFormat getFormat() {
+    AudioSource localSound = this.sound;
+    if (localSound == null) {
+      return null;
+    }
+    return localSound.getFormat();
+  }
+  ```
+    ]]>
+  </code>
+</response>

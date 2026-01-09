@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public boolean containsTile(ITile tile) {
+    ITilesetEntry entry = tile.getTilesetEntry();
+    return entry == null
+        ? this.containsTile(tile.getGridId())
+        : this.containsTile(Nullability.castToNonnull(tile.getTilesetEntry()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

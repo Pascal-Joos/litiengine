@@ -1,0 +1,40 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public boolean move(final IMobileEntity entity, Point2D target) {
+    if (entity.turnOnMove()) {
+      entity.setAngle(
+          (float) GeometricUtilities.calcRotationAngleInDegrees(Nullability.castToNonnull(entity.getLocation()), target));
+    }
+
+    // don't set new location if it is outside the boundaries of the map
+    if (!this.isInMap(entity.getCollisionBox(target))) {
+      target = this.clamptoMap(entity, target);
+    }
+
+    if (!entity.hasCollision()) {
+      entity.setLocation(target);
+      return true;
+    }
+
+    // check if there is any collision to resolve on the new location
+    if (this.resolveCollisionForNewPosition(entity, target)) {
+      return false;
+    }
+
+    // This method provides a simplified approach for a multi-sampling algorithm
+    // to prevent glitching through collision boxes that are smaller than the
+    // movement step size
+    if (this.resolveCollisionForRaycastToNewPosition(entity, target)) {
+      return false;
+    }
+
+    // set new map location
+    entity.setLocation(target);
+    return true;
+}
+  ```
+    ]]>
+  </code>
+</response>

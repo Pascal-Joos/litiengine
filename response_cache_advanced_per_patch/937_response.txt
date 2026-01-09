@@ -1,0 +1,50 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` simply returns the value of the static field `keyboard`:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+There is no initialization or assignment to this `keyboard` field shown anywhere in the provided call chain or surrounding code. Nothing in the given snippets guarantees that `keyboard` is ever set to a non-null value before or at the time of any of the shown call sites.
+
+In fact, several places in the code *explicitly* guard against `Input.keyboard()` being null:
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard().onKeyTyped(this::handleTypedKey);
+}
+```
+
+and
+
+```java
+IKeyboard keyboard = Input.keyboard();
+if (keyboard != null) {
+  ((Keyboard) keyboard).update();
+}
+```
+
+and
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard()
+      .onKeyTyped(
+          KeyEvent.VK_PRINTSCREEN,
+          key -> { ... });
+}
+```
+
+These conditional checks clearly show that the codebase expects and handles the possibility that `Input.keyboard()` may return null at runtime.
+
+Because:
+- `keyboard()` just returns the field without any non-null enforcement,
+- there is no provided code that ensures `keyboard` is initialized to a non-null instance, and
+- multiple callers treat `Input.keyboard()` as potentially null,
+
+the specific invocation `Input.keyboard()` at the listed call sites can indeed return null.]]></reason>
+  <value>YES</value>
+</response>

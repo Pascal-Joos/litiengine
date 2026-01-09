@@ -1,0 +1,64 @@
+<response>
+  <reason><![CDATA[
+`Game.world().environment()` returns the field `this.environment` from `GameWorld`:
+
+```java
+public Environment environment() {
+  return this.environment;
+}
+```
+
+From the provided code, `this.environment` is explicitly set to `null` in `unloadEnvironment()`:
+
+```java
+public void unloadEnvironment() {
+  if (this.environment() != null) {
+    // ...
+  }
+  this.environment = null;
+}
+```
+
+`unloadEnvironment()` is called by `clear()`:
+
+```java
+public void clear() {
+  this.unloadEnvironment();
+  // ...
+}
+```
+
+It is also called at the start of `loadEnvironment(env)`:
+
+```java
+public void loadEnvironment(final Environment env) {
+  Lock lock = Game.loop().getLock();
+  lock.lock();
+  try {
+    unloadEnvironment();
+    this.environment = env;
+    if (env != null) {
+      // ...
+    }
+  } finally {
+    lock.unlock();
+  }
+}
+```
+
+Since `this.environment = env;` is executed even when `env` is `null`, any call `loadEnvironment(null)` leaves `this.environment` as `null`.
+
+Many of the shown call sites guard against null:
+
+```java
+if (Game.world().environment() == null) { return; }
+if (Game.world().environment() != null) { ... }
+if (Game.world().environment() == null || Game.world().environment().getMap() == null) { return; }
+```
+
+These checks only make sense because `Game.world().environment()` can in fact be `null`. No invariant or guarantee is shown that `loadEnvironment` is always called with a non-null `env` before any of these usages, nor that `clear()`/`unloadEnvironment()` cannot have been called.
+
+Therefore, for the specific call site `Game.world().environment()`, the returned value is exactly `this.environment`, which can be `null` after `unloadEnvironment()` or `loadEnvironment(null)` (or before any environment has been loaded). There is no code shown that prevents these situations at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

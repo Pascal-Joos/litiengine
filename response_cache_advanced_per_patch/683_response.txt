@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public BufferedImage apply(BufferedImage image) {
+    if (this.getCreature().isDead()) {
+      return image;
+    }
+
+    final BufferedImage buffer =
+        Imaging.getCompatibleImage(image.getWidth() * 2 + 2, image.getHeight() * 2);
+    final Graphics2D graphics = Nullability.castToNonnull(buffer).createGraphics();
+    float x = image.getWidth() / 2.0f;
+    float y = image.getHeight() / 2.0f;
+
+    this.drawShadow(
+        graphics, image.getWidth(), image.getHeight(), x + this.offsetX, y + this.offsetY);
+
+    ImageRenderer.render(graphics, image, x, y);
+    graphics.dispose();
+    return buffer;
+  }
+  ```
+    ]]>
+  </code>
+</response>

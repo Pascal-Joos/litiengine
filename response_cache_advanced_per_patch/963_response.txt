@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no information about how `Input.mouse()` is implemented, how or when it is initialized, or whether its contract guarantees a non-null return.
+
+Analysis of code paths and usage:
+
+1. The constructor calls:
+   - `Input.keyboard().onKeyTyped(this::handleTypedKey);`
+   - `Input.mouse().onClicked(...)`
+   - Inside the `onClicked` handler, it calls `Input.mouse().getLocation()` again.
+
+2. There are no preceding null checks on `Input.mouse()` in this method, nor any visible initialization or guarantee in this snippet that `Input.mouse()` is non-null.
+
+3. Without the implementation or documented contract of `Input.mouse()` (e.g., whether it's a singleton that is always initialized before any UI components are created, or whether it can be absent / uninitialized in some runtime modes), we cannot soundly prove:
+   - that it will never return null, or
+   - that it may return null under certain conditions.
+
+4. Java itself does not enforce non-null return values without explicit annotations and supporting tools; the snippet contains no annotations (e.g., `@NonNull`) or defensive checks.
+
+Because the determination hinges entirely on the (unknown) implementation and guarantees of `Input.mouse()`, the nullability of that expression cannot be conclusively established from the given code.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or API contract (e.g., Javadoc or interface) for Input.mouse().]]></request>
+        <request><![CDATA[Indicate whether there is a global initialization process that guarantees Input.mouse() is non-null before any TextFieldComponent is constructed.]]></request>
+    </requests>
+</response>
+```

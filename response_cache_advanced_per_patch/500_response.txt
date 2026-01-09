@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void removeLayer(int index) {
+    if (this.layers == null) {
+      return;
+    }
+    ILayer removed = this.layers.remove(index);
+    this.layerRemoved(removed);
+    if (removed instanceof Layer) {
+      ((Layer) removed).setMap(null);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setLoopSprite(boolean loopSprite) {
+      this.loopSprite = loopSprite;
+      if (this.animation == null) {
+        return;
+      }
+      this.animation.getDefault().setLooping(loopSprite);
+  }
+  ```
+    ]]>
+  </code>
+</response>

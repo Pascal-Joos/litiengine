@@ -1,0 +1,27 @@
+```xml
+<response>
+    <reason><![CDATA[
+Inside the method, the result of entity.movement() is first stored in a local variable:
+
+    IMovementController mvmtControl = entity.movement();
+    if (mvmtControl != null) {
+        ...
+        entity.movement().apply(force);
+        ...
+    }
+
+The null check is performed on mvmtControl, not on a second call to entity.movement(). The call that is potentially null-checked (mvmtControl) is *not* the one later used for apply(force); instead, the code calls entity.movement() again.
+
+Unless there is an explicit, documented guarantee that:
+1) entity.movement() always returns the same non-null instance within the duration of this method after the first call, and
+2) entity.movement() cannot change to null between the first and second invocations (e.g., due to concurrent modification or internal state changes),
+
+then it is possible that:
+- The first call returns a non-null IMovementController (mvmtControl != null, so the if-block executes), but
+- A subsequent call to entity.movement() inside the if-block returns null, causing a NullPointerException when .apply(force) is invoked.
+
+Because we do not have the implementation or contract of entity.movement(), we cannot assert such a guarantee. From the presented code alone, there is a feasible path where entity.movement() at the call site entity.movement().apply(force) could be null, even if mvmtControl was non-null earlier. Therefore, based solely on this snippet and without stronger contracts, the expression can be null.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

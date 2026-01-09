@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void checkHeight(int value) {
+      checkDimension(value, Nullability.castToNonnull(this.getImage()).getHeight(), this.getName(), "height");
+  }
+  ```
+    ]]>
+  </code>
+</response>

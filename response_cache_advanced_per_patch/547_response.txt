@@ -1,0 +1,33 @@
+<response>
+  <reason><![CDATA[
+At every shown call site, the expression is:
+
+```java
+TmxMap map = (TmxMap) this.getLayer().getMap();
+```
+
+This expression is only executed inside branches that are guarded by `this.isInfiniteMap()`:
+
+```java
+private boolean isInfiniteMap() {
+  return this.getLayer() != null
+      && this.getLayer().getMap() != null
+      && this.getLayer().getMap().isInfinite()
+      && this.getLayer().getMap() instanceof TmxMap;
+}
+```
+
+`isInfiniteMap()` returns `true` only if **all** of the following are true:
+
+1. `this.getLayer() != null`
+2. `this.getLayer().getMap() != null`
+3. `this.getLayer().getMap().isInfinite()`
+4. `this.getLayer().getMap() instanceof TmxMap`
+
+Thus, at the moment the guarded code is executed, the condition `this.getLayer().getMap() != null` has already been verified. That means that, for this specific call site, `this.getLayer().getMap()` is guaranteed to be non-null whenever the line runs.
+
+If `isInfiniteMap()` is `false`, the guarded code (including the `getMap()` call in question) is not executed at all, so there is no execution path where the assignment runs with a null result from `getMap()`.
+
+Therefore, considering only this specific call site inside the `if (this.isInfiniteMap())` branches, `getMap()` cannot produce a null value at the point where it is cast to `TmxMap`.]]></reason>
+  <value>NO</value>
+</response>

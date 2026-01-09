@@ -1,0 +1,35 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public BufferedImage getCurrentImage() {
+    if (!this.isEnabled()) {
+      return null;
+    }
+
+    final Animation current = this.getCurrent();
+    if (current == null
+        || current.getSpritesheet() == null
+        || current.getCurrentKeyFrame() == null) {
+      return null;
+    }
+
+    final String cacheKey = this.buildCurrentCacheKey();
+    final Optional<BufferedImage> opt = Resources.images().tryGet(cacheKey);
+    if (opt.isPresent()) {
+      return opt.get();
+    }
+
+    BufferedImage sprite =
+        current.getSpritesheet().getSprite(current.getCurrentKeyFrame().getSpriteIndex());
+    for (final ImageEffect effect : this.getImageEffects()) {
+      sprite = effect.apply(Nullability.castToNonnull(sprite));
+    }
+
+    return sprite;
+  }
+  ```
+    ]]>
+  </code>
+</response>

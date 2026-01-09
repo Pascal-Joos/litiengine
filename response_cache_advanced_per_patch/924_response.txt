@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void updateInvariableEngineComponents() {
+    Game.audio().update();
+
+    ((Keyboard) Input.keyboard()).update();
+    ((Mouse) Input.mouse()).update();
+
+    if (Game.config().input().isGamepadSupport() && Input.gamepads() != null) {
+      for (IUpdateable gamepad : Input.gamepads().getAll()) {
+        gamepad.update();
+      }
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

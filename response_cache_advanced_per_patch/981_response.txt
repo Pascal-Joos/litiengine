@@ -1,0 +1,26 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no visible guarantee that `Input.mouse()` cannot return null:
+
+- `Input.mouse()` is a static method call; its implementation and contract are not shown.
+- There are no prior null checks on `Input.mouse()` in this method.
+- The fact that `Input.mouse()` is called twice (`Input.mouse().isRightButtonPressed()` and `Input.mouse().getMapLocation()`) does not, by itself, guarantee non-null; each call could independently return null or throw a `NullPointerException`.
+- The superclass `update()` and other surrounding code do not appear (from what is provided) to establish a non-null invariant for `Input.mouse()`.
+
+Because we lack:
+- The implementation of `Input.mouse()`
+- Any documented contract or annotation (e.g. @NotNull)
+- Any global initialization or lifecycle guarantees
+
+we cannot safely conclude that `Input.mouse()` is never null. We also cannot assert that it can be null without evidence from its implementation or documentation.
+
+Therefore, based solely on the snippet, the nullability of `Input.mouse()` is indeterminate.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or interface/contract of Input.mouse() (e.g., the Input class and its mouse() method).]]></request>
+        <request><![CDATA[Provide any framework or engine documentation that specifies whether Input.mouse() is guaranteed to return a non-null object.]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,40 @@
+<response>
+  <reason><![CDATA[
+At the call site in MapRenderer.drawTile:
+
+```java
+ITileOffset offset = tile.getTilesetEntry().getTileset().getTileOffset();
+```
+
+there is no prior null check on `tile.getTilesetEntry()`. The only information we have about `getTilesetEntry()` is its interface declaration:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.ITile {
+  public ITilesetEntry getTilesetEntry()
+}
+```
+
+No implementation or contract (e.g., @Nonnull) is shown that would guarantee a non-null return.
+
+Elsewhere, in `Tileset.containsTile(ITile tile)`:
+
+```java
+ITilesetEntry entry = tile.getTilesetEntry();
+return entry == null
+    ? this.containsTile(tile.getGridId())
+    : this.containsTile(Nullability.castToNonnull(tile.getTilesetEntry()));
+```
+
+this code explicitly checks `entry == null`, which demonstrates that callers of `ITile.getTilesetEntry()` expect that it can return null. This is the same interface and same method, so the nullability expectation applies to all its uses, including the `MapRenderer.drawTile` call site.
+
+Because:
+- `ITile.getTilesetEntry()` is an interface method with no provided implementation here,
+- another caller in the same codebase clearly treats its result as potentially null,
+- and nothing in the provided snippets establishes a stronger guarantee for tiles used in `MapRenderer.drawTile`,
+
+we must conclude that at this specific call site, `tile.getTilesetEntry()` can evaluate to null.
+
+If it is null, then `tile.getTilesetEntry().getTileset()` would throw a NullPointerException, but exceptions are explicitly not to be treated as "null returns"—the key point is that the return value of `getTilesetEntry()` itself may be null at this site.
+]]></reason>
+  <value>YES</value>
+</response>

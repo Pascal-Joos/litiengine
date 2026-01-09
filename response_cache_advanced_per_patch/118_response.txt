@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+With only the provided method:
+
+    protected double getViewportHeight() {
+        return Game.window().getResolution().getHeight() / this.getRenderScale();
+    }
+
+there is no visible guarantee that `Game.window()` or `Game.window().getResolution()` cannot be null.
+
+To determine nullability, we would need to know:
+- How `Game.window()` is implemented and initialized
+- Whether it can ever return null (e.g., before initialization, after shutdown, in headless mode, etc.)
+- Whether `getResolution()` on the window instance can return null by contract or in any exceptional state
+
+Because those implementations and contracts are not shown, both of these are possible:
+- `Game.window()` may be a static singleton initialized at startup and never null afterward.
+- `getResolution()` may always return a valid resolution object, or it may return null under some conditions.
+
+Without this information, we cannot conclusively state that `Game.window().getResolution()` can or cannot be null. Any assertion either way would be speculative.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or contract of Game.window(), including when and how the window object is created and whether it can ever be null.]]></request>
+        <request><![CDATA[Provide the implementation or contract of the window’s getResolution() method, including whether it can return null under any circumstances.]]></request>
+    </requests>
+</response>
+```

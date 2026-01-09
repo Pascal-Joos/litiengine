@@ -1,0 +1,90 @@
+<response>
+  <reason><![CDATA[
+At this call site, `this.getMap()` is the instance method:
+
+```java
+public IMap getMap() {
+  return this.map;
+}
+```
+
+There is no defensive check or non‑null guarantee on `this.map`; it directly returns the field. To determine nullability at the call site, we must see how `this.map` is assigned and whether it’s ever allowed to be null for the `Environment` instance on which `this.getMap()` is invoked.
+
+Assignments to `map` in `Environment` shown in the provided code:
+
+```java
+public Environment(final IMap map) {
+  this();
+  this.map = map;
+  if (this.getMap() != null) {
+    Game.physics().setBounds(this.getMap().getBounds());
+    this.setGravity(this.getMap().getIntValue(MapProperty.GRAVITY));
+  }
+}
+
+public Environment(final String mapPath) {
+  this(Resources.maps().get(mapPath));
+}
+```
+
+Both constructors assign `this.map` from an external source (`map` parameter or `Resources.maps().get(mapPath)`), and the code explicitly checks `if (this.getMap() != null)` before using it, which indicates that `map` may legally be null.
+
+`Environment` instances are created in multiple places without any enforcement that the `IMap` argument is non‑null:
+
+- `GameWorld.getEnvironment(IMap map)`:
+  ```java
+  if (map == null || map.getName() == null || map.getName().isEmpty()) {
+    return null;
+  }
+  Environment env = this.getEnvironments().stream()
+      .filter(e -> e.getMap().equals(map))
+      .findFirst()
+      .orElse(null);
+  if (env != null) {
+    return env;
+  }
+  env = new Environment(map);
+  this.addEnvironment(env);
+  return env;
+  ```
+  Here, the constructor is only called with non‑null `map`. So for `Environment` created here, `this.map` is non‑null.
+
+- `Environment(final String mapPath)`:
+  ```java
+  this(Resources.maps().get(mapPath));
+  ```
+  `Resources.maps().get(mapPath)` might return null; there is no check before passing it to the other constructor. So for such an `Environment`, `this.map` can be null.
+
+Additionally, various methods on `Environment` repeatedly check `if (this.getMap() != null)` before using it:
+
+- `addAmbientLight()`
+- `addStaticShadows()`
+- `init()`
+- `load()`
+- `updateLighting()`
+- `render(Graphics2D g)` (background color, `MapRenderer.render`, debug metrics, etc.)
+- `loadFromMap(int mapId)`  
+  and more.
+
+The presence of these explicit null checks implies that `this.map` is *expected* to sometimes be null in valid program states.
+
+The call site we are analyzing is simply:
+
+```java
+this.getMap()
+```
+
+with no surrounding null check (e.g., the usages where they do rely on non‑null either guard with `if (this.getMap() != null)` or wrap it in `Nullability.castToNonnull(...)`, which itself exists precisely because the value might be null).
+
+Since:
+
+- `getMap()` just returns the field `this.map` with no additional logic.
+- At least one constructor path can assign `null` to `this.map` (`Environment(String mapPath)` calling `Resources.maps().get(mapPath)` without checking).
+- Other `Environment` methods are written to handle `this.getMap()` being null.
+
+There is no guarantee at the call site that the receiver `Environment` instance was constructed only through the non‑null path or that `map` was never later changed to null (the field is not shown as `final`, so it could be reassigned elsewhere too).
+
+Therefore, at this specific invocation `this.getMap()`, the returned value *can* be null.
+  ]]></reason>
+  <value>YES</value>
+</response>

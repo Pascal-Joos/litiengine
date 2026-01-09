@@ -1,0 +1,36 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no guarantee that `this.collisionEntities.get(Collision.ANY)` is non-null.
+
+Analysis of control flow and checks:
+
+1. The only null check is on `entity.getCollisionType()`:
+   - If `entity.getCollisionType() == null`, the method returns early.
+   - Otherwise, it proceeds into the `switch`.
+
+2. The `switch` only handles `DYNAMIC` and `STATIC`:
+   - For these two cases, it calls:
+     `this.collisionEntities.get(entity.getCollisionType()).remove(entity);`
+   - For all other enum values (default), the method returns.
+
+3. After the `switch`, the method unconditionally executes:
+   `this.collisionEntities.get(Collision.ANY).remove(entity);`
+   This occurs whenever the `switch` handled `DYNAMIC` or `STATIC`.
+
+4. What is *not* checked anywhere:
+   - There is no null check on `this.collisionEntities.get(Collision.ANY)` itself.
+   - The code does not show how `collisionEntities` is initialized.
+   - There is no guarantee in the shown code that the map contains a non-null collection for key `Collision.ANY`.
+   - The earlier successful call `this.collisionEntities.get(entity.getCollisionType()).remove(entity);` does not imply anything about the existence or non-nullity of the value for the distinct key `Collision.ANY`.
+
+5. Semantics/contracts:
+   - Unless there is an external invariant (e.g., constructor or class contract) that *always* puts a non-null collection into `collisionEntities` under the key `Collision.ANY`, a call to `Map.get(Collision.ANY)` can legally return `null`.
+   - Java `Map#get` may return `null` if the key is not present or mapped to `null`.
+   - No such invariant is visible in the provided snippet.
+
+Therefore, based solely on the given code and standard Java Map semantics, `this.collisionEntities.get(Collision.ANY)` can be `null`, which would lead to a `NullPointerException` on `.remove(entity)` if the key is absent or mapped to `null`.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

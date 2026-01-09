@@ -1,0 +1,63 @@
+<response>
+  <reason><![CDATA[
+At this call site (`this.getHorizontalSlider()`), the method simply returns the field `this.horizontalSlider`. That field is assigned only in `initSliders()` and is otherwise allowed to remain uninitialized (i.e., `null` by default).
+
+From the provided constructor:
+
+```java
+public ListField(...) {
+  ...
+  this.initSliders();
+  this.initContentList();
+  ...
+}
+```
+
+`initSliders()` contains:
+
+```java
+final int maxNbOfRows = this.getMaxRows() - this.getNumberOfShownRows();
+if (this.getNumberOfShownColumns() < this.getContent().length) {
+  if (this.isSliderInside()) {
+    this.horizontalSlider = new HorizontalSlider(...);
+  } else {
+    this.horizontalSlider = new HorizontalSlider(...);
+  }
+  this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
+  this.getComponents().add(this.getHorizontalSlider());
+}
+```
+
+The assignment to `this.horizontalSlider` is guarded by:
+
+```java
+if (this.getNumberOfShownColumns() < this.getContent().length) {
+    ...
+}
+```
+
+If this condition is **false**, `this.horizontalSlider` is **never assigned** in `initSliders()`, so it remains `null`. There is no other assignment to `horizontalSlider` in the shown code.
+
+In `initContentList()` and elsewhere, the code itself assumes `getHorizontalSlider()` can be null:
+
+```java
+if (this.isSliderInside()) {
+  final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
+  if (horizontalSlider != null) {
+    ...
+  }
+}
+...
+final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
+if (horizontalSlider != null) {
+  horizontalSlider.onChange(...);
+}
+```
+
+These explicit null checks confirm that the author expects `getHorizontalSlider()` may return null.
+
+Since no given precondition or invariant at this specific call site ensures that `this.getNumberOfShownColumns() < this.getContent().length` is always true, there are valid executions where `horizontalSlider` remains null and `this.getHorizontalSlider()` returns null.
+
+Therefore, at this specific call site, `this.getHorizontalSlider()` **can** be null.]]></reason>
+  <value>YES</value>
+</response>

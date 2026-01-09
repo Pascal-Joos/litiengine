@@ -1,0 +1,9 @@
+<response>
+    <success>false</success>
+    <methods>
+      <method>getMap</method>
+      <method>getMapObjectLayers</method>
+      <method>addLayer</method>
+      <method>getMapObjectLayer</method>
+    </methods>
+</response>

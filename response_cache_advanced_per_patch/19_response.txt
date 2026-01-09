@@ -1,0 +1,83 @@
+<response>
+  <reason><![CDATA[
+The method `loop()` simply returns the static field `gameLoop`:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided `Game` class:
+
+- During initialization (`Game.init(...)`), `gameLoop` is created and assigned:
+
+  ```java
+  public static synchronized void init(String... args) {
+    if (initialized) {
+      ...
+      return;
+    }
+
+    ...
+    gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+    loop().attach(physics());
+    loop().attach(world());
+    ...
+    initialized = true;
+  }
+  ```
+
+  So after a successful `init`, `gameLoop` is non-null.
+
+- During termination (`Game.terminate()`), `gameLoop` is explicitly set to null:
+
+  ```java
+  static synchronized void terminate() {
+    if (!initialized) {
+      return;
+    }
+
+    hasStarted = false;
+    initialized = false;
+
+    config().save();
+    gameLoop.terminate();
+    tweenEngine.terminate();
+    soundEngine.terminate();
+
+    world().clear();
+    ...
+    gameLoop = null;
+    screenManager = null;
+    gameWindow = null;
+  }
+  ```
+
+Therefore, the value returned by `loop()` depends entirely on the lifecycle state managed by `Game`:
+
+- Before `Game.init(...)` successfully runs, `gameLoop` is never assigned and is therefore `null`.
+- After `Game.init(...)` and before `Game.terminate()`, `gameLoop` is non-null.
+- After `Game.terminate()` has run, `gameLoop` is set back to `null`.
+
+The call sites you provided include many usages that *check* for null:
+
+```java
+if (Game.loop() != null) {
+  this.lastScreenChange = Game.loop().getTicks();
+}
+```
+
+and in other places there is no null-check, which implies those authors expect `Game.init()` to have been called and `terminate()` not yet called at those points. However, from the code alone, there is no guarantee that any particular call to `loop()` is only made between `init()` and `terminate()`. The API neither enforces that `init()` has been called before the various callers use `Game.loop()`, nor prevents `loop()` calls after `terminate()`.
+
+Since:
+
+- `gameLoop` is a static field.
+- It is explicitly assigned `null` in `terminate()`.
+- It is only assigned a non-null value inside `init(...)`.
+- The code does not statically guarantee that `init` has run and `terminate` has not when `loop()` is called,
+
+the method `loop()` **can** return `null` at this call site, depending on whether the program has been initialized or already terminated at runtime. The presence of guards like `if (Game.loop() != null)` in some locations further confirms that the library itself expects `loop()` may be `null` at certain moments.
+  ]]></reason>
+  <value>YES</value>
+</response>

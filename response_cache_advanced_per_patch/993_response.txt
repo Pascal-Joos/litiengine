@@ -1,0 +1,54 @@
+```xml
+<response>
+    <reason><![CDATA[
+In the provided constructor, the critical expression in the actual code is:
+
+    final var mouse = Input.mouse();
+    if (mouse != null) {
+        mouse.onClicked(
+            e -> {
+                if (!this.getBoundingBox().contains(mouse.getLocation())) {
+                    this.setSelected(false);
+                }
+            });
+    }
+
+Inside the click-handler you use the captured local variable `mouse`, not `Input.mouse()`. The lambda is effectively:
+
+    e -> {
+        if (!this.getBoundingBox().contains(mouse.getLocation())) {
+            this.setSelected(false);
+        }
+    }
+
+The only place `mouse` is assigned is:
+
+    final var mouse = Input.mouse();
+
+Immediately after that, there is an explicit null-check:
+
+    if (mouse != null) {
+        mouse.onClicked( ... uses mouse ... );
+    }
+
+Therefore, the lambda is only ever registered and executed if `mouse` was non-null at registration time. There is no code path where the handler runs and `mouse` is null, because the registration (and thus the existence of the handler itself) is guarded by `if (mouse != null)`.
+
+Two important points:
+
+1. You are *not* calling `Input.mouse()` inside the handler, so any later change in `Input.mouse()`'s return value does not affect the already-captured `mouse` reference.
+
+2. For `mouse.getLocation()` to throw a `NullPointerException`, `mouse` would have to be null, but that would require the handler to have been registered when `mouse` was null, which is prevented by the explicit `if (mouse != null)`.
+
+Given only this method and standard Java semantics for lambdas and captured variables, `mouse` in `mouse.getLocation()` cannot be null at runtime via any code path inside this constructor.
+
+If the line were literally:
+
+    if (!this.getBoundingBox().contains(Input.mouse().getLocation())) {
+
+and there were no preceding guarantees about `Input.mouse()` never returning null, then `Input.mouse()` *could* be null. But that is *not* what the given method does. The real code uses the captured `mouse` variable, which is guarded by a null-check.
+
+Because the question explicitly asks about the expression `Input.mouse()` at that line, and in the actual provided code that exact expression is not used there, the only sound answer based on the method as written is: the used reference within the handler (`mouse`) cannot be null due to the prior null-check.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

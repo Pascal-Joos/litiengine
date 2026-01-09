@@ -1,0 +1,4 @@
+<response>
+    <reason><![CDATA[The method name is `setOrientation`, which is a conventional JavaBean-style setter. It neither matches known framework lifecycle initializer signatures (like `onCreate` or `init`) nor begins with `init` or `initialize`. By your stated criteria, setter methods must not be treated as initializer methods, even if they assign to non-null fields. Therefore, this method should not be considered an initializer method for NullAway.]]></reason>
+    <value>NO</value>
+</response>

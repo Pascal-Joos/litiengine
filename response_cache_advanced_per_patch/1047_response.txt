@@ -1,0 +1,7 @@
+<response>
+    <success>false</success>
+    <methods>
+      <method>getLocation</method>
+      <method>finish</method>
+    </methods>
+</response>

@@ -1,0 +1,60 @@
+<response>
+  <reason><![CDATA[
+The implementation of `getEnvironment()` is:
+
+```java
+@Override
+public Environment getEnvironment() {
+  return this.environment;
+}
+```
+
+So the return value is exactly the value of the field `this.environment`.
+
+From the provided code, we see that:
+
+- In `loaded(Environment environment)`:
+  ```java
+  @Override
+  public void loaded(Environment environment) {
+    this.environment = environment;
+
+    this.loaded = true;
+
+    for (EntityListener listener : this.listeners) {
+      listener.loaded(this, this.getEnvironment());
+    }
+  }
+  ```
+  Here `this.environment` is set to the argument `environment`, which might be non-null or null depending on how `loaded` is called (the call sites are not fully provided). Immediately afterward, `this.getEnvironment()` is used in the listener call, so at that point it returns the current value of `this.environment` (which could be null if `loaded` was invoked with a null argument).
+
+- In `removed(Environment environment)`:
+  ```java
+  @Override
+  public void removed(Environment environment) {
+    this.loaded = false;
+
+    for (EntityListener listener : this.listeners) {
+      listener.removed(this, this.getEnvironment());
+    }
+
+    // set to null after informing the listeners so they can still access the environment instance
+    this.environment = null;
+  }
+  ```
+  During the loop, `this.environment` still has its previous value (non-null if the entity had been in an environment), and only after the listeners have been notified is it explicitly set to `null`. Thus, after `removed` completes, later calls to `this.getEnvironment()` will return `null`.
+
+- In the constructor:
+  ```java
+  protected Entity() {
+    ...
+    this.registerActions();
+  }
+  ```
+  There is no initialization of `this.environment` in the constructor. Unless the field has another default initialization elsewhere (not shown), it will be `null` until `loaded` (or some other setter) assigns it.
+
+Other methods (e.g., `addTag`, `removeTag`, `Trigger.activate`) simply use `this.getEnvironment()` and contain explicit null checks in some cases, which implies that `getEnvironment()` is expected to be able to return null.
+
+Because no invariant is shown that guarantees `this.environment` is always non-null at the time of the specific call `this.getEnvironment()`, and we see explicit code that sets `this.environment = null` and does not reassign it before possible future uses, the field can be null at some points in the entity’s lifetime. Therefore, the call site `this.getEnvironment()` can evaluate to null.]]></reason>
+  <value>YES</value>
+</response>

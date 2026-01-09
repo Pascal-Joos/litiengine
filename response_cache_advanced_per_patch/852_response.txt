@@ -1,0 +1,40 @@
+<response>
+  <reason><![CDATA[
+At the shown call sites, `this.getButton2()` is invoked only after `setButton2(...)` has just been called with a `new ImageComponent(...)` instance.
+
+In `Slider`:
+```java
+public ImageComponent getButton2() {
+  return this.button2;
+}
+
+protected void setButton2(final ImageComponent button2) {
+  this.button2 = button2;
+  this.button2.onClicked(...);
+  this.getComponents().add(this.getButton2());
+}
+```
+
+In both `HorizontalSlider.initializeComponents()` and `VerticalSlider.initializeComponents()` the sequence is:
+
+HorizontalSlider:
+```java
+this.setButton2(
+    new ImageComponent(...));
+this.getButton2().setFont(ARROW_RIGHT.getFont());
+```
+
+VerticalSlider:
+```java
+this.setButton2(
+    new ImageComponent(...));
+Nullability.castToNonnull(this.getButton2()).setFont(...);
+Nullability.castToNonnull(this.getButton2()).setSpriteSheet(...);
+```
+
+`setButton2` directly assigns the non-null `new ImageComponent(...)` to `this.button2` before the `this.getButton2()` calls occur. There is no intervening code that could set `this.button2` to null or throw away the reference. Therefore, at these specific call sites, `this.button2` is guaranteed to hold the just-created `ImageComponent` instance.
+
+Even if `this.getComponents().add(this.getButton2())` (inside `setButton2`) or `button2.onClicked(...)` were to throw an exception, that would prevent the program from reaching the later `this.getButton2()` call at all; it would not cause `getButton2()` to return null. Since exception paths are explicitly excluded from consideration, and the field is directly and immediately initialized with a non-null value, the value returned by `this.getButton2()` at the shown call sites cannot be null.
+  ]]></reason>
+  <value>NO</value>
+</response>

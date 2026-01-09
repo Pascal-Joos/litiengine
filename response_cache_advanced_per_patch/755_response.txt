@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void update(Point2D emitterOrigin, float updateRatio) {
+    super.update(emitterOrigin, updateRatio);
+    if (this.animation == null) {
+      return;
+    }
+    this.animation.update();
+  }
+  ```
+    ]]>
+  </code>
+</response>

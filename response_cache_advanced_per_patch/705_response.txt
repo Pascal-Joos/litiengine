@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void updateRowsAndCols() {
+      final BufferedImage sprite = this.getImage();
+      this.columns = Nullability.castToNonnull(sprite).getWidth() / this.spriteWidth;
+      this.rows = Nullability.castToNonnull(sprite).getHeight() / this.spriteHeight;
+  }
+  ```
+    ]]>
+  </code>
+</response>

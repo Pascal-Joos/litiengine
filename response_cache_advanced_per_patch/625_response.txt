@@ -1,0 +1,45 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, every control-flow path that reaches the `for (TileChunk chunk : this.chunks)` loop is preceded by an explicit null check on `this.chunks`.
+
+More precisely:
+
+1. The method begins with checks on `this.getEncoding()` and `this.isInfinite()`. If the encoding is null/empty or the layer is not infinite, it throws an IllegalArgumentException and returns early; the rest of the method is not executed in those cases.
+
+2. After that, there are only three mutually-exclusive branches based on `this.getEncoding()`:
+   - `if (this.getEncoding().equals(Encoding.BASE64)) { ... }`
+   - `else if (this.getEncoding().equals(Encoding.CSV)) { ... }`
+   - `else { throw new IllegalArgumentException(...) }`
+
+3. In the BASE64 branch:
+   - The code checks:
+     ```java
+     if (this.chunks == null || this.chunks.isEmpty()) {
+         throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
+     }
+     ```
+     If `this.chunks` is null, the method throws and does not proceed. Therefore, any execution that reaches:
+     ```java
+     for (TileChunk chunk : Nullability.castToNonnull(this.chunks)) {
+     ```
+     must have had `this.chunks != null` and `!this.chunks.isEmpty()`.
+
+4. In the CSV branch, the same pattern appears:
+   - The code checks:
+     ```java
+     if (this.chunks == null || this.chunks.isEmpty()) {
+         throw new IllegalArgumentException("Unsupported tile layer encoding " + this.getEncoding());
+     }
+     ```
+     Again, if `this.chunks` were null, the method would have thrown before the loop, so any execution reaching the loop has `this.chunks != null`.
+
+5. The third `else` branch throws unconditionally and never reaches a loop over `this.chunks`.
+
+Therefore, inside this method, under its own control flow and assuming no undefined behavior in `Nullability.castToNonnull`, `this.chunks` cannot be null at the point where it is iterated in either branch.
+
+Note that this conclusion is scoped strictly to the control flow of this method; external callers could still pass an object with `chunks == null`, but such a state will always cause an exception before any `for (TileChunk chunk : this.chunks)` loop is entered.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

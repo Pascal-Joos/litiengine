@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+protected ColorLayer(Environment env,  final Color color) {
+    this.environment = env;
+    this.color = color;
+
+    if (this.environment.getMap() != null) {
+      Dimension size = env.getMap().getSizeInPixels();
+      this.layer = Imaging.getCompatibleImage(size.width, size.height);
+      this.updateSection(this.environment.getMap().getBounds());
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

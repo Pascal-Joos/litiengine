@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void checkWidth(int value) {
+      if (this.getImage() == null) {
+          return;
+      }
+      checkDimension(value, this.getImage().getWidth(), this.getName(), "width");
+  }
+  ```
+    ]]>
+  </code>
+</response>

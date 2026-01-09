@@ -1,0 +1,67 @@
+<response>
+  <reason><![CDATA[
+At the provided call sites, there is no preceding null-check that would guarantee `map.getOrientation()` is non-null, and nothing in the given code constrains implementations of `IMap` to return a non-null `IMapOrientation`.
+
+The relevant uses:
+
+- In `MapUtilities.getTilesByPixelLocation`:
+  ```java
+  final Point tileLocation = map.getOrientation().getTile(location, map);
+  ```
+  This method does *not* check `map.getOrientation()` for null before calling `getTile`. An earlier guard is:
+  ```java
+  if (map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
+    return tilesAtLocation;
+  }
+  ```
+  which only concerns tile layers, not orientation. Therefore, if an `IMap` instance returns null for `getOrientation()`, this call will receive null and dereference it.
+
+- In `MapRenderer.drawTile`:
+  ```java
+  Point p = map.getOrientation().getLocation(x, y, map);
+  ```
+  Again, there is no preceding `map == null` or `map.getOrientation() == null` check.
+
+- In `DebugRenderer.drawTileBoundingBox`:
+  ```java
+  final Rectangle2D playerTile =
+      map.getOrientation().getEnclosingTileShape(location, map).getBounds2D();
+  ...
+  final Point tileLocation = map.getOrientation().getTile(location, map);
+  ```
+  This method is called from `renderMapDebugInfo`:
+  ```java
+  if (Game.config().debug().showTilesMetric()) {
+    drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
+  }
+  ```
+  There is no orientation null-check in either method.
+
+Contrast this with other utilities in the same code base that explicitly defend against a null orientation:
+
+- `MapUtilities.getTileBoundingBox(IMap, Rectangle2D)`:
+  ```java
+  if (map == null || map.getOrientation() == null) {
+    return new Rectangle2D.Double();
+  }
+  ```
+- `MapUtilities.getTile(IMap, Point2D)`:
+  ```java
+  if (map == null || map.getOrientation() == null) {
+    return new Point(-1, -1);
+  }
+  ```
+- `MapUtilities.getTileBoundingBox(IMap, Point tile)`:
+  ```java
+  if (map == null) {
+    return new Rectangle2D.Double();
+  }
+  return map.getOrientation().getBounds(tile, map);
+  ```
+  (Here they *do not* null-check `map.getOrientation()`, again implying it might be null in practice, but they simply didn't guard this call.)
+
+The presence of multiple explicit `map.getOrientation() == null` checks in other methods clearly indicates that `getOrientation()` is allowed to and may actually return null. Since `IMap` is just an interface here and no implementation is provided, we cannot assume otherwise. Given that, at the specific call sites like `map.getOrientation().getTile(...)`, `map.getOrientation().getLocation(...)`, and `map.getOrientation().getEnclosingTileShape(...)`, there is no local guarantee that `getOrientation()` is non-null.
+
+Therefore, for the specific invocation `map.getOrientation()` at these call sites, the return value can indeed be null.]]></reason>
+  <value>YES</value>
+</response>

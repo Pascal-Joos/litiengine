@@ -1,0 +1,13 @@
+<response>
+  <reason><![CDATA[
+The method body is:
+
+public StaticShadowLayer getStaticShadowLayer() {
+  return this.staticShadowLayer;
+}
+
+There are no other return paths or method calls involved. The return value is exactly the value of the instance field `this.staticShadowLayer`. Based solely on this body, there is nothing that guarantees that `staticShadowLayer` is initialized to a non-null value or that it cannot later be set to null. Without seeing the field declaration and all assignments to `staticShadowLayer`, the method can return whatever value that field currently holds, including null.
+
+Therefore, based only on the provided method body, it is possible for this method to return null.]]></reason>
+  <value>YES</value>
+</response>

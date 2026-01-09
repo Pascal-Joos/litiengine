@@ -1,0 +1,67 @@
+<response>
+  <reason><![CDATA[
+At the call site, x is a Tileset used inside streams like:
+
+- distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))
+- distinctTilesets.stream().anyMatch(x -> x.getName().equals(sprite.getName()))
+- Resources.tilesets().contains(tileset.getName())
+- Resources.tilesets().add(tileset.getName(), tileset)
+
+All these places assume x.getName() returns a non-null String: they immediately call equals(...) on the result (e.g., x.getName().equals(...)). If x.getName() could be null, this would throw a NullPointerException. There is no null check on x.getName() at these call sites, so for the code to work as intended, getName() must yield a non-null value for every Tileset that reaches these locations.
+
+Looking at the implementation:
+
+```java
+@Override
+public String getName() {
+  return this.sourceTileset != null ? this.sourceTileset.getName() : this.name;
+}
+```
+
+There are two possible return paths:
+
+1. this.sourceTileset != null:  
+   Then the method returns this.sourceTileset.getName(). For that to be non-null, the sourceTileset’s own getName() must be non-null. We see how sourceTileset is set:
+
+   - In the constructor:
+     ```java
+     public Tileset(Tileset source) {
+       this.source = source.getName() + "." + FILE_EXTENSION;
+       this.sourceTileset = source;
+       this.firstgid = 1;
+     }
+     ```
+     Here, calling source.getName() is done without a null check, and it’s immediately concatenated with a String. If source.getName() could be null, this would again risk NPE. This strongly implies that for any Tileset passed as source, source.getName() must already be non-null.
+
+   - In load(List<Tileset> rawTilesets):
+     ```java
+     if (set.getName() != null && set.getName().equals(fileName)) {
+       this.sourceTileset = set;
+       break;
+     }
+     ```
+     When sourceTileset is reassigned from the list, it is only set to a Tileset where set.getName() != null. Therefore, any sourceTileset assigned here definitely has a non-null name.
+
+   As a result, whenever this.sourceTileset is non-null at our call site, its getName() has already been used in contexts that assume non-null, and in the load method it is explicitly guarded with set.getName() != null. Therefore, the returned value through this branch is constrained to be non-null for the Tilesets that proceed into the resource-loading flow.
+
+2. this.sourceTileset == null:  
+   Then the method returns this.name. The provided code does not show any explicit initialization of this.name nor any handling that would guarantee or deny its nullability. However, this same getName() result is used as a key in:
+
+   ```java
+   if (Resources.tilesets().contains(tileset.getName())) { ... }
+   Resources.tilesets().add(tileset.getName(), tileset);
+   ```
+
+   A resource name used as a registry key is expected to be non-null. Passing null into contains/add would typically be a bug. Furthermore, in beforeMarshal, Tileset names are used inside equals comparisons as well, again assuming non-null or at least “safe” values.
+
+Given:
+- Every place where getName() is used in the shown call chain either calls equals(...) on it or uses it as a registry key, with no null checks.
+- sourceTileset, when non-null, is only ever set in ways that assume or enforce a non-null getName().
+- The code structure (use as map keys and equality checks) relies on names being present, not optional.
+
+Within this specific call chain, for Tilesets that actually reach the shown call site and are processed successfully, allowing getName() to return null would immediately break these usages with NPEs. The library is evidently written under the invariant that Tileset.getName() is non-null in this context.
+
+Therefore, in the context of the given call site x.getName() and its surrounding usage, the method’s result is not intended to be nullable and, under the assumptions of the existing code, should not be null.
+  ]]></reason>
+  <value>NO</value>
+</response>

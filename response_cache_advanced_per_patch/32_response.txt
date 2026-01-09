@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void loaded(Environment environment) {
+    if (Game.loop() != null) {
+      environmentLoaded = Game.loop().getTicks();
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

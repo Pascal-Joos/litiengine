@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public float getRelativeCurrentValue() {
+      final Float max = this.getMax();
+      if (max == null || max.floatValue() == 0.0f) {
+          return 0.0f;
+      }
+      final Float current = this.get();
+      if (current == null) {
+          return 0.0f;
+      }
+      return current.floatValue() / max.floatValue();
+  }
+  ```
+    ]]>
+  </code>
+</response>

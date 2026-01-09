@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int hashCode() {
+    // add a constant to avoid collisions with LoopedTrack
+    return (this.sound == null ? 1 : this.sound.hashCode()) + 0xdb9857d0;
+  }
+  ```
+    ]]>
+  </code>
+</response>

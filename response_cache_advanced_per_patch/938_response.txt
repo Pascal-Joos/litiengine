@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void handleBackSpace() {
+    if (Input.keyboard() != null && Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
+      while (this.getText().length() >= 1
+          && this.getText().charAt(this.getText().length() - 1) == ' ') {
+        this.setText(this.getText().substring(0, this.getText().length() - 1));
+      }
+
+      while (this.getText().length() >= 1
+          && this.getText().charAt(this.getText().length() - 1) != ' ') {
+        this.setText(this.getText().substring(0, this.getText().length() - 1));
+      }
+    } else if (this.getText().length() >= 1) {
+      this.setText(this.getText().substring(0, this.getText().length() - 1));
+    }
+
+    if (this.isKnownNumericFormat() && (this.getText() == null || this.getText().isEmpty())) {
+      this.setText("0");
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

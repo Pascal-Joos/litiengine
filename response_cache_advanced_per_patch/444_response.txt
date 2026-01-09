@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nonnull
+  public default IMapObjectLayer getMapObjectLayer(String layerName) {
+    Optional<IMapObjectLayer> layer =
+        this.getMapObjectLayers().stream().filter(x -> layerName != null && layerName.equals(x.getName())).findFirst();
+    return layer.orElse(null);
+  }
+  ```
+    ]]>
+  </code>
+</response>

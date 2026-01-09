@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static void drawRow(
+      Graphics2D g, ITileLayer layer, int y, IMap map, Rectangle2D viewport) {
+    RenderOrder renderOrder = map.getRenderOrder();
+    if (renderOrder == null) {
+      return;
+    }
+    if (renderOrder.rtl) {
+      for (int x = map.getWidth() - 1; x >= 0; x--) {
+        drawTile(g, layer, x, y, map, viewport);
+      }
+    } else {
+      for (int x = 0; x < map.getWidth(); x++) {
+        drawTile(g, layer, x, y, map, viewport);
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

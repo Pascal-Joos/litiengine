@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public Point2D getCenter() {
+    if (this.getMap() == null) {
+      return new Point2D.Double(0, 0);
+    }
+
+    return new Point2D.Double(
+        this.getMap().getSizeInPixels().getWidth() / 2.0,
+        this.getMap().getSizeInPixels().getHeight() / 2.0);
+}
+  ```
+    ]]>
+  </code>
+</response>

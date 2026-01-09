@@ -1,0 +1,61 @@
+<response>
+    <reason><![CDATA[
+Looking only at the provided code and ignoring annotations:
+
+The `add(IMapObjectLayer layer, IMapObject mapObject)` method uses `layer` directly:
+```java
+public IMapObject add( IMapObjectLayer layer, IMapObject mapObject) {
+      layer.addMapObject(mapObject);
+      return mapObject;
+}
+```
+There are no null checks; if `layer` is null at call time, this method will throw a `NullPointerException` when calling `layer.addMapObject(mapObject)`.
+
+From the call chain:
+
+Depth 1:
+```java
+public IMapObject add(IMapObject mapObject) {
+      IMapObjectLayer layer;
+      if (this.getMap().getMapObjectLayers().isEmpty()) {
+        layer = new MapObjectLayer();
+        layer.setName(MapObjectLayer.DEFAULT_MAPOBJECTLAYER_NAME);
+        this.getMap().addLayer(layer);
+      } else {
+        layer = this.getMap().getMapObjectLayer(0);
+      }
+
+      return this.add(layer, mapObject);
+}
+```
+
+- In the `if` branch, `layer` is a new `MapObjectLayer()` instance, so non-null.
+- In the `else` branch, `layer` is obtained via:
+  ```java
+  layer = this.getMap().getMapObjectLayer(0);
+  ```
+  where `getMapObjectLayer` comes from `ILayerList`:
+
+Depth 2:
+```java
+public default IMapObjectLayer getMapObjectLayer(int layerId) {
+    Optional<IMapObjectLayer> layer =
+        this.getMapObjectLayers().stream().filter(x -> x.getId() == layerId).findFirst();
+    return layer.orElse(null);
+}
+```
+
+This implementation explicitly returns `null` if no matching layer is found (`orElse(null)`), so the caller `add(IMapObject mapObject)` can receive `null` for `layer` from `getMapObjectLayer(0)` and then call:
+```java
+return this.add(layer, mapObject);
+```
+passing `null` to the `layer` parameter of the target method.
+
+Thus:
+- A caller in the shown call chain can indeed pass `null` into `add(IMapObjectLayer layer, IMapObject mapObject)` (via `getMapObjectLayer` returning `null`).
+- No reassignment or null-check occurs on `layer` before it is used.
+- If `layer` is null, the method will crash with a `NullPointerException`.
+
+Therefore, based on the provided code, the parameter `layer` can be null.]]></reason>
+    <value>YES</value>
+</response>

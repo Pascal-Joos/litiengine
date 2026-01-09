@@ -1,0 +1,47 @@
+<response>
+  <reason><![CDATA[
+From the provided code, `IMap.getOrientation()` is an interface method with no implementation shown:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public IMapOrientation getOrientation()
+}
+```
+
+None of the call sites impose any precondition or guarantee that `getOrientation()` is non-null. In fact, the library code explicitly guards against it being null in at least one place:
+
+```java
+public static Point getTile(IMap map, final Point2D mapLocation) {
+  if (map == null || map.getOrientation() == null) {
+    return new Point(-1, -1);
+  }
+  return map.getOrientation().getTile(mapLocation, map);
+}
+```
+
+and:
+
+```java
+public static ITile getTopMostTile(final IMap map, final Point2D location) {
+  ...
+  if (map.getOrientation() == null) {
+    return null;
+  }
+
+  return getTopMostTile(map.getOrientation().getTile(location, map));
+}
+```
+
+These checks demonstrate that the authors consider `map.getOrientation()` *possibly null* at runtime. No stronger guarantees are introduced higher up the call chain (e.g., `renderMapDebugInfo`, `drawTile`, or the various `MapUtilities` methods) that would ensure a non-null orientation for the `map` argument passed in.
+
+Because we do not have an implementation of `IMap.getOrientation()` (and thus cannot prove it always returns a non-null `IMapOrientation`), and because existing code handles the `null` case explicitly, we must conclude that at the specific call sites like:
+
+```java
+map.getOrientation()
+```
+
+(e.g., in `MapUtilities.getTileBoundingBox`, `MapRenderer.drawTile`, `DebugRenderer.drawTileBoundingBox`, etc.) the method **can** return null, and those particular sites do not guard against that possibility.
+
+Therefore, `map.getOrientation()` can be null at these call sites.]]></reason>
+  <value>YES</value>
+</response>

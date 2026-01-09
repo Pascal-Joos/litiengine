@@ -1,0 +1,46 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void updateDimensionsByTileData() {
+    if (!this.isInfinite()) {
+      return;
+    }
+
+    int minX = 0;
+    int maxX = 0;
+    int minY = 0;
+    int maxY = 0;
+    int maxChunkWidth = 0;
+    int maxChunkHeight = 0;
+
+    for (TileChunk chunk : this.chunks) {
+      if (chunk.getX() < minX) {
+        minX = chunk.getX();
+      }
+
+      if (chunk.getY() < minY) {
+        minY = chunk.getY();
+      }
+
+      if (chunk.getX() + chunk.getWidth() > maxX) {
+        maxX = chunk.getX();
+        maxChunkWidth = chunk.getWidth();
+      }
+
+      if (chunk.getY() + chunk.getHeight() > maxY) {
+        maxY = chunk.getY();
+        maxChunkHeight = chunk.getHeight();
+      }
+    }
+
+    this.width = (maxX + maxChunkWidth) - minX;
+    this.height = (maxY + maxChunkHeight) - minY;
+
+    this.offsetX = minX;
+    this.offsetY = minY;
+}
+  ```
+    ]]>
+  </code>
+</response>

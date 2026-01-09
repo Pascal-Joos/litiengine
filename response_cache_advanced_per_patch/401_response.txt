@@ -1,0 +1,73 @@
+<response>
+  <reason><![CDATA[
+`Game.world().camera()` simply returns the `camera` field of `GameWorld`:
+
+```java
+public ICamera camera() {
+  return this.camera;
+}
+```
+
+From the provided code, there are exactly two relevant ways this field is set:
+
+1. **During initialization (non-null):**
+   ```java
+   public static synchronized void init(String... args) {
+     ...
+     world.setCamera(new Camera());
+     ...
+   }
+   ```
+   Here, `world.setCamera(new Camera());` assigns a new `Camera` instance to the `GameWorld`:
+
+   ```java
+   public void setCamera(final ICamera cam) {
+     if (this.camera() != null) {
+       Game.loop().detach(camera);
+     }
+
+     camera = cam;
+
+     if (cam != null && !Game.isInNoGUIMode()) {
+       Game.loop().attach(cam);
+       cam.updateFocus();
+     }
+   }
+   ```
+
+   After `Game.init(...)` has executed, `camera` is therefore non-null.
+
+2. **When clearing the world (set to null explicitly):**
+   ```java
+   public void clear() {
+     this.unloadEnvironment();
+     this.environments.clear();
+     this.setCamera(null);
+     Game.physics().clear();
+     ...
+   }
+   ```
+   In `setCamera(null)`:
+   - If `this.camera() != null`, it detaches the previous camera, then:
+     ```java
+     camera = cam; // cam is null here
+     ```
+   So after `GameWorld.clear()` has been called, `this.camera` is set to `null`.
+
+You also have multiple call sites that explicitly check for `Game.world().camera() != null` (e.g., in `Emitter`, `DebugRenderer`, `Mouse.getMapLocation`, `SpeechBubble.update`, some `RenderEngine` methods, `AStarGrid.render`). That is strong evidence that the library authors consider `Game.world().camera()` nullable at runtime.
+
+Crucially, nothing in the provided code guarantees that `GameWorld.clear()` is never called, or that `setCamera(null)` is otherwise forbidden before or around the time the analyzed call occurs. Conversely, there is no invariant or non-null annotation enforcing that `camera` must always be non-null after initialization. The only hard guarantee we can see is that:
+
+- Before `Game.init(...)` finishes, `camera` is set to a non-null `Camera`.
+- After any call to `GameWorld.clear()` (or another `setCamera(null)`), `camera` can be null.
+
+Since the question is whether this specific call site `Game.world().camera()` **can** evaluate to null at runtime, we must consider all legal executions of the program given the code:
+
+- Execution path A: typical start-up, `Game.init()` is called, `world.setCamera(new Camera())` runs, and `clear()` is never called -> `camera()` returns non-null.
+- Execution path B: the world is later cleared (e.g., via `Game.world().clear()`), which calls `setCamera(null)` -> subsequent `Game.world().camera()` calls see `camera == null`.
+
+Because path B is valid given the code, `Game.world().camera()` can return null at that call site. The presence of surrounding null checks in several methods further supports that this is an intended and supported state.
+
+Therefore, the method `camera()` can indeed return null at this call site.]]></reason>
+  <value>YES</value>
+</response>

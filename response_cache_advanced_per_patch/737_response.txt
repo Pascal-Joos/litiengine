@@ -1,0 +1,29 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int compare(final IEntity entity1, final IEntity entity2) {
+    if (this.getRelativeEntity() == null) {
+      return 0;
+    }
+
+    final double distance1 =
+        Nullability.castToNonnull(entity1.getLocation())
+            .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+    final double distance2 =
+        Nullability.castToNonnull(entity2.getLocation())
+            .distance(Nullability.castToNonnull(this.getRelativeEntity().getLocation()));
+    if (distance1 < distance2) {
+      return -1;
+    }
+    if (distance1 > distance2) {
+      return 1;
+    }
+
+    return 0;
+  }
+  ```
+    ]]>
+  </code>
+</response>

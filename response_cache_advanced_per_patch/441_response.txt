@@ -1,0 +1,34 @@
+<response>
+  <reason><![CDATA[
+The only information provided for `IMapObject.getType()` is its signature:
+
+```java
+public String getType()
+```
+
+No implementation or contract (e.g., documentation or annotations such as `@NotNull`) is given. Within the provided call chain, `mapObject.getType()` is explicitly treated as possibly `null`:
+
+```java
+if (mapObject.getType() == null || mapObject.getType().isEmpty()) {
+  loader = mapObjectLoaders.getOrDefault(MapObjectType.UNDEFINED_MAPOBJECTTYPE, null);
+} else {
+  loader = mapObjectLoaders.get(mapObject.getType());
+}
+```
+
+and:
+
+```java
+.filter(
+  mapObject ->
+      mapObject.getType() != null
+          && !mapObject.getType().isEmpty()
+          && mapObject.getId() == mapId)
+```
+
+These checks only prove that *callers* defensively assume `getType()` may return `null`; they do not prove it can’t. Because we don’t see the body of `getType()`, we cannot rule out that it returns `null` at this specific call site `mapObject.getType()` (in `Environment.load` and related usages).
+
+Under the given rules, if the implementation that determines the return value is not provided, we must not assume non-null. Therefore the result of `mapObject.getType()` *can* be `null` at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,46 @@
+<response>
+  <reason><![CDATA[
+Within class de.gurkenlabs.litiengine.graphics.animation.Animation, getCurrentKeyFrame() is:
+
+  KeyFrame getCurrentKeyFrame() {
+    return this.currentFrame;
+  }
+
+There are no null checks or alternative return paths; the return value is exactly the field this.currentFrame.
+
+From the provided code in Animation.update():
+
+- currentFrame is read multiple times (e.g., getKeyframes().indexOf(this.currentFrame)).
+- currentFrame is reassigned from the keyframe list: this.currentFrame = this.getKeyframes().get(newFrameIndex);
+
+None of this guarantees that:
+- currentFrame was ever initialized to a non-null value before update() or before getCurrentKeyFrame() is called, or
+- currentFrame cannot be set to null elsewhere in the class (no field declaration or constructor logic is shown).
+
+In AnimationController.getCurrentImage() and buildCurrentCacheKey(), calls to getCurrentKeyFrame() are explicitly null-checked:
+
+  if (this.getCurrent() == null
+      || this.getCurrent().getCurrentKeyFrame() == null
+      || this.getCurrent().getSpritesheet() == null) {
+    return null;
+  }
+
+and
+
+  if (this.getCurrent() == null
+      || this.getCurrent().getCurrentKeyFrame() == null
+      || this.getCurrent().getSpritesheet() == null) {
+    return null;
+  }
+
+These checks show that the library itself considers getCurrentKeyFrame() possibly returning null. Since we are not given any constructor or setter logic enforcing a non-null invariant on currentFrame, the safe conclusion from the available code is that this.currentFrame may be null at some times.
+
+Because getCurrentKeyFrame() is just a direct field return with no guarding logic, this specific call site:
+
+  this.getCurrentKeyFrame()
+
+can therefore evaluate to null whenever this.currentFrame is null.
+
+]]></reason>
+  <value>YES</value>
+</response>

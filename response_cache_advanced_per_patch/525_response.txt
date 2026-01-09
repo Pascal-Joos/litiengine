@@ -1,0 +1,31 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method:
+
+@Override
+public IMapImage getImage() {
+    return this.image;
+}
+
+there is not enough information to determine whether `this.image` can be null. The nullability of the returned expression depends on:
+
+- How and where `this.image` is declared (e.g., as a field) and whether it has any default or explicit initialization.
+- All assignments to `this.image` in constructors, setters, or other methods.
+- Whether any of those assignments can set `this.image` to null (either directly or via a method call that may return null).
+- Whether there are any class invariants, annotations, or framework guarantees (e.g., `@NonNull`, `@NotNull`, or explicit documentation) that forbid `this.image` from being null.
+
+Since none of that context is provided, we cannot rule out that `this.image` might be:
+- never assigned (thus remaining at Java’s default null for object fields), or
+- assigned null at some point in the object’s lifecycle.
+
+Without seeing the surrounding class and its initialization/assignment logic, the nullability of `this.image` at the point of `return this.image;` cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of the field `image` (including any annotations) in the containing class.]]></request>
+        <request><![CDATA[Provide all constructors and any methods that assign a value to `this.image` (including setters or builder methods).]]></request>
+        <request><![CDATA[If available, provide any documentation or interface/contract that specifies whether `getImage()` must never return null.]]></request>
+    </requests>
+</response>
+```

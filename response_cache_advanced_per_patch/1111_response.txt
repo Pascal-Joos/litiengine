@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static String getFileName( URL path) {
+      return getFileName(Nullability.castToNonnull(path).getPath());
+  }
+  ```
+    ]]>
+  </code>
+</response>

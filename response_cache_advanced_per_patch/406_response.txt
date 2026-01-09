@@ -1,0 +1,85 @@
+<response>
+  <reason><![CDATA[
+`Game.world().camera()` returns the `camera` field of `GameWorld`:
+
+```java
+public ICamera camera() {
+  return this.camera;
+}
+```
+
+From the provided code, `this.camera` is manipulated in exactly these ways:
+
+1. **Initialization in `Game.init`**  
+   During `Game.init(...)`:
+
+   ```java
+   world.setCamera(new Camera());
+   ```
+
+   So once `Game.init` has run, `Game.world().camera()` is set to a non‑null `Camera` instance.
+
+2. **`GameWorld.setCamera` can set it to null**
+
+   ```java
+   public void setCamera(final ICamera cam) {
+     if (this.camera() != null) {
+       Game.loop().detach(camera);
+     }
+
+     camera = cam;
+
+     if (cam != null && !Game.isInNoGUIMode()) {
+       Game.loop().attach(cam);
+       cam.updateFocus();
+     }
+   }
+   ```
+
+   Here, `camera` is directly assigned from the parameter `cam`, which may be `null`.  
+
+3. **`GameWorld.clear` explicitly sets it to null**
+
+   ```java
+   public void clear() {
+     this.unloadEnvironment();
+     this.environments.clear();
+     this.setCamera(null);
+     Game.physics().clear();
+     ...
+   }
+   ```
+
+   Calling `clear()` will invoke `setCamera(null)`, meaning `this.camera` becomes `null`.
+
+4. **Other uses confirm null is expected/allowed**  
+   Numerous call sites treat `Game.world().camera()` as possibly null, for example:
+
+   - Explicit null check:
+     ```java
+     if (Game.world().camera() != null) {
+       Game.world().camera().updateFocus();
+     }
+     ```
+   - Ternary use:
+     ```java
+     final Rectangle2D viewport =
+         Game.screens() != null && Game.world().camera() != null
+             ? Game.world().camera().getViewport()
+             : null;
+     ```
+
+   These patterns show the library itself considers `camera()` nullable and guards against null in multiple places.
+
+5. **No guarantee at the specific call site**  
+   The question focuses on the call site `Game.world().camera()`, not tied to a particular phase (e.g., strictly between `Game.init` and `GameWorld.clear`, or during a specific method where invariants guarantee a non-null camera). The provided code shows:
+
+   - `camera` is nullable by design (can be set to `null`).
+   - There is at least one public method (`clear`) that sets it to `null`.
+   - There is no invariant or checked precondition in `camera()` itself that prevents returning `null`.
+   - Many parts of the code base expect and handle `null` results from `Game.world().camera()`.
+
+Given that `camera` can be explicitly set to `null` via `setCamera(null)` (called from `clear()`), and there is no guard preventing `Game.world().camera()` from being invoked after that, the method `camera()` **can** return `null` at this call site. Whether it is null at runtime depends on game lifecycle and calls like `clear()` or other uses of `setCamera(null)`, but from a static perspective, a null result is clearly possible.
+  ]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  @XmlTransient
+  public void setY(float y) {
+    if (this.isInfiniteMap()) {
+      TmxMap map = (TmxMap) this.getLayer().getMap();
+      this.y = y + Nullability.castToNonnull(map).getChunkOffsetY() * Nullability.castToNonnull(map).getTileHeight();
+      return;
+    }
+
+    this.y = y;
+  }
+  ```
+    ]]>
+  </code>
+</response>

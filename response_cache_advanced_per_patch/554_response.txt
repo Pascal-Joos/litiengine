@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int getOffsetX() {
+    if (this.isInfiniteMap()) {
+      TmxMap map = (TmxMap) this.getMap();
+      return super.getOffsetX() - Nullability.castToNonnull(map).getChunkOffsetX() * Nullability.castToNonnull(map).getTileWidth();
+    }
+
+    return super.getOffsetX();
+  }
+  ```
+    ]]>
+  </code>
+</response>

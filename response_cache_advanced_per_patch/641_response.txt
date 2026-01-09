@@ -1,0 +1,4 @@
+<response>
+  <reason><![CDATA[The provided code only shows the declaration of ITilesetEntry.getTileset() with no implementation or documentation indicating non-null behavior (e.g., no @NotNull annotation, no invariant shown). At the call site tile.getTilesetEntry().getTileset(), nothing in drawTile or drawRow checks the result of getTileset() for null before calling .getTileOffset(), which would throw a NullPointerException if getTileset() were null. However, the absence of a null-check does not prove non-nullness; it only shows that the code *assumes* non-null. Since the actual implementation of ITilesetEntry.getTileset() is not provided and the return value does not depend on any parameters or other shown methods, there is no basis to guarantee it never returns null. Therefore, it is possible for this method to return null at this call site.]]></reason>
+  <value>YES</value>
+</response>

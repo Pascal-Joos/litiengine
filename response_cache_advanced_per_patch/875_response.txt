@@ -1,0 +1,61 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(final Graphics2D g) {
+    if (this.currentText == null
+        || this.textIndex <= 0
+        || !Game.graphics().canRender(this.entity)) {
+      return;
+    }
+
+    if (this.entityCenter == null) {
+      this.entityCenter = Game.world().camera().getViewportLocation(this.getEntity().getCenter());
+    }
+
+    final float deltaX = (float) (this.textBoxWidth / 2.0 + this.getAppearance().getPadding());
+    final float deltaY =
+        (float)
+            ((this.getEntity().getHeight() / 2.0)
+                + this.bubble.getHeight()
+                + this.getAppearance().getPadding()
+                + 1);
+
+    final float startX = (float) (this.entityCenter.getX() - deltaX);
+    final float startY = (float) (this.entityCenter.getY() - deltaY);
+    ImageRenderer.render(g, this.bubble, new Point2D.Double(startX, startY));
+
+    final AttributedString styledText = new AttributedString(this.currentText);
+    styledText.addAttribute(TextAttribute.FONT, this.getFont());
+    styledText.addAttribute(TextAttribute.FOREGROUND, this.getAppearance().getForeColor());
+    final LineBreakMeasurer measurer =
+        new LineBreakMeasurer(styledText.getIterator(), g.getFontRenderContext());
+
+    float y = startY + this.getAppearance().getPadding();
+    float x = startX + this.getAppearance().getPadding();
+    while (measurer.getPosition() < this.textIndex) {
+      final TextLayout layout = measurer.nextLayout(this.textBoxWidth, this.textIndex, false);
+
+      y += layout.getAscent();
+      final float dx = layout.isLeftToRight() ? 0 : this.textBoxWidth - layout.getAdvance();
+      layout.draw(g, x + dx, y);
+      y += layout.getDescent() + layout.getLeading();
+    }
+
+    if (Game.config().debug().renderGuiComponentBoundingBoxes()) {
+      g.setColor(Color.RED);
+      Game.graphics()
+          .renderOutline(
+              g,
+              new Rectangle2D.Double(
+                  this.getEntity().getCenter().getX() - deltaX,
+                  this.getEntity().getCenter().getY() - deltaY,
+                  this.bubble.getWidth(),
+                  this.bubble.getHeight()));
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

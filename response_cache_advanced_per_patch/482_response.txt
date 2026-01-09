@@ -1,0 +1,19 @@
+<response>
+  <reason><![CDATA[
+At the call site in `MapUtilities.convertPolyshapeToPath`, the code explicitly performs a null check on the result of `mapObject.getPolyline()`:
+
+```java
+List<Point2D> points =
+    mapObject.getPolyline() != null
+        ? mapObject.getPolyline().getPoints()
+        : mapObject.getPolygon().getPoints();
+```
+
+This shows that the author of the code considers it possible that `mapObject.getPolyline()` may return `null`, because:
+- The ternary operator is based on the condition `mapObject.getPolyline() != null`.
+- If `getPolyline()` were guaranteed never to return null, this null-check and the fallback to `mapObject.getPolygon()` would be unnecessary and misleading.
+
+We are not given the implementation of `IMapObject.getPolyline()`, so we cannot prove it never returns null. In the absence of such guarantees and given the explicit null-check, we must assume that `getPolyline()` can indeed return null at this call site.
+]]></reason>
+  <value>YES</value>
+</response>

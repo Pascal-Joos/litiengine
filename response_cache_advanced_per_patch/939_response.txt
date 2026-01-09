@@ -1,0 +1,19 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided snippet, there is no visible guarantee that Input.keyboard() is non-null:
+
+- Input is referenced as a type with a static method keyboard(), but its implementation, initialization, and contract are not shown.
+- There are no prior null checks or defensive checks around Input.keyboard() in this constructor.
+- The code does not show whether Input is a framework class that *guarantees* a non-null keyboard (e.g., via documentation or annotations such as @NotNull), nor whether it might return null when, for example, the input system is not initialized or not available.
+- Without the implementation or a documented contract for Input.keyboard(), static analysis cannot conclude that it always returns a non-null value.
+
+Therefore, based solely on the method you provided, it is not possible to definitively determine whether Input.keyboard() can or cannot be null. The answer depends on the semantics and guarantees of the (unseen) Input class and its keyboard() method.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or interface/abstract definition of the Input class, especially the keyboard() method.]]></request>
+        <request><![CDATA[Provide any available documentation or annotations (e.g., @NonNull/@Nullable) for Input.keyboard().]]></request>
+    </requests>
+</response>
+```

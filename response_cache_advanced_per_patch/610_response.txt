@@ -1,0 +1,12 @@
+<response>
+    <reason><![CDATA[
+The method `public void setEncoding(String encoding)` is a typical setter: its name starts with `set`, it sets a single field, and its behavior matches the standard JavaBean setter convention. 
+
+Per your criteria, initializer methods are:
+- Typically known framework lifecycle methods (e.g., `onCreate`, `init` in certain interfaces), or
+- Any method whose name starts with "init" or "initialize" and is *not* a setter.
+
+Your explicit condition excludes setter methods from being considered initializer methods. Since this method is clearly a setter (name starts with `set` and sets one field), it must not be treated as an initializer method for NullAway’s initialization assumptions.
+    ]]></reason>
+    <value>NO</value>
+</response>

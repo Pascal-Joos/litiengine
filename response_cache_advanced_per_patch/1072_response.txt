@@ -1,0 +1,71 @@
+<response>
+  <reason><![CDATA[
+At the call site `intro.getFormat()` where `intro` is an instance of `IntroTrack`, the following method implementation is executed:
+
+```java
+class de.gurkenlabs.litiengine.sound.IntroTrack {
+  @Override
+  public AudioFormat getFormat() {
+    return this.loop.getFormat();
+  }
+}
+```
+
+So the nullability of `intro.getFormat()` depends entirely on `this.loop.getFormat()`.
+
+`loop` is set in the `IntroTrack` constructor:
+
+```java
+public IntroTrack(Sound intro, Sound loop) {
+  Objects.requireNonNull(intro);
+  Objects.requireNonNull(loop);
+  if (!intro.getFormat().matches(loop.getFormat())) {
+    throw new IllegalArgumentException(intro.getFormat() + " does not match " + loop.getFormat());
+  }
+  this.intro = intro;
+  this.loop = loop;
+}
+```
+
+Here, `loop` itself is guaranteed non-null (due to `Objects.requireNonNull(loop)`), but there is no guarantee that `loop.getFormat()` is non-null:
+
+- `Sound.getFormat()` is defined as:
+  ```java
+  public AudioFormat getFormat() {
+    return this.format;
+  }
+  ```
+  and nothing in the provided code ensures that `this.format` is non-null.
+
+- The constructor uses `intro.getFormat()` and `loop.getFormat()` to call `.matches(...)`:
+  ```java
+  if (!intro.getFormat().matches(loop.getFormat())) { ... }
+  ```
+  If either `intro.getFormat()` or `loop.getFormat()` is `null`, this line will throw a `NullPointerException`. This does *not* prevent `getFormat()` from being able to return `null` in general; it only means that in *this* constructor, if a null `format` occurs, object construction fails with an exception.
+
+However, you also have additional constructors:
+
+```java
+public IntroTrack(String intro, String loop) {
+  this(Resources.sounds().get(intro), Resources.sounds().get(loop));
+}
+public IntroTrack(Sound intro, String loop) {
+  this(intro, Resources.sounds().get(loop));
+}
+public IntroTrack(String intro, Sound loop) {
+  this(Resources.sounds().get(intro), loop);
+}
+```
+
+These rely on `Resources.sounds().get(...)` returning `Sound` objects. From the provided code, there is no guarantee that the `Sound` instances created (or retrieved) by `Resources.sounds().get(...)` always have a non-null `format`. Similarly, there is no shown invariant or initialization code in `Sound` that would guarantee `this.format` is set to a non-null `AudioFormat` for all `Sound` instances.
+
+Therefore:
+
+- `intro` (an `IntroTrack`) is non-null at this call site.
+- `intro.loop` is non-null.
+- `intro.loop.getFormat()` is `Sound.getFormat()`, which directly returns `this.format` with no non-null guarantee.
+- Without any additional constraints on how `Sound.format` is initialized or maintained, it is entirely possible for `this.format` to be `null`, which would propagate up and make `intro.getFormat()` return `null`.
+
+Thus, based on the provided code, `intro.getFormat()` **can** return `null` at this call site.]]></reason>
+  <value>YES</value>
+</response>

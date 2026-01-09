@@ -1,0 +1,33 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void display(final String screenName) {
+    if (this.current() != null && this.current().getName() != null && this.current().getName().equalsIgnoreCase(screenName)) {
+      log.log(
+          Level.INFO,
+          "Skipping displaying of screen {0} because it is already the current screen.",
+          screenName);
+      return;
+    }
+
+    if (this.screens.stream()
+        .noneMatch(element -> element.getName() != null && element.getName().equalsIgnoreCase(screenName))) {
+      log.log(
+          Level.WARNING,
+          "Could not display the screen {0} because there is no screen with the specified name.",
+          screenName);
+      return;
+    }
+
+    Screen screen = this.get(screenName);
+    if (screen == null) {
+      return;
+    }
+
+    this.display(screen);
+}
+  ```
+    ]]>
+  </code>
+</response>

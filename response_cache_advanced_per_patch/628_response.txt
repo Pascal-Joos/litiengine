@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected List<Tile> getData() {
+    if (this.data != null) {
+      return this.data.getTiles();
+    }
+    return null;
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,31 @@
+<response>
+  <reason><![CDATA[
+The method `TmxMap.getOrientation()` returns the field `this.mapOrientation`. If that field is `null`, the method assigns it from `MapOrientations.forName(this.orientation)` and then returns it.
+
+The implementation of `MapOrientations.forName(String name)` is:
+
+```java
+public static IMapOrientation forName(String name) {
+  if ("orthogonal".equals(name)) {
+    return ORTHOGONAL;
+  } else if ("isometric".equals(name)) {
+    return ISOMETRIC;
+  } else if ("staggered".equals(name)) {
+    return ISOMETRIC_STAGGERED;
+  } else if ("hexagonal".equals(name)) {
+    return HEXAGONAL;
+  } else {
+    return null;
+  }
+}
+```
+
+This method explicitly returns `null` for any `name` that is not one of `"orthogonal"`, `"isometric"`, `"staggered"`, or `"hexagonal"` (including if `name` is `null` or any other string).
+
+Therefore:
+- If `this.mapOrientation` is already non-null, `getOrientation()` returns a non-null value (whatever was previously set).
+- If `this.mapOrientation` is `null` and `this.orientation` is not one of the recognized strings, then `MapOrientations.forName(this.orientation)` returns `null`, `this.mapOrientation` remains `null`, and `getOrientation()` returns `null`.
+
+Hence, there exist valid execution paths where `getOrientation()` returns `null`.]]></reason>
+  <value>YES</value>
+</response>

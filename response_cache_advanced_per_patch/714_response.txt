@@ -1,0 +1,31 @@
+<response>
+    <reason><![CDATA[
+Within this constructor:
+
+public Animation(
+       final Spritesheet spritesheet,
+      final boolean loop,
+      final boolean randomizeStart,
+      final int... keyFrameDurations) {
+    this(spritesheet.getName(), spritesheet, loop, randomizeStart, keyFrameDurations);
+}
+
+the parameter spritesheet is used directly (spritesheet.getName() and passed as spritesheet) without any local reassignment or null-checks. Thus, if a caller passes null, the method will dereference it immediately via spritesheet.getName(), causing a NullPointerException.
+
+From the provided call chain, the depth-1 constructor is:
+
+public Animation(
+      final String spriteSheetName,
+      final boolean loop,
+      final boolean randomizeStart,
+      final int... keyFrameDurations) {
+    this(Resources.spritesheets().get(spriteSheetName), loop, randomizeStart, keyFrameDurations);
+}
+
+This shows one caller that may pass null, because Resources.spritesheets().get(spriteSheetName) may return null depending on its implementation. Additionally, other callers (not shown) could also directly pass null to the spritesheet parameter.
+
+Since we do not have the implementation of Resources.spritesheets() or its get method, we cannot guarantee they never return null. Therefore, there is a real possibility that spritesheet is null when this constructor is invoked, and nothing in this method prevents that.
+
+Consequently, based solely on the visible code and ignoring annotations, spritesheet can be null.]]></reason>
+    <value>YES</value>
+</response>

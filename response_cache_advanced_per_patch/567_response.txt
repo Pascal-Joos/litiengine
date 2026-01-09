@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public int hashCode() {
+    return (this.getAbsoluteSourcePath() == null ? 1 : this.getAbsoluteSourcePath().hashCode())
+        ^ (this.getTransparentColor() == null ? 1 : this.getTransparentColor().hashCode());
+  }
+  ```
+    ]]>
+  </code>
+</response>

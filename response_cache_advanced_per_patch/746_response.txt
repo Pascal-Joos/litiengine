@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public float getOpacity() {
+      Color color = this.getColor();
+      if (color != null && this.isFading() && this.getTimeToLive() > 0) {
+        return MathUtilities.clamp(
+            color.getAlpha() / 255f - (float) this.getAliveTime() / this.getTimeToLive(),
+            0,
+            1);
+      }
+      return 1;
+  }
+  ```
+    ]]>
+  </code>
+</response>

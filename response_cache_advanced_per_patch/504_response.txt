@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  protected void afterUnmarshal(Unmarshaller u, Object parent) {
+    super.afterUnmarshal(u, parent);
+    if (getMap() != null && layers != null) {
+      for (ILayer layer : layers) {
+        ((Layer) layer).setMap((TmxMap) getMap());
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>
