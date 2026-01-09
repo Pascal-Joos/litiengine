@@ -109,10 +109,7 @@ public class TileLayer extends Layer implements ITileLayer {
   }
 
   protected List<Tile> getData() {
-    if (this.data != null) {
-      return this.data.getTiles();
-    }
-    return null;
+    return this.data.getTiles();
   }
 
   @Nullable
