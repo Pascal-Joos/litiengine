@@ -182,7 +182,7 @@ public class AStarPathFinder extends PathFinder {
     final List<AStarNode> path = new ArrayList<>();
     AStarNode currentNode = targetNode.getPredecessor();
 
-    while (currentNode != null && currentNode != startNode) {
+    while (currentNode != startNode) {
       path.add(currentNode);
       currentNode = currentNode.getPredecessor();
     }
