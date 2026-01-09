@@ -23,12 +23,11 @@ public abstract class ShapeParticle extends Particle {
 
   @Override
   public void render(final Graphics2D g, final Point2D emitterOrigin) {
-    final Color color = this.getColor();
     g.setColor(
         new Color(
-            color.getRed() / 255f,
-            color.getGreen() / 255f,
-            color.getBlue() / 255f,
+            this.getColor().getRed() / 255f,
+            this.getColor().getGreen() / 255f,
+            this.getColor().getBlue() / 255f,
             this.getOpacity()));
 
     if (this.isOutlineOnly() || this instanceof LineParticle) {
