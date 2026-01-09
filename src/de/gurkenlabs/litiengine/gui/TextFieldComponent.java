@@ -35,7 +35,9 @@ public class TextFieldComponent extends ImageComponent {
     this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
     this.setText(text);
     this.flickerDelay = 100;
-    Input.keyboard().onKeyTyped(this::handleTypedKey);
+    if (Input.keyboard() != null) {
+      Input.keyboard().onKeyTyped(this::handleTypedKey);
+    }
     this.onClicked(
         e -> {
           if (!this.isSelected()) {
@@ -43,13 +45,15 @@ public class TextFieldComponent extends ImageComponent {
           }
         });
 
-    Input.mouse()
-        .onClicked(
-            e -> {
-              if (!this.getBoundingBox().contains(Input.mouse().getLocation())) {
-                this.setSelected(false);
-              }
-            });
+    if (Input.mouse() != null) {
+      Input.mouse()
+          .onClicked(
+              e -> {
+                if (!this.getBoundingBox().contains(Input.mouse().getLocation())) {
+                  this.setSelected(false);
+                }
+              });
+    }
 
     this.setTextAlign(Align.LEFT);
   }
@@ -137,7 +141,7 @@ public class TextFieldComponent extends ImageComponent {
   }
 
   private void handleBackSpace() {
-    if (Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
+    if (Input.keyboard() != null && Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
       while (this.getText().length() >= 1
           && this.getText().charAt(this.getText().length() - 1) == ' ') {
         this.setText(this.getText().substring(0, this.getText().length() - 1));
