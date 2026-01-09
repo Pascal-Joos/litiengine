@@ -5,7 +5,6 @@ import de.gurkenlabs.litiengine.ILaunchable;
 import de.gurkenlabs.litiengine.IUpdateable;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.resources.Resources;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -73,12 +72,7 @@ public class Animation implements IUpdateable, ILaunchable {
       final boolean loop,
       final boolean randomizeStart,
       final int... keyFrameDurations) {
-    this(
-        Nullability.castToNonnull(spritesheet).getName(),
-        Nullability.castToNonnull(spritesheet),
-        loop,
-        randomizeStart,
-        keyFrameDurations);
+    this(spritesheet.getName(), spritesheet, loop, randomizeStart, keyFrameDurations);
   }
 
   /**
