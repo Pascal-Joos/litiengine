@@ -127,7 +127,6 @@ public class SoundSource extends Entity {
    *
    * @return the sound instance used for playback.
    */
-  @Nullable
   public Sound getSound() {
     return sound;
   }
@@ -148,9 +147,6 @@ public class SoundSource extends Entity {
    */
   @Nullable
   public String getSoundName() {
-    if (this.sound == null) {
-      return null;
-    }
     return this.sound.getName();
   }
 

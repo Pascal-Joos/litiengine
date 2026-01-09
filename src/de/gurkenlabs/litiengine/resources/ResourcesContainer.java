@@ -2,7 +2,6 @@ package de.gurkenlabs.litiengine.resources;
 
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.GameListener;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -187,7 +186,6 @@ public abstract class ResourcesContainer<T> {
    * @param resourceName The resource's name.
    * @return The resource with the specified name or null if not found.
    */
-  @Nullable
   public T get(@Nullable String resourceName) {
     return this.get(this.getIdentifier(resourceName), false);
   }
@@ -335,7 +333,7 @@ public abstract class ResourcesContainer<T> {
    */
   public Optional<T> tryGet(@Nullable String resourceName) {
     if (this.contains(resourceName)) {
-      return Optional.of(Nullability.castToNonnull(this.get(resourceName)));
+      return Optional.of(this.get(resourceName));
     }
 
     return Optional.empty();
