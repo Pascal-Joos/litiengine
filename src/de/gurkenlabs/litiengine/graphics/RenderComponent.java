@@ -95,12 +95,6 @@ public class RenderComponent extends Canvas {
   }
 
   public void render() {
-    if (this.currentBufferStrategy == null) {
-      return;
-    }
-    if (Game.screens() == null) {
-      return;
-    }
     final long currentMillis = System.currentTimeMillis();
     if (currentMillis - this.lastFpsTime >= 1000) {
       this.lastFpsTime = currentMillis;
