@@ -63,6 +63,7 @@ public class TextFieldComponent extends ImageComponent {
     return this.maxLength;
   }
 
+  @Nullable
   @Override
   public String getText() {
     return this.fullText;
@@ -78,7 +79,7 @@ public class TextFieldComponent extends ImageComponent {
         this.handleBackSpace();
         break;
       case KeyEvent.VK_SPACE:
-        if (!this.getText().equals("")) {
+        if (this.getText() != null && !this.getText().equals("")) {
           this.setText(this.getText() + " ");
         }
         break;
@@ -137,27 +138,43 @@ public class TextFieldComponent extends ImageComponent {
   }
 
   private void handleBackSpace() {
-    if (Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
-      while (this.getText().length() >= 1
-          && this.getText().charAt(this.getText().length() - 1) == ' ') {
-        this.setText(this.getText().substring(0, this.getText().length() - 1));
+    String currentText = this.getText();
+    if (currentText == null) {
+      if (this.isKnownNumericFormat()) {
+        this.setText("0");
       }
-
-      while (this.getText().length() >= 1
-          && this.getText().charAt(this.getText().length() - 1) != ' ') {
-        this.setText(this.getText().substring(0, this.getText().length() - 1));
-      }
-    } else if (this.getText().length() >= 1) {
-      this.setText(this.getText().substring(0, this.getText().length() - 1));
+      return;
     }
 
-    if (this.isKnownNumericFormat() && (this.getText() == null || this.getText().isEmpty())) {
+    if (Input.keyboard().isPressed(KeyEvent.VK_SHIFT)) {
+      while (currentText.length() >= 1 && currentText.charAt(currentText.length() - 1) == ' ') {
+        currentText = currentText.substring(0, currentText.length() - 1);
+        this.setText(currentText);
+      }
+
+      while (currentText.length() >= 1 && currentText.charAt(currentText.length() - 1) != ' ') {
+        currentText = currentText.substring(0, currentText.length() - 1);
+        this.setText(currentText);
+      }
+    } else if (currentText.length() >= 1) {
+      currentText = currentText.substring(0, currentText.length() - 1);
+      this.setText(currentText);
+    }
+
+    currentText = this.getText();
+    if (currentText == null) {
+      if (this.isKnownNumericFormat()) {
+        this.setText("0");
+      }
+      return;
+    }
+    if (this.isKnownNumericFormat() && currentText.isEmpty()) {
       this.setText("0");
     }
   }
 
   private void handleNormalTyping(KeyEvent event) {
-    if (this.getMaxLength() > 0 && this.getText().length() >= this.getMaxLength()) {
+    if (this.getMaxLength() > 0 && String.valueOf(this.getText()).length() >= this.getMaxLength()) {
       return;
     }
 
@@ -169,17 +186,18 @@ public class TextFieldComponent extends ImageComponent {
     // regex check to ensure certain formats
     if (this.getFormat() != null && !this.getFormat().isEmpty()) {
       final Pattern pat = Pattern.compile(this.getFormat());
-      final Matcher mat = pat.matcher(this.getText() + text);
+      final Matcher mat = pat.matcher(String.valueOf(this.getText()) + text);
       if (!mat.matches()) {
         return;
       }
     }
 
-    if (this.isKnownNumericFormat() && this.getText().equals("0")) {
+    final String currentText = String.valueOf(this.getText());
+    if (this.isKnownNumericFormat() && "0".equals(currentText)) {
       this.setText("");
     }
 
-    this.setText(this.getText() + text);
+    this.setText(currentText + text);
   }
 
   private boolean isKnownNumericFormat() {
