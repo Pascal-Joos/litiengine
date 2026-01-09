@@ -32,6 +32,9 @@ public class SoundEvent extends EventObject {
 
   @Override
   public String toString() {
-    return super.toString() + "[sound=" + this.sound.getName() + "]";
+    return super.toString()
+        + "[sound="
+        + (this.sound == null ? "null" : this.sound.getName())
+        + "]";
   }
 }
