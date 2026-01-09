@@ -112,12 +112,17 @@ public class TextFieldComponent extends ImageComponent {
       this.lastToggled = Game.time().now();
     }
     if (this.isSelected() && this.cursorVisible) {
+      Font font = this.getFont();
+      if (font == null) {
+        font = new JLabel().getFont().deriveFont((float) (this.getHeight() * 3 / 6f));
+        this.setFont(font);
+      }
       final Rectangle2D cursor =
           new Rectangle2D.Double(
               this.getX() + this.getTextX() + fm.stringWidth(this.getTextToRender(g)),
               this.getY() + this.getTextY(),
-              this.getFont().getSize2D() * 3 / 5,
-              this.getFont().getSize2D() * 1 / 5);
+              font.getSize2D() * 3 / 5,
+              font.getSize2D() * 1 / 5);
       g.setColor(this.getAppearance().getForeColor());
       g.fill(cursor);
     }
