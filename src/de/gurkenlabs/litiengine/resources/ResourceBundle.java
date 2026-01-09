@@ -6,7 +6,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.xml.Tileset;
 import de.gurkenlabs.litiengine.environment.tilemap.xml.TmxMap;
 import de.gurkenlabs.litiengine.graphics.emitters.xml.EmitterData;
 import de.gurkenlabs.litiengine.util.io.XmlUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -213,8 +212,7 @@ public class ResourceBundle implements Serializable {
 
     List<Tileset> distinctTilesets = new ArrayList<>();
     for (Tileset tileset : this.getTilesets()) {
-      if (distinctTilesets.stream()
-          .anyMatch(x -> Nullability.castToNonnull(x.getName()).equals(tileset.getName()))) {
+      if (distinctTilesets.stream().anyMatch(x -> x.getName().equals(tileset.getName()))) {
         continue;
       }
 
