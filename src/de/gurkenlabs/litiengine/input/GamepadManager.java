@@ -159,7 +159,6 @@ public final class GamepadManager extends GamepadEvents implements ILaunchable {
    * @see #getAll()
    * @see #current()
    */
-  @Nullable
   public Gamepad get(final int index) {
     if (this.gamePads.isEmpty()) {
       return null;
