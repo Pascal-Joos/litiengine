@@ -3,7 +3,6 @@ package de.gurkenlabs.litiengine.tweening;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.ILaunchable;
 import de.gurkenlabs.litiengine.IUpdateable;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
@@ -122,7 +121,7 @@ public class TweenEngine implements IUpdateable, ILaunchable {
   public void remove(final Tweenable target, final TweenType type) {
     final Tween tween = this.getTween(target, type);
     if (tween != null) {
-      Nullability.castToNonnull(this.getTweens().get(target)).remove(type);
+      this.getTweens().get(target).remove(type);
     }
   }
 
