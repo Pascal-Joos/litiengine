@@ -33,7 +33,6 @@ public interface ITilesetEntry extends ICustomPropertyProvider {
    *
    * @return The tileset for this entry
    */
-  @Nullable
   public ITileset getTileset();
 
   @Nullable
