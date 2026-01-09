@@ -18,6 +18,7 @@ public interface ITilesetEntry extends ICustomPropertyProvider {
    *
    * @return The current image for this tileset entry, accounting for animation.
    */
+  @Nullable
   public BufferedImage getImage();
 
   /**
