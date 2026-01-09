@@ -1,8 +1,10 @@
 package de.gurkenlabs.litiengine.attributes;
 
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.annotation.Nullable;
 
 public class RangeAttribute<T extends Number> extends Attribute<T> {
   private final List<AttributeModifier<T>> minModifiers;
@@ -55,17 +57,27 @@ public class RangeAttribute<T extends Number> extends Attribute<T> {
     return this.applyMinModifiers(this.minBaseValue);
   }
 
+  @Nullable
   public T getMax() {
     return this.applyMaxModifiers(this.maxBaseValue);
   }
 
   public float getRelativeCurrentValue() {
-    return this.get().floatValue() / this.getMax().floatValue();
+    final Float max = this.getMax();
+    if (max == null || max.floatValue() == 0.0f) {
+      return 0.0f;
+    }
+    final Float current = this.get();
+    if (current == null) {
+      return 0.0f;
+    }
+    return current.floatValue() / max.floatValue();
   }
 
   @Override
   public void modifyBaseValue(final AttributeModifier<T> modifier) {
-    this.setBaseValue(this.valueInRange(modifier.modify(this.getBase())));
+    this.setBaseValue(
+        this.valueInRange(Nullability.castToNonnull(modifier.modify(this.getBase()))));
   }
 
   public void modifyMaxBaseValue(final AttributeModifier<T> modifier) {
@@ -77,7 +89,7 @@ public class RangeAttribute<T extends Number> extends Attribute<T> {
   }
 
   public void setToMax() {
-    this.setBaseValue(this.getMax());
+    this.setBaseValue(Nullability.castToNonnull(this.getMax()));
   }
 
   public void setMaxBaseValue(final T maxValue) {
@@ -96,19 +108,21 @@ public class RangeAttribute<T extends Number> extends Attribute<T> {
     return this.maxModifiers;
   }
 
+  @Nullable
   protected T applyMinModifiers(final T maxValue) {
     T currentValue = maxValue;
     for (final AttributeModifier<T> modifier : this.getMinModifiers()) {
-      currentValue = modifier.modify(currentValue);
+      currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
     }
 
     return currentValue;
   }
 
+  @Nullable
   protected T applyMaxModifiers(final T maxValue) {
     T currentValue = maxValue;
     for (final AttributeModifier<T> modifier : this.getMaxModifiers()) {
-      currentValue = modifier.modify(currentValue);
+      currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
     }
 
     return currentValue;
@@ -117,8 +131,8 @@ public class RangeAttribute<T extends Number> extends Attribute<T> {
   private T valueInRange(final T value) {
     if (value.doubleValue() < this.minBaseValue.doubleValue()) {
       return this.minBaseValue;
-    } else if (value.doubleValue() > this.getMax().doubleValue()) {
-      return this.getMax();
+    } else if (value.doubleValue() > Nullability.castToNonnull(this.getMax()).doubleValue()) {
+      return Nullability.castToNonnull(this.getMax());
     }
 
     return value;
