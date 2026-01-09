@@ -496,47 +496,45 @@ public class ListField extends GuiComponent {
   }
 
   private void prepareInput() {
-    if (Input.keyboard() != null) {
-      Input.keyboard()
-          .onKeyTyped(
-              KeyEvent.VK_UP,
-              e -> {
-                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
-                  return;
-                }
-                this.setSelection(this.getHorizontalLowerBound(), this.selectionRow - 1);
-              });
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_UP,
+            e -> {
+              if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                return;
+              }
+              this.setSelection(this.getHorizontalLowerBound(), this.selectionRow - 1);
+            });
 
-      Input.keyboard()
-          .onKeyTyped(
-              KeyEvent.VK_DOWN,
-              e -> {
-                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
-                  return;
-                }
-                this.setSelection(this.getHorizontalLowerBound(), this.selectionRow + 1);
-              });
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_DOWN,
+            e -> {
+              if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                return;
+              }
+              this.setSelection(this.getHorizontalLowerBound(), this.selectionRow + 1);
+            });
 
-      Input.keyboard()
-          .onKeyTyped(
-              KeyEvent.VK_LEFT,
-              e -> {
-                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
-                  return;
-                }
-                this.setSelection(this.getHorizontalLowerBound() - 1, this.selectionRow);
-              });
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_LEFT,
+            e -> {
+              if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                return;
+              }
+              this.setSelection(this.getHorizontalLowerBound() - 1, this.selectionRow);
+            });
 
-      Input.keyboard()
-          .onKeyTyped(
-              KeyEvent.VK_RIGHT,
-              e -> {
-                if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
-                  return;
-                }
-                this.setSelection(this.getHorizontalLowerBound() + 1, this.selectionRow);
-              });
-    }
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_RIGHT,
+            e -> {
+              if (this.isSuspended() || !this.isVisible() || !this.isArrowKeyNavigation()) {
+                return;
+              }
+              this.setSelection(this.getHorizontalLowerBound() + 1, this.selectionRow);
+            });
 
     this.onMouseWheelScrolled(
         e -> {

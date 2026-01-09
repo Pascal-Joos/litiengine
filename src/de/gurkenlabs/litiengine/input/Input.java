@@ -56,7 +56,6 @@ public final class Input {
    *
    * @return The keyboard input device.
    */
-  @Nullable
   public static IKeyboard keyboard() {
     return keyboard;
   }

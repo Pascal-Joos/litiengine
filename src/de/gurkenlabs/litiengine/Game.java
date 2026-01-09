@@ -485,19 +485,17 @@ public final class Game {
                   Resources.images().get("liti-logo-x32.png"),
                   Resources.images().get("liti-logo-x48.png")));
 
-      if (Input.keyboard() != null) {
-        Input.keyboard()
-            .onKeyTyped(
-                KeyEvent.VK_PRINTSCREEN,
-                key -> {
-                  // don't take a screenshot if a modifier is active
-                  if (key.getModifiers() != 0) {
-                    return;
-                  }
+      Input.keyboard()
+          .onKeyTyped(
+              KeyEvent.VK_PRINTSCREEN,
+              key -> {
+                // don't take a screenshot if a modifier is active
+                if (key.getModifiers() != 0) {
+                  return;
+                }
 
-                  window().getRenderComponent().takeScreenshot();
-                });
-      }
+                window().getRenderComponent().takeScreenshot();
+              });
     }
 
     Runtime.getRuntime().addShutdownHook(new Thread(Game::terminate, "Shutdown"));
