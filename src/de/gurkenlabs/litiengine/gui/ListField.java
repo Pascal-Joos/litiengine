@@ -155,7 +155,6 @@ public class ListField extends GuiComponent {
     return this.horizontalLowerBound;
   }
 
-  @Nullable
   public HorizontalSlider getHorizontalSlider() {
     return this.horizontalSlider;
   }
@@ -605,17 +604,15 @@ public class ListField extends GuiComponent {
               entryComponent.getWidth()
                   - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()));
         }
-        if (this.isSliderInside()) {
-          final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
-          if (horizontalSlider != null) {
-            entryComponent.setY(
-                this.getY()
-                    + ((rowHeight - (horizontalSlider.getHeight() / this.getNumberOfShownRows()))
-                        * row));
-            entryComponent.setHeight(
-                entryComponent.getHeight()
-                    - (horizontalSlider.getHeight() / this.getNumberOfShownRows()));
-          }
+        if (this.isSliderInside() && this.getHorizontalSlider() != null) {
+          entryComponent.setY(
+              this.getY()
+                  + ((rowHeight
+                          - (this.getHorizontalSlider().getHeight() / this.getNumberOfShownRows()))
+                      * row));
+          entryComponent.setHeight(
+              entryComponent.getHeight()
+                  - (this.getHorizontalSlider().getHeight() / this.getNumberOfShownRows()));
         }
         entryComponent.setTextAlign(Align.LEFT);
         this.getListEntry(column).add(entryComponent);
@@ -642,12 +639,11 @@ public class ListField extends GuiComponent {
                 .getSliderComponent()
                 .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
           }
-          final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
-          if (horizontalSlider != null) {
-            horizontalSlider.setCurrentValue(this.getHorizontalLowerBound());
-            horizontalSlider
+          if (this.getHorizontalSlider() != null) {
+            this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
+            this.getHorizontalSlider()
                 .getSliderComponent()
-                .setLocation(horizontalSlider.getRelativeSliderPosition());
+                .setLocation(this.getHorizontalSlider().getRelativeSliderPosition());
           }
         });
     if (this.getVerticalSlider() != null) {
@@ -661,16 +657,16 @@ public class ListField extends GuiComponent {
                 this.refresh();
               });
     }
-    final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
-    if (horizontalSlider != null) {
-      horizontalSlider.onChange(
-          sliderValue -> {
-            this.setHorizontalLowerBound(sliderValue.intValue());
-            horizontalSlider
-                .getSliderComponent()
-                .setLocation(horizontalSlider.getRelativeSliderPosition());
-            this.refresh();
-          });
+    if (this.getHorizontalSlider() != null) {
+      this.getHorizontalSlider()
+          .onChange(
+              sliderValue -> {
+                this.setHorizontalLowerBound(sliderValue.intValue());
+                this.getHorizontalSlider()
+                    .getSliderComponent()
+                    .setLocation(this.getHorizontalSlider().getRelativeSliderPosition());
+                this.refresh();
+              });
     }
   }
 
@@ -699,9 +695,7 @@ public class ListField extends GuiComponent {
                 this.nbOfColumns - this.getNumberOfShownColumns(),
                 1);
       }
-      if (this.getHorizontalSlider() != null) {
-        this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
-      }
+      this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
       this.getComponents().add(this.getHorizontalSlider());
     }
 
