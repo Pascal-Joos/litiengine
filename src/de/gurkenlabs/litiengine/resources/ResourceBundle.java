@@ -166,6 +166,9 @@ public class ResourceBundle implements Serializable {
 
     try (FileOutputStream fileOut = new FileOutputStream(newFile, false)) {
       final JAXBContext jaxbContext = XmlUtilities.getContext(ResourceBundle.class);
+      if (jaxbContext == null) {
+        return null;
+      }
       final Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
       // output pretty printed
       jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, false);
@@ -230,6 +233,9 @@ public class ResourceBundle implements Serializable {
   private static ResourceBundle getResourceBundle(@Nullable URL file)
       throws JAXBException, IOException {
     final JAXBContext jaxbContext = XmlUtilities.getContext(ResourceBundle.class);
+    if (jaxbContext == null) {
+      return null;
+    }
     final Unmarshaller um = jaxbContext.createUnmarshaller();
     try (InputStream inputStream = Resources.get(file)) {
 
