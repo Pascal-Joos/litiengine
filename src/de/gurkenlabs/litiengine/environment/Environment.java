@@ -43,6 +43,7 @@ import de.gurkenlabs.litiengine.physics.IMovementController;
 import de.gurkenlabs.litiengine.resources.Resources;
 import de.gurkenlabs.litiengine.util.TimeUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -2305,7 +2306,9 @@ public final class Environment implements IRenderable {
     // 3. Render entities
     Game.graphics()
         .renderEntities(
-            g, this.miscEntities.get(renderType).values(), renderType == RenderType.NORMAL);
+            g,
+            Nullability.castToNonnull(this.miscEntities.get(renderType)).values(),
+            renderType == RenderType.NORMAL);
 
     // 4. fire event
     this.fireRenderEvent(g, renderType);
