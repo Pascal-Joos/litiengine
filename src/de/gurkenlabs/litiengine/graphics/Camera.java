@@ -6,6 +6,7 @@ import de.gurkenlabs.litiengine.Valign;
 import de.gurkenlabs.litiengine.entities.IEntity;
 import de.gurkenlabs.litiengine.graphics.animation.IAnimationController;
 import de.gurkenlabs.litiengine.util.MathUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -136,7 +137,7 @@ public class Camera implements ICamera {
 
   @Override
   public void setFocus(@Nullable final Point2D focus) {
-    this.focus = this.clampToMap(focus);
+    this.focus = this.clampToMap(Nullability.castToNonnull(focus));
 
     // dunno why but without the factor of 0.01 sometimes everything starts to
     // get wavy while rendering ...
