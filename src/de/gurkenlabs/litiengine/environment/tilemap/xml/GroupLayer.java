@@ -5,6 +5,7 @@ import de.gurkenlabs.litiengine.environment.tilemap.IImageLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.ILayer;
 import de.gurkenlabs.litiengine.environment.tilemap.IMapObjectLayer;
 import de.gurkenlabs.litiengine.environment.tilemap.ITileLayer;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlElements;
 
 public class GroupLayer extends Layer implements IGroupLayer {
 
+  @Nullable
   @XmlElements({
     @XmlElement(name = "imagelayer", type = ImageLayer.class),
     @XmlElement(name = "layer", type = TileLayer.class),
@@ -37,6 +39,7 @@ public class GroupLayer extends Layer implements IGroupLayer {
   private transient List<IGroupLayer> groupLayers =
       Collections.unmodifiableList(this.rawGroupLayers);
 
+  @Nullable
   @Override
   public List<ILayer> getRenderLayers() {
     return this.layers;
@@ -49,16 +52,21 @@ public class GroupLayer extends Layer implements IGroupLayer {
 
   @Override
   public void addLayer(ILayer layer) {
-    this.layers.add(layer);
-    this.layerAdded(layer);
-    if (layer instanceof Layer) {
-      ((Layer) layer).setMap((TmxMap) this.getMap());
+    if (this.layers != null) {
+      this.layers.add(layer);
+      this.layerAdded(layer);
+      if (layer instanceof Layer) {
+        ((Layer) layer).setMap((TmxMap) this.getMap());
+      }
     }
   }
 
   @Override
   public void addLayer(int index, ILayer layer) {
-    this.layers.add(index, layer);
+    if (this.layers == null) {
+      return;
+    }
+    Nullability.castToNonnull(this.layers).add(index, layer);
     this.layerAdded(layer);
     if (layer instanceof Layer) {
       ((Layer) layer).setMap((TmxMap) this.getMap());
@@ -67,7 +75,9 @@ public class GroupLayer extends Layer implements IGroupLayer {
 
   @Override
   public void removeLayer(ILayer layer) {
-    this.layers.remove(layer);
+    if (this.layers != null) {
+      this.layers.remove(layer);
+    }
     this.layerRemoved(layer);
     if (layer instanceof Layer) {
       ((Layer) layer).setMap(null);
@@ -76,7 +86,10 @@ public class GroupLayer extends Layer implements IGroupLayer {
 
   @Override
   public void removeLayer(int index) {
-    ILayer removed = this.layers.remove(index);
+    if (this.layers == null) {
+      return;
+    }
+    ILayer removed = Nullability.castToNonnull(this.layers).remove(index);
     this.layerRemoved(removed);
     if (removed instanceof Layer) {
       ((Layer) removed).setMap(null);
@@ -131,8 +144,8 @@ public class GroupLayer extends Layer implements IGroupLayer {
   @Override
   protected void afterUnmarshal(Unmarshaller u, Object parent) {
     super.afterUnmarshal(u, parent);
-    if (getMap() != null) {
-      for (ILayer layer : layers) {
+    if (getMap() != null && layers != null) {
+      for (ILayer layer : Nullability.castToNonnull(layers)) {
         ((Layer) layer).setMap((TmxMap) getMap());
       }
     }
@@ -141,9 +154,11 @@ public class GroupLayer extends Layer implements IGroupLayer {
   @Override
   void finish(@Nullable URL location) throws TmxException {
     super.finish(location);
-    for (ILayer layer : this.layers) {
-      if (layer instanceof Layer) {
-        ((Layer) layer).finish(location);
+    if (this.layers != null) {
+      for (ILayer layer : Nullability.castToNonnull(this.layers)) {
+        if (layer instanceof Layer) {
+          ((Layer) layer).finish(location);
+        }
       }
     }
   }
