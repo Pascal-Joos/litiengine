@@ -1,6 +1,7 @@
 package de.gurkenlabs.litiengine.entities;
 
 import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,7 @@ public final class EntityControllers {
         this.controllers.keySet().stream().filter(x -> clss.isAssignableFrom(clss)).findFirst();
     if (typeKey.isPresent()) {
       IEntityController controller = this.controllers.get(typeKey.get());
-      controller.detach();
+      Nullability.castToNonnull(controller).detach();
       this.controllers.remove(typeKey.get());
       this.animationController = null;
     }
