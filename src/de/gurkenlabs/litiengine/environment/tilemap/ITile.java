@@ -24,7 +24,6 @@ public interface ITile extends ICustomPropertyProvider {
   @Nullable
   public Point getTileCoordinate();
 
-  @Nullable
   public ITilesetEntry getTilesetEntry();
 
   public boolean isFlippedHorizontally();
