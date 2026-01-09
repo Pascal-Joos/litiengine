@@ -196,9 +196,7 @@ public final class Gamepad extends GamepadEvents implements IUpdateable {
   private void dispose() {
     this.componentPollListeners.clear();
     this.componentPressedListeners.clear();
-    if (Game.config().input().isGamepadSupport()) {
-      Input.gamepads().remove(this);
-    }
+    Input.gamepads().remove(this);
   }
 
   private void handlePollEvents(Event event) {
