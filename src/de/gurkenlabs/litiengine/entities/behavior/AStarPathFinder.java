@@ -44,13 +44,13 @@ public class AStarPathFinder extends PathFinder {
 
     final AStarNode startNode = this.getGrid().getNode(startLocation);
     AStarNode targetNode = this.getGrid().getNode(target);
-    if (startNode.equals(targetNode)) {
+    if (startNode == null || startNode.equals(targetNode)) {
       return null;
     }
 
     // simple fallback if the target tile is not walkable.
     boolean gotoNeighbor = false;
-    if (!targetNode.isWalkable()) {
+    if (targetNode == null || !targetNode.isWalkable()) {
       for (AStarNode neighbor : this.getGrid().getNeighbors(targetNode)) {
         if (neighbor.isWalkable()) {
           targetNode = neighbor;
