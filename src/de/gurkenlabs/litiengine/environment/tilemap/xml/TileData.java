@@ -3,7 +3,6 @@ package de.gurkenlabs.litiengine.environment.tilemap.xml;
 import com.uber.nullaway.annotations.Initializer;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.io.Codec;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -288,7 +287,7 @@ public class TileData {
       throws InvalidTileLayerException {
     List<Tile> parsed = new ArrayList<>();
 
-    String enc = Nullability.castToNonnull(value).trim();
+    String enc = value.trim();
     byte[] dec;
     try {
       dec = DatatypeConverter.parseBase64Binary(enc);
