@@ -52,6 +52,7 @@ public interface ILayer extends ICustomPropertyProvider {
    */
   public Dimension getSizeInTiles();
 
+  @Nullable
   public IMap getMap();
 
   /**
