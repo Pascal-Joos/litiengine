@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -251,6 +252,7 @@ public class ListField extends GuiComponent {
     return this.verticalLowerBound;
   }
 
+  @Nullable
   public VerticalSlider getVerticalSlider() {
     return this.verticalSlider;
   }
@@ -598,11 +600,13 @@ public class ListField extends GuiComponent {
           entryComponent.setX(
               this.getX()
                   + ((columnWidth
-                          - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()))
+                          - (Nullability.castToNonnull(this.getVerticalSlider()).getWidth()
+                              / this.getNumberOfShownColumns()))
                       * column));
           entryComponent.setWidth(
               entryComponent.getWidth()
-                  - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()));
+                  - (Nullability.castToNonnull(this.getVerticalSlider()).getWidth()
+                      / this.getNumberOfShownColumns()));
         }
         if (this.isSliderInside() && this.getHorizontalSlider() != null) {
           entryComponent.setY(
@@ -634,10 +638,13 @@ public class ListField extends GuiComponent {
     this.onChange(
         s -> {
           if (this.getVerticalSlider() != null) {
-            this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
-            this.getVerticalSlider()
+            Nullability.castToNonnull(this.getVerticalSlider())
+                .setCurrentValue(this.getVerticalLowerBound());
+            Nullability.castToNonnull(this.getVerticalSlider())
                 .getSliderComponent()
-                .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
+                .setLocation(
+                    Nullability.castToNonnull(this.getVerticalSlider())
+                        .getRelativeSliderPosition());
           }
           if (this.getHorizontalSlider() != null) {
             this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
@@ -647,13 +654,15 @@ public class ListField extends GuiComponent {
           }
         });
     if (this.getVerticalSlider() != null) {
-      this.getVerticalSlider()
+      Nullability.castToNonnull(this.getVerticalSlider())
           .onChange(
               sliderValue -> {
                 this.setVerticalLowerBound(sliderValue.intValue());
-                this.getVerticalSlider()
+                Nullability.castToNonnull(this.getVerticalSlider())
                     .getSliderComponent()
-                    .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
+                    .setLocation(
+                        Nullability.castToNonnull(this.getVerticalSlider())
+                            .getRelativeSliderPosition());
                 this.refresh();
               });
     }
@@ -733,7 +742,8 @@ public class ListField extends GuiComponent {
                 this.getMaxRows() - this.getNumberOfShownRows(),
                 1);
       }
-      this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
+      Nullability.castToNonnull(this.getVerticalSlider())
+          .setCurrentValue(this.getVerticalLowerBound());
       this.getComponents().add(this.getVerticalSlider());
     }
   }
