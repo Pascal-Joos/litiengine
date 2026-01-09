@@ -311,7 +311,14 @@ public final class GameWorld implements IUpdateable {
 
     Environment env =
         this.getEnvironments().stream()
-            .filter(e -> e.getMap().equals(map))
+            .filter(
+                e -> {
+                  IMap environmentMap = e.getMap();
+                  if (environmentMap == null) {
+                    return false;
+                  }
+                  return environmentMap.equals(map);
+                })
             .findFirst()
             .orElse(null);
     if (env != null) {
