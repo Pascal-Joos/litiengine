@@ -2,7 +2,6 @@ package de.gurkenlabs.litiengine.resources;
 
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.GameListener;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +113,7 @@ public abstract class ResourcesContainer<T> {
   }
 
   public void add(@Nullable URL resourceName, T resource) {
-    this.add(Nullability.castToNonnull(resourceName).toString(), resource);
+    this.add(resourceName.toString(), resource);
   }
 
   /** Clears the resource container by removing all previously loaded resources. */
