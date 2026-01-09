@@ -188,6 +188,10 @@ public abstract class Effect implements IUpdateable {
   }
 
   protected Collection<ICombatEntity> getEntitiesInImpactArea(final Shape impactArea) {
+    if (Game.world().environment() == null) {
+      return java.util.Collections.emptyList();
+    }
+
     return Game.world().environment().findCombatEntities(impactArea);
   }
 

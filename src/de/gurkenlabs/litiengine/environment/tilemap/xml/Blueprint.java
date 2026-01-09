@@ -91,6 +91,10 @@ public class Blueprint extends MapObject {
   public List<IMapObject> build(float x, float y) {
     List<IMapObject> builtObjects = new ArrayList<>();
 
+    if (Game.world().environment() == null) {
+      return builtObjects;
+    }
+
     int baseId = Game.world().environment().getNextMapId();
     for (MapObject item : this.getItems()) {
       MapObject newObject = new MapObject(item, this.keepIds());
