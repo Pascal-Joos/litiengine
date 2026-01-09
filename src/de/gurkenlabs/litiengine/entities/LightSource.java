@@ -338,10 +338,6 @@ public class LightSource extends Entity implements IRenderable {
    * @param center the center
    */
   private void renderShadows(final Graphics2D g) {
-    if (Game.world().environment() == null) {
-      return;
-    }
-
     if (!Game.world().environment().getCombatEntities().stream()
         .anyMatch(isInRange(this.getCenter(), SHADOW_GRADIENT_SIZE))) {
       return;
