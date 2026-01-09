@@ -125,8 +125,13 @@ public final class GameLoop extends UpdateLoop implements IGameLoop {
   private void updateInvariableEngineComponents() {
     Game.audio().update();
 
-    ((Keyboard) Input.keyboard()).update();
-    ((Mouse) Input.mouse()).update();
+    if (Input.keyboard() != null) {
+      ((Keyboard) Input.keyboard()).update();
+    }
+
+    if (Input.mouse() != null) {
+      ((Mouse) Input.mouse()).update();
+    }
 
     if (Game.config().input().isGamepadSupport()) {
       for (IUpdateable gamepad : Input.gamepads().getAll()) {

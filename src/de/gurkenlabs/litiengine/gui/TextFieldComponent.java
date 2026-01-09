@@ -3,6 +3,7 @@ package de.gurkenlabs.litiengine.gui;
 import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -35,7 +36,10 @@ public class TextFieldComponent extends ImageComponent {
     this.changeConfirmedConsumers = new CopyOnWriteArrayList<>();
     this.setText(text);
     this.flickerDelay = 100;
-    Input.keyboard().onKeyTyped(this::handleTypedKey);
+    final var keyboard = Input.keyboard();
+    if (keyboard != null) {
+      keyboard.onKeyTyped(this::handleTypedKey);
+    }
     this.onClicked(
         e -> {
           if (!this.isSelected()) {
@@ -43,13 +47,16 @@ public class TextFieldComponent extends ImageComponent {
           }
         });
 
-    Input.mouse()
-        .onClicked(
-            e -> {
-              if (!this.getBoundingBox().contains(Input.mouse().getLocation())) {
-                this.setSelected(false);
-              }
-            });
+    final var mouse = Input.mouse();
+    if (mouse != null) {
+      mouse.onClicked(
+          e -> {
+            if (!this.getBoundingBox()
+                .contains(Nullability.castToNonnull(Input.mouse()).getLocation())) {
+              this.setSelected(false);
+            }
+          });
+    }
 
     this.setTextAlign(Align.LEFT);
   }

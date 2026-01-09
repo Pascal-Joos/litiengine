@@ -61,15 +61,25 @@ public final class MouseCursor implements IRenderable {
   @Override
   public void render(Graphics2D g) {
     if (this.isVisible()) {
-      final Point2D locationWithOffset =
-          new Point2D.Double(
-              Input.mouse().getLocation().getX() + this.getOffsetX(),
-              Input.mouse().getLocation().getY() + this.getOffsetY());
-      ImageRenderer.renderTransformed(g, this.getImage(), locationWithOffset, this.getTransform());
+      final IMouse mouse = Input.mouse();
+      if (mouse != null) {
+        final Point2D locationWithOffset =
+            new Point2D.Double(
+                mouse.getLocation().getX() + this.getOffsetX(),
+                mouse.getLocation().getY() + this.getOffsetY());
+        ImageRenderer.renderTransformed(
+            g, this.getImage(), locationWithOffset, this.getTransform());
+      }
     }
 
     if (Game.config().debug().isRenderDebugMouse()) {
-      ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, Input.mouse().getLocation());
+      final IMouse mouse = Input.mouse();
+      if (mouse != null) {
+        final Point2D location = mouse.getLocation();
+        if (location != null) {
+          ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, location);
+        }
+      }
     }
   }
 
@@ -114,7 +124,7 @@ public final class MouseCursor implements IRenderable {
       return;
     }
 
-    if (!Input.mouse().isGrabMouse()) {
+    if (Input.mouse() != null && !Input.mouse().isGrabMouse()) {
       showDefaultCursor();
     }
   }
