@@ -3,6 +3,7 @@ package de.gurkenlabs.litiengine.environment.tilemap.xml;
 import com.uber.nullaway.annotations.Initializer;
 import de.gurkenlabs.litiengine.util.ArrayUtilities;
 import de.gurkenlabs.litiengine.util.io.Codec;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -345,7 +346,7 @@ public class TileData {
 
     // trim 'space', 'tab', 'newline'. pay attention to additional unicode chars
     // like \u2028, \u2029, \u0085 if necessary
-    String[] csvTileIds = value.trim().split("[\\s]*,[\\s]*");
+    String[] csvTileIds = Nullability.castToNonnull(value).trim().split("[\\s]*,[\\s]*");
 
     for (String gid : csvTileIds) {
       int tileId;
