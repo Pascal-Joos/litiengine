@@ -125,8 +125,7 @@ public class RenderComponent extends Canvas {
                 ? RenderingHints.VALUE_INTERPOLATION_BILINEAR
                 : RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-        final ScreenManager screenManager = Game.screens();
-        final Screen currentScreen = screenManager != null ? screenManager.current() : null;
+        final Screen currentScreen = Game.screens().current();
         if (currentScreen != null) {
           long renderStart = System.nanoTime();
           currentScreen.render(g);
