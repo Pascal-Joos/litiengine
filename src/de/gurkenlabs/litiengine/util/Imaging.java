@@ -3,7 +3,6 @@ package de.gurkenlabs.litiengine.util;
 import de.gurkenlabs.litiengine.entities.Rotation;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -394,7 +393,7 @@ public final class Imaging {
     }
 
     final BufferedImage dimg = getCompatibleImage(w, h);
-    final Graphics2D g = Nullability.castToNonnull(dimg).createGraphics();
+    final Graphics2D g = dimg.createGraphics();
     g.drawImage(img, 0, 0 + h, w, -h, null);
     g.dispose();
     return dimg;
