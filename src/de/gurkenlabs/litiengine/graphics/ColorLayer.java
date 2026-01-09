@@ -22,11 +22,9 @@ public abstract class ColorLayer implements IRenderable {
     this.environment = env;
     this.color = color;
 
-    if (this.environment != null && this.environment.getMap() != null) {
-      Dimension size = this.environment.getMap().getSizeInPixels();
-      this.layer = Imaging.getCompatibleImage(size.width, size.height);
-      this.updateSection(this.environment.getMap().getBounds());
-    }
+    Dimension size = env.getMap().getSizeInPixels();
+    this.layer = Imaging.getCompatibleImage(size.width, size.height);
+    this.updateSection(this.environment.getMap().getBounds());
   }
 
   @Override
@@ -46,16 +44,12 @@ public abstract class ColorLayer implements IRenderable {
             this.getColor().getGreen(),
             this.getColor().getBlue(),
             MathUtilities.clamp(ambientAlpha, 0, 255)));
-    if (this.environment.getMap() != null) {
-      this.updateSection(this.environment.getMap().getBounds());
-    }
+    this.updateSection(this.environment.getMap().getBounds());
   }
 
   public void setColor(final Color color) {
     this.color = color;
-    if (this.environment.getMap() != null) {
-      this.updateSection(this.environment.getMap().getBounds());
-    }
+    this.updateSection(this.environment.getMap().getBounds());
   }
 
   public void updateSection(Rectangle2D section) {

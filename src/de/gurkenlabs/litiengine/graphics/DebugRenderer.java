@@ -13,7 +13,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.ITile;
 import de.gurkenlabs.litiengine.environment.tilemap.MapUtilities;
 import de.gurkenlabs.litiengine.input.Input;
 import de.gurkenlabs.litiengine.physics.Collision;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -147,10 +146,10 @@ public final class DebugRenderer {
 
     if (Game.config().debug().showTilesMetric()) {
       // draw mouse tile info
-      drawTileBoundingBox(g, Nullability.castToNonnull(map), Input.mouse().getMapLocation());
+      drawTileBoundingBox(g, map, Input.mouse().getMapLocation());
     }
 
-    final MapRenderedEvent event = new MapRenderedEvent(g, Nullability.castToNonnull(map));
+    final MapRenderedEvent event = new MapRenderedEvent(g, map);
     for (MapRenderedListener cons : mapDebugListener) {
       cons.rendered(event);
     }

@@ -6,7 +6,6 @@ import de.gurkenlabs.litiengine.environment.Environment;
 import de.gurkenlabs.litiengine.util.MathUtilities;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
 import de.gurkenlabs.litiengine.util.geom.Vector2D;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -90,10 +89,8 @@ public class AmbientLight extends ColorLayer {
   }
 
   private void renderLightSource(final Graphics2D g, final LightSource light, Rectangle2D section) {
-    final double mapWidth =
-        Nullability.castToNonnull(this.getEnvironment().getMap()).getSizeInPixels().width;
-    final double mapHeight =
-        Nullability.castToNonnull(this.getEnvironment().getMap()).getSizeInPixels().height;
+    final double mapWidth = this.getEnvironment().getMap().getSizeInPixels().width;
+    final double mapHeight = this.getEnvironment().getMap().getSizeInPixels().height;
     double longerDimension = mapWidth < mapHeight ? mapHeight : mapWidth;
 
     final Point2D lightCenter = light.getCenter();
