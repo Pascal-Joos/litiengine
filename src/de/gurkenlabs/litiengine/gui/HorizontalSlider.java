@@ -1,7 +1,6 @@
 package de.gurkenlabs.litiengine.gui;
 
 import de.gurkenlabs.litiengine.input.Input;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -47,7 +46,7 @@ public class HorizontalSlider extends Slider {
             this.getButtonSpritesheet(),
             ARROW_LEFT.getText(),
             null));
-    Nullability.castToNonnull(this.getButton1()).setFont(ARROW_LEFT.getFont());
+    this.getButton1().setFont(ARROW_LEFT.getFont());
     this.setButton2(
         new ImageComponent(
             this.getX() + this.getWidth() - this.getHeight(),
@@ -57,7 +56,7 @@ public class HorizontalSlider extends Slider {
             this.getButtonSpritesheet(),
             ARROW_RIGHT.getText(),
             null));
-    Nullability.castToNonnull(this.getButton2()).setFont(ARROW_RIGHT.getFont());
+    this.getButton2().setFont(ARROW_RIGHT.getFont());
 
     final double sliderWidth = this.getHeight() * 2;
     this.minSliderX = this.getX() + this.getHeight();
