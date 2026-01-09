@@ -12,7 +12,6 @@ import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
 import de.gurkenlabs.litiengine.tweening.TweenType;
 import de.gurkenlabs.litiengine.tweening.Tweenable;
 import de.gurkenlabs.litiengine.util.ReflectionUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.InvocationTargetException;
@@ -421,7 +420,7 @@ public abstract class Entity implements IEntity, EntityRenderListener, Tweenable
     if (Game.world().environment() == null) {
       return;
     }
-    Nullability.castToNonnull(this.getEnvironment().getEntitiesByTag().get(tag)).remove(this);
+    this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
     if (this.getEnvironment().getEntitiesByTag().get(tag).isEmpty()) {
       this.getEnvironment().getEntitiesByTag().remove(tag);
     }
