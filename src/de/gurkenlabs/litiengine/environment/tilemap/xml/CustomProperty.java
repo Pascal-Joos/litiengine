@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 public class CustomProperty implements ICustomProperty {
 
   private String type;
-  @Nullable private String value;
+  private String value;
   @Nullable private URL location;
 
   /**
@@ -114,7 +114,6 @@ public class CustomProperty implements ICustomProperty {
     this.location = null;
   }
 
-  @Nullable
   @Override
   public String getAsString() {
     return this.value;
