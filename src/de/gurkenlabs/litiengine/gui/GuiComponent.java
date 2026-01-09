@@ -261,7 +261,6 @@ public abstract class GuiComponent
    *
    * @return the name
    */
-  @Nullable
   public String getName() {
     return this.name;
   }
