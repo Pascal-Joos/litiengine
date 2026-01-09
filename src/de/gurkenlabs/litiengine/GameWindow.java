@@ -202,7 +202,6 @@ public final class GameWindow {
    *
    * @return The {@code GameWindow}'s internal resolution as a {@link Dimension}.
    */
-  @Nullable
   public Dimension getResolution() {
     return this.resolution;
   }
