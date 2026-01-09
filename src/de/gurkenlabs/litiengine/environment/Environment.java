@@ -2312,20 +2312,15 @@ public final class Environment implements IRenderable {
 
     if (Game.config().debug().trackRenderTimes()) {
       final double renderTime = TimeUtilities.nanoToMs(System.nanoTime() - renderStart);
-      GameMetrics.RenderInfo layersInfo = null;
-      if (this.getMap() != null && this.getMap().getRenderLayers() != null) {
-        layersInfo =
-            new GameMetrics.RenderInfo(
-                "layers",
-                this.getMap().getRenderLayers().stream()
-                    .filter(m -> m.getRenderType() == renderType)
-                    .count());
-      }
       Game.metrics()
           .trackRenderTime(
               renderType.toString().toLowerCase(),
               renderTime,
-              layersInfo,
+              new GameMetrics.RenderInfo(
+                  "layers",
+                  this.getMap().getRenderLayers().stream()
+                      .filter(m -> m.getRenderType() == renderType)
+                      .count()),
               new GameMetrics.RenderInfo("renderables", this.getRenderables(renderType).size()),
               new GameMetrics.RenderInfo("entities", this.miscEntities.get(renderType).size()));
     }
