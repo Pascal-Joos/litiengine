@@ -17,7 +17,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.xml.TmxMap;
 import de.gurkenlabs.litiengine.graphics.RenderType;
 import de.gurkenlabs.litiengine.util.io.FileUtilities;
 import de.gurkenlabs.litiengine.util.io.XmlUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -267,7 +266,7 @@ public final class Maps extends ResourcesContainer<IMap> {
      * @return The added map object.
      */
     public IMapObject add(@Nullable IMapObjectLayer layer, IMapObject mapObject) {
-      Nullability.castToNonnull(layer).addMapObject(mapObject);
+      layer.addMapObject(mapObject);
       return mapObject;
     }
 
