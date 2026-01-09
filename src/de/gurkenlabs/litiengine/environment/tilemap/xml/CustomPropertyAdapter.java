@@ -100,6 +100,7 @@ public class CustomPropertyAdapter
 
   @XmlAccessorType(XmlAccessType.FIELD)
   static class PropertyList {
+
     @Nullable
     @XmlElement(name = "property")
     List<Property> properties;
@@ -114,15 +115,20 @@ public class CustomPropertyAdapter
   @Override
   public Map<String, ICustomProperty> unmarshal(PropertyList v) {
     Map<String, ICustomProperty> map =
-        new HashMap<>(v.properties.size()); // use hashtable to reject null keys/values
-    for (Property property : v.properties) {
-      CustomProperty prop =
-          new CustomProperty(
-              property.type, property.value != null ? property.value : property.contents);
-      if (property.location != null) {
-        prop.setValue(property.location);
+        new HashMap<>(
+            v != null && v.properties != null
+                ? v.properties.size()
+                : 0); // use hashtable to reject null keys/values
+    if (v != null && v.properties != null) {
+      for (Property property : v.properties) {
+        CustomProperty prop =
+            new CustomProperty(
+                property.type, property.value != null ? property.value : property.contents);
+        if (property.location != null) {
+          prop.setValue(property.location);
+        }
+        map.put(property.name, prop);
       }
-      map.put(property.name, prop);
     }
     return map;
   }
