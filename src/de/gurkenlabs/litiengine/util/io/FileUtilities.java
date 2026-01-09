@@ -1,6 +1,5 @@
 package de.gurkenlabs.litiengine.util.io;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -109,7 +108,7 @@ public final class FileUtilities {
   }
 
   public static String getFileName(@Nullable URL path) {
-    return getFileName(Nullability.castToNonnull(path).getPath());
+    return getFileName(path.getPath());
   }
 
   public static String getFileName(@Nullable final String path) {
