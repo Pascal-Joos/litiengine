@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntry {
-  @XmlTransient private Tileset tileset;
+  @Nullable @XmlTransient private Tileset tileset;
 
   @Nullable private transient ITerrain[] terrains;
 
@@ -79,6 +79,9 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
     if (this.animation == null) {
       return this.getBasicImage();
     }
+    if (this.tileset == null) {
+      return null;
+    }
     return this.tileset.getTile(this.animation.getCurrentFrame().getTileId()).getBasicImage();
   }
 
@@ -88,11 +91,15 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
     if (this.image != null) {
       return Resources.images().get(this.image.getAbsoluteSourcePath());
     }
+    if (this.tileset == null) {
+      return null;
+    }
     return this.tileset
         .getSpritesheet()
         .getSprite(this.getId(), this.tileset.getMargin(), this.tileset.getSpacing());
   }
 
+  @Nullable
   @Override
   public ITileset getTileset() {
     return this.tileset;
