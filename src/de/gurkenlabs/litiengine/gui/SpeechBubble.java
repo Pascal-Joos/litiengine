@@ -9,7 +9,6 @@ import de.gurkenlabs.litiengine.graphics.RenderType;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.sound.Sound;
 import de.gurkenlabs.litiengine.util.Imaging;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -258,21 +257,19 @@ public class SpeechBubble implements IUpdateable, IRenderable {
     final BufferedImage img = Imaging.getCompatibleImage(500, 500);
     final Graphics2D g = img.createGraphics();
     g.setFont(this.getFont());
-    final float stringWidth =
-        g.getFontMetrics().stringWidth(Nullability.castToNonnull(this.currentText));
+    final float stringWidth = g.getFontMetrics().stringWidth(this.currentText);
     if (stringWidth < this.textBoxWidth) {
       this.textBoxWidth = stringWidth;
     }
 
     final FontRenderContext frc = g.getFontRenderContext();
-    final AttributedString styledText =
-        new AttributedString(Nullability.castToNonnull(this.currentText));
+    final AttributedString styledText = new AttributedString(this.currentText);
     styledText.addAttribute(TextAttribute.FONT, this.getFont());
     final AttributedCharacterIterator iterator = styledText.getIterator();
     final LineBreakMeasurer measurer = new LineBreakMeasurer(iterator, frc);
     measurer.setPosition(0);
     float y = 0;
-    while (measurer.getPosition() < Nullability.castToNonnull(this.currentText).length()) {
+    while (measurer.getPosition() < this.currentText.length()) {
       final TextLayout layout = measurer.nextLayout(this.textBoxWidth);
       y += layout.getAscent() + layout.getLeading() + layout.getDescent();
     }
