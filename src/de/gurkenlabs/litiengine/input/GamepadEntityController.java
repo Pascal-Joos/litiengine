@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Game;
 import de.gurkenlabs.litiengine.entities.IMobileEntity;
 import de.gurkenlabs.litiengine.physics.MovementController;
 import de.gurkenlabs.litiengine.util.geom.GeometricUtilities;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Point2D;
 
 public class GamepadEntityController<T extends IMobileEntity> extends MovementController<T> {
@@ -72,13 +73,21 @@ public class GamepadEntityController<T extends IMobileEntity> extends MovementCo
   }
 
   private void retrieveGamepadValues() {
-    if (this.gamepadId == -1
-        || this.gamepadId != -1 && Input.gamepads().getById(this.gamepadId) == null) {
+    if (this.gamepadId == -1) {
       return;
     }
 
-    final float x = Input.gamepads().get(this.gamepadId).getPollData(Gamepad.Axis.X);
-    final float y = Input.gamepads().get(this.gamepadId).getPollData(Gamepad.Axis.Y);
+    if (Input.gamepads().isEmpty()) {
+      return;
+    }
+
+    final Gamepad gamepad = Input.gamepads().get(this.gamepadId);
+    if (gamepad == null) {
+      return;
+    }
+
+    final float x = gamepad.getPollData(Gamepad.Axis.X);
+    final float y = gamepad.getPollData(Gamepad.Axis.Y);
 
     if (Math.abs(x) > this.gamepadDeadzone) {
       this.setDx(x);
@@ -89,8 +98,10 @@ public class GamepadEntityController<T extends IMobileEntity> extends MovementCo
     }
 
     if (this.isRotateWithRightStick()) {
-      final float rightX = Input.gamepads().get(this.gamepadId).getPollData(Gamepad.Axis.RX);
-      final float rightY = Input.gamepads().get(this.gamepadId).getPollData(Gamepad.Axis.RY);
+      final float rightX = gamepad.getPollData(Gamepad.Axis.RX);
+      final float rightY =
+          Nullability.castToNonnull(Input.gamepads().get(this.gamepadId))
+              .getPollData(Gamepad.Axis.RY);
       float targetX = 0;
       float targetY = 0;
       if (Math.abs(rightX) > this.gamepadRightStick) {
