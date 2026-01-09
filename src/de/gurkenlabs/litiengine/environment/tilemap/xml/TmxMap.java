@@ -15,7 +15,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.RenderOrder;
 import de.gurkenlabs.litiengine.environment.tilemap.StaggerAxis;
 import de.gurkenlabs.litiengine.environment.tilemap.StaggerIndex;
 import de.gurkenlabs.litiengine.util.io.FileUtilities;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -57,7 +56,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @XmlTransient private IMapOrientation mapOrientation;
 
-  @Nullable @XmlAttribute private RenderOrder renderorder;
+  @XmlAttribute private RenderOrder renderorder;
 
   @XmlAttribute private int width;
 
@@ -69,7 +68,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @XmlAttribute private int infinite;
 
-  @Nullable @XmlAttribute private Integer hexsidelength;
+  @XmlAttribute private Integer hexsidelength;
 
   @Nullable @XmlAttribute private StaggerAxis staggeraxis;
 
@@ -80,11 +79,9 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
   @XmlJavaTypeAdapter(ColorAdapter.class)
   private Color backgroundcolor;
 
-  @Nullable
   @XmlAttribute(name = "nextlayerid")
   private Integer nextLayerId;
 
-  @Nullable
   @XmlAttribute(name = "nextobjectid")
   private Integer nextObjectId;
 
@@ -142,12 +139,12 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
    */
   @Override
   public int getNextObjectId() {
-    return Nullability.castToNonnull(this.nextObjectId);
+    return this.nextObjectId;
   }
 
   @Override
   public int getNextLayerId() {
-    return Nullability.castToNonnull(this.nextLayerId);
+    return this.nextLayerId;
   }
 
   @Override
@@ -165,7 +162,6 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
     return this.path;
   }
 
-  @Nullable
   @Override
   public RenderOrder getRenderOrder() {
     return this.renderorder;
@@ -270,7 +266,7 @@ public final class TmxMap extends CustomPropertyProvider implements IMap {
 
   @Override
   public int getHexSideLength() {
-    return Nullability.castToNonnull(this.hexsidelength);
+    return this.hexsidelength;
   }
 
   @Nullable
