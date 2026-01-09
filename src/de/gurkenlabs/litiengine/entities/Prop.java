@@ -7,7 +7,6 @@ import de.gurkenlabs.litiengine.environment.tilemap.TmxProperty;
 import de.gurkenlabs.litiengine.environment.tilemap.TmxType;
 import de.gurkenlabs.litiengine.graphics.animation.IEntityAnimationController;
 import de.gurkenlabs.litiengine.graphics.animation.PropAnimationController;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.geom.Point2D;
 import javax.annotation.Nullable;
 
@@ -114,8 +113,7 @@ public class Prop extends CombatEntity {
     if (!this.isIndestructible() && this.getHitPoints().get() <= 0) {
       return PropState.DESTROYED;
     } else if (!this.isIndestructible()
-        && this.getHitPoints().get()
-            <= Nullability.castToNonnull(this.getHitPoints().getMax()) * 0.5) {
+        && this.getHitPoints().get() <= this.getHitPoints().getMax() * 0.5) {
       return PropState.DAMAGED;
     } else {
       return PropState.INTACT;
