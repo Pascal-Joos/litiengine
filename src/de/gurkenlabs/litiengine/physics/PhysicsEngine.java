@@ -840,20 +840,19 @@ public final class PhysicsEngine implements IUpdateable {
   }
 
   private Point2D clamptoMap(IMobileEntity entity, Point2D newLocation) {
-    Rectangle2D bounds = this.getBounds();
     double collisionLocationX =
         entity.getCollisionBoxAlign().getLocation(entity.getWidth(), entity.getCollisionBoxWidth());
-    double leftBoundX = bounds.getMinX() - collisionLocationX;
+    double leftBoundX = this.getBounds().getMinX() - collisionLocationX;
     double deltaX = entity.getWidth() - entity.getCollisionBoxWidth() - collisionLocationX;
-    double rightBoundX = bounds.getMaxX() - entity.getWidth() + deltaX;
+    double rightBoundX = this.getBounds().getMaxX() - entity.getWidth() + deltaX;
 
     double collisionLocationY =
         entity
             .getCollisionBoxValign()
             .getLocation(entity.getHeight(), entity.getCollisionBoxHeight());
-    double topBoundY = bounds.getMinY() - collisionLocationY;
+    double topBoundY = this.getBounds().getMinY() - collisionLocationY;
     double deltaY = entity.getHeight() - entity.getCollisionBoxHeight() - collisionLocationY;
-    double buttomBoundY = bounds.getMaxY() - entity.getHeight() + deltaY;
+    double buttomBoundY = this.getBounds().getMaxY() - entity.getHeight() + deltaY;
 
     // right and left border minus the collision box width
     double x = MathUtilities.clamp(newLocation.getX(), leftBoundX, rightBoundX);
