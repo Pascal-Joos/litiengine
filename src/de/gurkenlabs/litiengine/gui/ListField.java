@@ -4,6 +4,7 @@ import de.gurkenlabs.litiengine.Align;
 import de.gurkenlabs.litiengine.graphics.ShapeRenderer;
 import de.gurkenlabs.litiengine.graphics.Spritesheet;
 import de.gurkenlabs.litiengine.input.Input;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -252,6 +253,7 @@ public class ListField extends GuiComponent {
     return this.verticalLowerBound;
   }
 
+  @Nullable
   public VerticalSlider getVerticalSlider() {
     return this.verticalSlider;
   }
@@ -595,15 +597,17 @@ public class ListField extends GuiComponent {
                   this.getContent()[column][row].toString(),
                   null);
         }
-        if (this.isSliderInside() && this.getVerticalSlider() != null) {
-          entryComponent.setX(
-              this.getX()
-                  + ((columnWidth
-                          - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()))
-                      * column));
-          entryComponent.setWidth(
-              entryComponent.getWidth()
-                  - (this.getVerticalSlider().getWidth() / this.getNumberOfShownColumns()));
+        if (this.isSliderInside()) {
+          final VerticalSlider verticalSlider = this.getVerticalSlider();
+          if (verticalSlider != null) {
+            entryComponent.setX(
+                this.getX()
+                    + ((columnWidth - (verticalSlider.getWidth() / this.getNumberOfShownColumns()))
+                        * column));
+            entryComponent.setWidth(
+                entryComponent.getWidth()
+                    - (verticalSlider.getWidth() / this.getNumberOfShownColumns()));
+          }
         }
         if (this.isSliderInside()) {
           final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
@@ -636,11 +640,12 @@ public class ListField extends GuiComponent {
 
     this.onChange(
         s -> {
-          if (this.getVerticalSlider() != null) {
-            this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
-            this.getVerticalSlider()
+          final VerticalSlider verticalSlider = this.getVerticalSlider();
+          if (verticalSlider != null) {
+            verticalSlider.setCurrentValue(this.getVerticalLowerBound());
+            verticalSlider
                 .getSliderComponent()
-                .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
+                .setLocation(verticalSlider.getRelativeSliderPosition());
           }
           final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
           if (horizontalSlider != null) {
@@ -650,16 +655,16 @@ public class ListField extends GuiComponent {
                 .setLocation(horizontalSlider.getRelativeSliderPosition());
           }
         });
-    if (this.getVerticalSlider() != null) {
-      this.getVerticalSlider()
-          .onChange(
-              sliderValue -> {
-                this.setVerticalLowerBound(sliderValue.intValue());
-                this.getVerticalSlider()
-                    .getSliderComponent()
-                    .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
-                this.refresh();
-              });
+    final VerticalSlider verticalSlider = this.getVerticalSlider();
+    if (verticalSlider != null) {
+      verticalSlider.onChange(
+          sliderValue -> {
+            this.setVerticalLowerBound(sliderValue.intValue());
+            verticalSlider
+                .getSliderComponent()
+                .setLocation(verticalSlider.getRelativeSliderPosition());
+            this.refresh();
+          });
     }
     final HorizontalSlider horizontalSlider = this.getHorizontalSlider();
     if (horizontalSlider != null) {
@@ -739,7 +744,8 @@ public class ListField extends GuiComponent {
                 this.getMaxRows() - this.getNumberOfShownRows(),
                 1);
       }
-      this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
+      Nullability.castToNonnull(this.getVerticalSlider())
+          .setCurrentValue(this.getVerticalLowerBound());
       this.getComponents().add(this.getVerticalSlider());
     }
   }
