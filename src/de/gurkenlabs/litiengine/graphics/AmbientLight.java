@@ -175,6 +175,9 @@ public class AmbientLight extends ColorLayer {
     // render parts that lie within the shadow with a gradient from the light
     // color to transparent
     final Shape lightShape = light.getLightShape();
+    if (lightShape == null) {
+      return;
+    }
 
     final double radius =
         lightShape.getBounds2D().getWidth() > lightShape.getBounds2D().getHeight()
