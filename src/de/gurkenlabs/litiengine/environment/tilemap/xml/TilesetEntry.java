@@ -94,6 +94,9 @@ public class TilesetEntry extends CustomPropertyProvider implements ITilesetEntr
     if (this.tileset == null) {
       return null;
     }
+    if (this.tileset.getSpritesheet() == null) {
+      return null;
+    }
     return this.tileset
         .getSpritesheet()
         .getSprite(this.getId(), this.tileset.getMargin(), this.tileset.getSpacing());
