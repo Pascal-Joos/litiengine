@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void apply(final Shape impactArea) {
+    final List<ICombatEntity> affected = this.lookForAffectedEntities(impactArea);
+    for (final ICombatEntity affectedEntity : affected) {
+      this.apply(affectedEntity);
+    }
+
+    this.appliances.add(new EffectApplication(affected, impactArea));
+
+    // if it is the first appliance -> register for update
+    if (this.appliances.size() == 1) {
+      Nullability.castToNonnull(Game.loop()).attach(this);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

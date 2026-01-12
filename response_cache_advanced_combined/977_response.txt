@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void set(final Image img, final int offsetX, final int offsetY) {
+    this.image = img;
+    this.setOffset(offsetX, offsetY);
+
+    if (this.getImage() != null) {
+      hideDefaultCursor();
+      return;
+    }
+
+    if (Input.mouse() != null && !Input.mouse().isGrabMouse()) {
+      showDefaultCursor();
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

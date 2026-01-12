@@ -1,0 +1,76 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+From the provided code, there is clear evidence that this field can be null at runtime:
+
+1. Multiple call sites explicitly perform null checks before using it:
+   - `TextFieldComponent` constructor:
+     ```java
+     final var mouse = Input.mouse();
+     if (mouse != null) {
+       mouse.onClicked(...);
+     }
+     ```
+   - `GuiComponent.prepare()`:
+     ```java
+     final IMouse mouse = Input.mouse();
+     if (mouse != null) {
+       mouse.addMouseListener(this);
+       mouse.onWheelMoved(this);
+       mouse.addMouseMotionListener(this);
+     }
+     ```
+   - `GameLoop.updateInvariableEngineComponents()`:
+     ```java
+     if (Input.mouse() != null) {
+       ((Mouse) Input.mouse()).update();
+     }
+     ```
+   - `MouseCursor.render()`:
+     ```java
+     final IMouse mouse = Input.mouse();
+     if (mouse != null) {
+       ...
+     }
+     ```
+
+   These checks are only meaningful if `mouse` can be null; otherwise they would be unnecessary.
+
+2. Several other call sites use `Input.mouse()` without a null check:
+   - `MousePathController.update()`:
+     ```java
+     this.navigating = Input.mouse().isRightButtonPressed();
+     ...
+     this.navigator.navigate(Input.mouse().getMapLocation());
+     ```
+   - `Slider.setSliderComponent(...)` drag handlers
+   - `FreeFlightCamera.handleFreeFlightCamera()`
+   - `HorizontalSlider.setValueRelativeToMousePosition()`
+   - `VerticalSlider.setValueRelativeToMousePosition()`
+   - `DebugRenderer.renderMapDebugInfo(...)`
+   - `GuiComponent.suspend()`:
+     ```java
+     Input.mouse().removeMouseListener(this);
+     Input.mouse().removeMouseWheelListener(this);
+     Input.mouse().removeMouseMotionListener(this);
+     ```
+
+   However, the fact that other code *defensively* checks for null shows that the designers consider `Input.mouse()` potentially null in at least some engine states (e.g., before initialization, after shutdown, or in a no-input/no-GUI mode). There is no alternative constructor or branch given that would guarantee non-null at the specific call sites.
+
+3. Nothing in the provided code forces initialization of `mouse` to a non-null value before these null-unsafe usages. The actual assignment to the static field `mouse` (e.g., in an `Input.init` method, static initializer, or similar) is not shown, so we cannot prove that `mouse` is always non-null at those times.
+
+Given:
+- The method is a direct field getter with no guard or default.
+- The field is demonstrably treated as nullable by other code.
+- There is no shown invariant or initialization logic guaranteeing non-null at the specific call sites.
+
+We must conclude that `Input.mouse()` **can** return null at those specific call sites.]]></reason>
+  <value>YES</value>
+</response>

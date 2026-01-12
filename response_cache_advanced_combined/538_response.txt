@@ -1,0 +1,59 @@
+<response>
+  <reason><![CDATA[
+At the specific call site
+
+```java
+TmxMap map = (TmxMap) this.getMap();
+```
+
+inside `ImageLayer.getOffsetX`/`getOffsetY`, the code is executed only under the condition:
+
+```java
+if (this.isInfiniteMap()) {
+  TmxMap map = (TmxMap) this.getMap();
+  ...
+}
+```
+
+and `isInfiniteMap()` is implemented as:
+
+```java
+private boolean isInfiniteMap() {
+  return this.getMap() != null 
+      && this.getMap().isInfinite() 
+      && this.getMap() instanceof TmxMap;
+}
+```
+
+This is crucial:
+
+1. `isInfiniteMap()` explicitly checks `this.getMap() != null`.  
+   If `getMap()` were to return `null`, `isInfiniteMap()` would be `false` and the body of the `if` (including the cast and assignment `TmxMap map = (TmxMap) this.getMap();`) would not be executed at all.
+
+2. For the `if (this.isInfiniteMap())` branch to be taken, all three conditions must be true in that *single* evaluation of `isInfiniteMap()`:
+   - `this.getMap() != null`
+   - `this.getMap().isInfinite()`
+   - `this.getMap() instanceof TmxMap`
+
+   Therefore, at the moment control enters the `if` block, there already exists at least one successful call to `getMap()` that returned a non-null value.
+
+3. The `getMap()` method itself is:
+
+   ```java
+   @Override
+   public IMap getMap() {
+     return this.parentMap;
+   }
+   ```
+
+   The only value it returns is `this.parentMap`. Whether `parentMap` can be `null` in general is irrelevant for this call site, because the `if (this.isInfiniteMap())` guard ensures that `getMap()` has just been observed to be non-null before the cast and assignment line is executed.
+
+Given this control flow, the particular invocation
+
+```java
+TmxMap map = (TmxMap) this.getMap();
+```
+
+inside the `if (this.isInfiniteMap())` block cannot result in `null` being assigned to `map` at runtime. If `getMap()` were `null`, the line would not be executed at all.]]></reason>
+  <value>NO</value>
+</response>

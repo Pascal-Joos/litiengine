@@ -1,0 +1,38 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  @Override
+  public BufferedImage getImage() {
+    if (this.tilesetEntry == null) { // happens if the tile is empty
+      return null;
+    }
+    TilesetEntry tilesetEntry = this.getTilesetEntry();
+    if (tilesetEntry == null) {
+      return null;
+    }
+    BufferedImage base = tilesetEntry.getImage();
+    if (!this.isFlipped()) {
+      return base;
+    }
+    // save some overhead by doing all the reflection at once
+    // affine transforms are confusing: this actually does represent the correct order
+    AffineTransform tx = new AffineTransform();
+    if (this.isFlippedHorizontally()) {
+      tx.translate(base.getWidth(), 0.0);
+      tx.scale(-1.0, 1.0);
+    }
+    if (this.isFlippedVertically()) {
+      tx.translate(0.0, base.getHeight());
+      tx.scale(1.0, -1.0);
+    }
+    if (this.isFlippedDiagonally()) {
+      tx.concatenate(TX_DIAGONAL_FLIP);
+    }
+    return (new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR)).filter(base, null);
+  }
+  ```
+    ]]>
+  </code>
+</response>

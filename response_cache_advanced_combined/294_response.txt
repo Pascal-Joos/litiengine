@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void add(IEntity entity) {
+      if (entity == null) {
+        return;
+      }
+      this.addEntity(entity);
+      Nullability.castToNonnull(this.miscEntities.get(entity.getRenderType())).put(entity.getMapId(), entity);
+      this.fireEntityEvent(l -> l.entityAdded(entity));
+  }
+  ```
+    ]]>
+  </code>
+</response>

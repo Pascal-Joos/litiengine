@@ -1,0 +1,38 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there are no explicit null checks or guarantees around the expression `Input.mouse().getMapLocation()`.
+
+To determine if `Input.mouse()` can be null, we would need to know:
+
+- How `Input.mouse()` is implemented and initialized.
+- Whether `Input.mouse()` is documented or enforced (e.g., via framework guarantees, annotations, or initialization logic) to always return a non-null mouse object when `renderMapDebugInfo` is called.
+
+The method `renderMapDebugInfo` only gates the call with:
+- `Game.config().debug().isDebugEnabled()` and
+- `Game.config().debug().showTilesMetric()`,
+
+but these conditions say nothing about the initialization state of the input system or the mouse object.
+
+If, for example, the engine guarantees that:
+- the input subsystem is always initialized before any rendering occurs, and
+- `Input.mouse()` always returns a singleton, non-null mouse instance once initialized,
+
+then `Input.mouse()` would be non-null at this point.
+
+However, in absence of that information, it is entirely plausible that:
+- the input system has not yet been initialized,
+- the mouse handling is disabled in some environments, or
+- `Input.mouse()` is designed to return null when no mouse is present/available.
+
+Because those behaviors depend on code and contracts not shown here, we cannot soundly conclude that `Input.mouse()` is never null.
+
+Therefore, based solely on the snippet provided and without the contract/implementation of `Input.mouse()`, the nullability of `Input.mouse()` (and therefore of the expression `Input.mouse()` at the call site) cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or API contract (Javadoc, annotations, or engine documentation) for Input.mouse().]]></request>
+        <request><![CDATA[Indicate whether the input system is guaranteed to be initialized before renderMapDebugInfo is ever called.]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,6 @@
+<response>
+    <reason><![CDATA[
+The method name `afterUnmarshal` does not match any of the known framework-based initializer patterns listed (e.g., `onCreate`, `init`) nor does it start with "init" or "initialize". It is a JAXB lifecycle callback invoked after unmarshalling, and while it assigns a field, it is logically closer to a post-processing hook or specialized setter than to a class-wide initializer method as defined for NullAway. Therefore, it should not be treated as an initializer method under the given criteria.
+    ]]></reason>
+    <value>NO</value>
+</response>

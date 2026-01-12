@@ -1,0 +1,46 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+Point2D entityLocation = entity.getLocation();
+```
+
+`entity` has static type `IEntity`, whose declaration is:
+
+```java
+class de.gurkenlabs.litiengine.entities.IEntity {
+  Point2D getLocation()
+}
+```
+
+This is only an interface-style declaration (no method body). There is no guarantee here that implementations must return a non‑null `Point2D`.
+
+You provided one concrete override:
+
+```java
+class de.gurkenlabs.litiengine.graphics.emitters.EntityEmitter {
+  @Override
+  public Point2D getLocation() {
+    if (this.getEntity() == null) {
+      return null;
+    }
+    return this.hasDynamicLocation() ? this.getEntity().getLocation() : super.getLocation();
+  }
+}
+```
+
+This implementation explicitly returns `null` if `this.getEntity() == null`. Since `EntityEmitter` implements/overrides `getLocation()` from `IEntity`, this proves that at least one valid `IEntity` implementation can return `null` from `getLocation()`.
+
+At the specific call site, the only static information is that `entity` is an `IEntity`. It may be an instance of `EntityEmitter` (or any other implementation that might also return `null`). No preceding checks or constraints at this call site rule out `EntityEmitter` or guarantee a non‑null location. Nothing in the shown code establishes an invariant such as “all `IEntity` passed here are never `EntityEmitter` with `getEntity() == null`”.
+
+Because:
+
+- `IEntity.getLocation()` has no non‑null contract,
+- there exists at least one implementation (`EntityEmitter`) that can return `null`,
+- and the call site does not restrict `entity` to a non‑null‑returning implementation,
+
+the result of `entity.getLocation()` at this call site can be `null`.
+  ]]></reason>
+  <value>YES</value>
+</response>

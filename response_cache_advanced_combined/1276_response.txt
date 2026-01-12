@@ -1,0 +1,21 @@
+<response>
+  <reason><![CDATA[
+At this call site, `this.getVerticalSlider()` is simply returning the field `this.verticalSlider`. That field is only assigned within `initSliders()`:
+
+```java
+if (maxNbOfRows > 0) {
+  ...
+  this.verticalSlider = new VerticalSlider(...);
+  ...
+}
+```
+
+There is no `else` assignment that would initialize `verticalSlider` when `maxNbOfRows <= 0`; in that case, the entire `if (maxNbOfRows > 0)` block is skipped and `this.verticalSlider` remains at its default value, which in Java is `null`.
+
+`initSliders()` is called from the constructor and from `setSliderInside`, but neither guarantees that `maxNbOfRows > 0` will be true. Thus, for some valid constructions or later state changes of `ListField`, `verticalSlider` can legitimately remain `null`.
+
+In the shown usages, the code itself guards against this by checking `if (this.getVerticalSlider() != null)` before dereferencing, which implicitly acknowledges that `getVerticalSlider()` may return `null`.
+
+Therefore, at the specific call site `this.getVerticalSlider()`, the method can return `null` because `verticalSlider` is not guaranteed to be initialized to a non-null value in all cases.]]></reason>
+  <value>YES</value>
+</response>

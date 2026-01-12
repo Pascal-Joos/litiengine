@@ -1,0 +1,40 @@
+<response>
+  <reason><![CDATA[
+GameWorld.camera() simply returns the field `this.camera`.
+
+From the provided code:
+
+- `Game.init(...)` eventually calls `world.setCamera(new Camera());`, so during normal initialization a non-null `Camera` is installed.
+- However, `GameWorld.setCamera(ICamera cam)` explicitly allows `null`:
+  ```java
+  public void setCamera(final ICamera cam) {
+    if (this.camera() != null) {
+      Game.loop().detach(camera);
+    }
+
+    camera = cam;
+
+    if (cam != null && !Game.isInNoGUIMode()) {
+      Game.loop().attach(cam);
+      cam.updateFocus();
+    }
+  }
+  ```
+  This method is called with `null` in `GameWorld.clear()`:
+  ```java
+  public void clear() {
+    this.unloadEnvironment();
+    this.environments.clear();
+    this.setCamera(null);
+    ...
+  }
+  ```
+  After `clear()` is called, `this.camera` is set to `null`.
+
+- The call site is `Game.world().camera()`. Nothing at that call site guarantees that `clear()` has not been called beforehand, nor that `setCamera(null)` (or another `setCamera` with `null`) has not been used elsewhere.
+
+Because `setCamera(null)` is a legitimate, reachable operation and no invariant or guard at the call site ensures that the camera has been reset to a non-null value, the field `camera` can be `null` at the moment `Game.world().camera()` is invoked.
+
+Therefore, at this specific call site, the method `camera()` can return `null`.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,39 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public RaycastHit raycast(Line2D line, Collision collision,  ICollisionEntity entity) {
+    final Point2D rayCastSource = new Point2D.Double(line.getX1(), line.getY1());
+
+    for (final ICollisionEntity collisionEntity : this.collisionEntities.get(collision)) {
+      if (!canCollide(entity, collisionEntity)) {
+        continue;
+      }
+
+      Rectangle2D collisionBox = collisionEntity.getCollisionBox();
+      if (collisionBox == null) {
+        return null;
+      }
+      if (collisionBox.intersectsLine(line)) {
+        double closestDist = -1;
+        Point2D closestPoint = null;
+        for (final Point2D intersection :
+            GeometricUtilities.getIntersectionPoints(line, collisionBox)) {
+          final double dist = intersection.distance(rayCastSource);
+          if (closestPoint == null || dist < closestDist) {
+            closestPoint = intersection;
+            closestDist = dist;
+          }
+        }
+
+        return new RaycastHit(closestPoint, collisionEntity, closestDist);
+      }
+    }
+
+    return null;
+}
+  ```
+    ]]>
+  </code>
+</response>

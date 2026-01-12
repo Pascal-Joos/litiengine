@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void onRendered(RenderType renderType, EnvironmentRenderedListener listener) {
+      Nullability.castToNonnull(this.renderListeners.get(renderType)).add(listener);
+  }
+  ```
+    ]]>
+  </code>
+</response>

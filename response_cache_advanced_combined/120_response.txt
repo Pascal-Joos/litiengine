@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected double getViewportHeight() {
+      Dimension resolution = Game.window().getResolution();
+      return (resolution == null ? 0 : resolution.getHeight()) / this.getRenderScale();
+  }
+  ```
+    ]]>
+  </code>
+</response>

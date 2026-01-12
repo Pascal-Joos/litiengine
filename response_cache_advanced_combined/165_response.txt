@@ -1,0 +1,36 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  private Intersection getIntersection(final ICollisionEntity entity, final Rectangle2D rect) {
+    Intersection result = null;
+    for (final ICollisionEntity otherEntity : this.getCollisionEntities()) {
+      if (!canCollide(entity, otherEntity)) {
+        continue;
+      }
+
+      Rectangle2D otherBox = otherEntity.getCollisionBox();
+      if (otherBox == null) {
+        return null;
+      }
+
+      if (GeometricUtilities.intersects(otherBox, rect)) {
+        Rectangle2D intersection = otherBox.createIntersection(rect);
+        if (result != null) {
+          result =
+              new Intersection(
+                  intersection.createUnion(result),
+                  ArrayUtilities.append(result.involvedEntities, otherEntity));
+        } else {
+          result = new Intersection(intersection, otherEntity);
+        }
+      }
+    }
+
+    return result;
+  }
+  ```
+    ]]>
+  </code>
+</response>

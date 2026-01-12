@@ -1,0 +1,18 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  protected Tileset load( URL resourceName) throws IOException, URISyntaxException {
+    try {
+      Tileset tileset = XmlUtilities.read(Tileset.class, resourceName);
+      Nullability.castToNonnull(tileset).finish(resourceName);
+      return tileset;
+    } catch (JAXBException e) {
+      throw new TmxException(e);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

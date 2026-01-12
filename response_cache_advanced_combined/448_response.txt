@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("unused")
+  private void beforeMarshal(Marshaller m) {
+    if (this.mapOrientation == null) {
+      this.mapOrientation = MapOrientations.ORTHOGONAL;
+    }
+    this.orientation = this.mapOrientation.getName();
+  }
+  ```
+    ]]>
+  </code>
+</response>

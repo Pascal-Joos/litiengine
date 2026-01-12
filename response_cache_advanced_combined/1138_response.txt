@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void loaded(Environment environment) {
+    environmentLoaded = Nullability.castToNonnull(Game.loop()).getTicks();
+  }
+  ```
+    ]]>
+  </code>
+</response>

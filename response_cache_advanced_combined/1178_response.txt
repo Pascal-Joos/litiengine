@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+    public float getTickVelocity() {
+      // pixels per ms multiplied by the passed ms
+      // ensure that entities don't travel too far in case of lag
+      return Math.min(Game.loop().getDeltaTime(), GameLoop.TICK_DELTATIME_LAG)
+          * 0.001F
+          * Nullability.castToNonnull(this.getVelocity().get())
+          * Game.loop().getTimeScale();
+}
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,41 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` is a trivial static getter:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+There is only a single return path that directly returns the static field `keyboard`. No initialization, assignment, or invariant for this field is shown anywhere in the provided call chain or surrounding code. None of the provided methods (e.g., constructors, `Game.init`, `GameLoop.updateInvariableEngineComponents`, GUI components, or controllers) assign a non-null value to `Input.keyboard` or otherwise guarantee it is initialized.
+
+Additionally, the codebase itself repeatedly performs explicit null checks before using `Input.keyboard()`:
+
+- In `TextFieldComponent` constructor:
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyTyped(this::handleTypedKey);
+  }
+  ```
+- In `GameLoop.updateInvariableEngineComponents()`:
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+    ((Keyboard) keyboard).update();
+  }
+  ```
+- In `Game.init`:
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyTyped(KeyEvent.VK_PRINTSCREEN, ...);
+  }
+  ```
+
+These checks are strong evidence that `Input.keyboard()` is expected to be possibly null at runtime.
+
+At the specific call sites you provided that *do not* perform a null check (e.g., `Input.keyboard().onKeyPressed(this::handlePressedKey);` in `KeyboardEntityController` and `PlatformingMovementController`, and multiple `Input.keyboard().onKeyTyped(...)` calls in `ListField.prepareInput` and `DropdownListField.prepareInput`), the code simply assumes a non-null return. However, since no guarantee or initialization of the static field `keyboard` has been shown, the same underlying getter is used, and other parts of the code handle the null case explicitly, the method can still return null at these call sites.
+
+Because the getter only forwards the field and there is no evidence that `keyboard` is always initialized before those usages, `Input.keyboard()` can be null at the given call sites.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,43 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public GamepadEntityController(final T entity, boolean rotateWithRightStick) {
+      super(entity);
+      final GamepadManager gamepadManager = Input.gamepads();
+      if (gamepadManager != null && gamepadManager.current() != null) {
+        this.gamepadId = gamepadManager.current().getId();
+      }
+
+      this.rotateWithRightStick = rotateWithRightStick;
+      if (gamepadManager != null) {
+        gamepadManager
+            .onAdded(
+                pad -> {
+                  if (this.gamepadId == -1) {
+                    this.gamepadId = pad.getId();
+                  }
+                });
+      }
+
+      if (gamepadManager != null) {
+        gamepadManager
+            .onRemoved(
+                pad -> {
+                  if (this.gamepadId == pad.getId()) {
+                    this.gamepadId = -1;
+                    final GamepadManager currentGamepadManager = Input.gamepads();
+                    if (currentGamepadManager != null) {
+                      final Gamepad newGamePad = currentGamepadManager.current();
+                      if (newGamePad != null) {
+                        this.gamepadId = newGamePad.getId();
+                      }
+                    }
+                  }
+                });
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

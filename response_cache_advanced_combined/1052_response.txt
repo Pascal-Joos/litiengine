@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Optional<T> tryGet( String resourceName) {
+      if (this.contains(resourceName)) {
+        return Optional.of(Nullability.castToNonnull(this.get(resourceName)));
+      }
+
+      return Optional.empty();
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void attach() {
+    Nullability.castToNonnull(Game.loop()).attach(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

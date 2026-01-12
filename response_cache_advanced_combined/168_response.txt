@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean collides(
+      Point2D location, Collision collision, ICollisionEntity entity) {
+    if (this.environmentBounds != null && !this.environmentBounds.contains(location)) {
+      return true;
+    }
+
+    return collides(
+        entity,
+        collision,
+        otherEntity -> {
+          Rectangle2D collisionBox = otherEntity.getCollisionBox();
+          return collisionBox != null && collisionBox.contains(location);
+        });
+  }
+  ```
+    ]]>
+  </code>
+</response>

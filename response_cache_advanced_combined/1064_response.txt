@@ -1,0 +1,25 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public Sprite getSprite(String name) {
+    if (name == null || name.isEmpty()) {
+      return null;
+    }
+
+    return this.getSprites().stream()
+        .filter(x -> {
+          String spriteName = x.getName();
+          if (spriteName == null) {
+            return false;
+          }
+          return spriteName.equals(name);
+        })
+        .findFirst()
+        .orElse(null);
+  }
+  ```
+    ]]>
+  </code>
+</response>

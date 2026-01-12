@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean canTrigger(ICollisionEntity entity) {
+        return entity.canCollideWith(this)
+            && GeometricUtilities.intersects(Nullability.castToNonnull(this.getCollisionBox()), Nullability.castToNonnull(entity.getCollisionBox()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected T applyModifiers(final T baseValue) {
+    T currentValue = baseValue;
+    for (final AttributeModifier<T> modifier : this.getModifiers()) {
+      currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
+    }
+
+    return currentValue;
+  }
+  ```
+    ]]>
+  </code>
+</response>

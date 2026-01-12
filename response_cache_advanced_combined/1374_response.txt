@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void remove(final ICollisionEntity entity) {
+    if (entity.getCollisionType() == null) {
+      return;
+    }
+
+    switch (entity.getCollisionType()) {
+      case DYNAMIC:
+      case STATIC:
+        Nullability.castToNonnull(this.collisionEntities.get(entity.getCollisionType())).remove(entity);
+        break;
+      default:
+        return;
+    }
+
+    Nullability.castToNonnull(this.collisionEntities.get(Collision.ANY)).remove(entity);
+}
+  ```
+    ]]>
+  </code>
+</response>

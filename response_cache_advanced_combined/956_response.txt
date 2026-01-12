@@ -1,0 +1,21 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void prepare() {
+    this.suspended = false;
+    this.visible = true;
+    final IMouse mouse = Input.mouse();
+    if (mouse != null) {
+      mouse.addMouseListener(this);
+      mouse.onWheelMoved(this);
+      mouse.addMouseMotionListener(this);
+    }
+    for (final GuiComponent component : this.getComponents()) {
+      component.prepare();
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

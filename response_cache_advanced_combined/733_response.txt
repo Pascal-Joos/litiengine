@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean move(final IMobileEntity entity, final double angle, final double distance) {
+      final Point2D newPosition = GeometricUtilities.project(Nullability.castToNonnull(entity.getLocation()), angle, distance);
+      return this.move(entity, newPosition);
+  }
+  ```
+    ]]>
+  </code>
+</response>

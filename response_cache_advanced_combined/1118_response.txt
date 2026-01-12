@@ -1,0 +1,63 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public String save(final String fileName, final boolean compress) {
+    String fileNameWithExtension = fileName;
+    if (!fileNameWithExtension.endsWith("." + FILE_EXTENSION)) {
+      fileNameWithExtension += "." + FILE_EXTENSION;
+    }
+
+    final File newFile = new File(fileNameWithExtension);
+    if (newFile.exists()) {
+      try {
+        Files.delete(newFile.toPath().toAbsolutePath());
+      } catch (IOException e) {
+        log.log(Level.WARNING, e.getMessage(), e);
+      }
+    }
+
+    Collections.sort(this.getMaps());
+    Collections.sort(this.getSpriteSheets());
+    Collections.sort(this.getTilesets());
+    Collections.sort(this.getEmitters());
+    Collections.sort(this.getBluePrints());
+    Collections.sort(this.getSounds());
+
+    try (FileOutputStream fileOut = new FileOutputStream(newFile, false)) {
+      final JAXBContext jaxbContext = XmlUtilities.getContext(ResourceBundle.class);
+      if (jaxbContext == null) {
+        return null;
+      }
+      final Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+      // output pretty printed
+      jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, false);
+
+      if (compress) {
+        final GZIPOutputStream stream = new GZIPOutputStream(fileOut);
+        jaxbMarshaller.marshal(this, stream);
+        stream.flush();
+        stream.close();
+      } else {
+
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        // first: marshal to byte array
+        jaxbMarshaller.marshal(this, out);
+        out.flush();
+
+        // second: postprocess xml and then write it to the file
+        XmlUtilities.saveWithCustomIndentation(
+            new ByteArrayInputStream(out.toByteArray()), fileOut, 1);
+        out.close();
+      }
+    } catch (final JAXBException | IOException e) {
+      log.log(Level.SEVERE, e.getMessage(), e);
+    }
+
+    return newFile.toString();
+}
+  ```
+    ]]>
+  </code>
+</response>

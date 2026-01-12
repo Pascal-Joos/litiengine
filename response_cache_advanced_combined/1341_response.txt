@@ -1,0 +1,66 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+final BufferedImage sprite = this.getImage();
+```
+
+inside `Spritesheet.updateRowsAndCols()`:
+
+```java
+private void updateRowsAndCols() {
+    final BufferedImage sprite = this.getImage();
+    this.columns = sprite.getWidth() / this.spriteWidth;
+    this.rows = sprite.getHeight() / this.spriteHeight;
+}
+```
+
+`this` is an instance of `de.gurkenlabs.litiengine.graphics.Spritesheet`, and `getImage()` simply returns the field `this.image`.
+
+From the provided constructor:
+
+```java
+public Spritesheet(
+       final BufferedImage image,
+       final String path,
+       final int spriteWidth,
+       final int spriteHeight) {
+    checkImage(image, path);
+    this.image = image;
+    this.name = FileUtilities.getFileName(path);
+    this.checkHeight(spriteHeight);
+    this.checkWidth(spriteWidth);
+
+    this.spriteWidth = spriteWidth;
+    this.spriteHeight = spriteHeight;
+    this.imageFormat = ImageFormat.get(FileUtilities.getExtension(path));
+
+    this.updateRowsAndCols();
+    ...
+}
+```
+
+`updateRowsAndCols()` (and thus the `this.getImage()` call) is invoked in the constructor after:
+
+1. `checkImage(image, path);`
+2. `this.image = image;`
+
+So `this.image` is exactly the constructor parameter `image` at this point.
+
+The critical question is whether `image` can be null when constructing a `Spritesheet`. The only information we have about that is the call to `checkImage(image, path);` before assigning `this.image`. We are not given the implementation of `checkImage`. For the `updateRowsAndCols` call to safely dereference `sprite.getWidth()` and `sprite.getHeight()`, `checkImage` would normally be expected to enforce non-null (e.g., by throwing if `image == null`), but we cannot assume this behavior without its declaration, per the instructions.
+
+Because:
+- `getImage()` is just a field getter, no additional logic.
+- `this.image` is set directly from the possibly-null constructor parameter `image`.
+- The only safeguard is `checkImage(image, path)`, whose behavior is unknown from the provided code and whose declaration we are not given.
+
+we cannot soundly guarantee that `this.image` is never null at this call site without knowing what `checkImage` does. If `checkImage` allows `image` to be null, then `this.image` (and thus `getImage()`) can be null here; if it forbids null (e.g., throws on null), then `getImage()` cannot be null at this call site.
+
+To make a confident determination, the implementation of `checkImage` is required.
+  ]]></reason>
+  <success>false</success>
+  <methods>
+    <method>checkImage</method>
+  </methods>
+</response>

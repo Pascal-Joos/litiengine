@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean resolveCollisionForRaycastToNewPosition(
+      ICollisionEntity entity, Point2D newPosition) {
+    // special case to prevent entities to glitch through collision boxes if
+    // they have a large enough step size
+    Rectangle2D collisionBox = entity.getCollisionBox();
+    if (collisionBox == null) {
+      return false;
+    }
+    Rectangle2D newCollisionBox = entity.getCollisionBox(newPosition);
+    if (newCollisionBox == null) {
+      return false;
+    }
+    final Line2D line =
+        new Line2D.Double(
+            collisionBox.getCenterX(),
+            collisionBox.getCenterY(),
+            newCollisionBox.getCenterX(),
+            newCollisionBox.getCenterY());
+    return this.collides(line, Collision.ANY, entity);
+  }
+  ```
+    ]]>
+  </code>
+</response>

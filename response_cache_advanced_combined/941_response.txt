@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public KeyboardEntityController(
+      final T entity, final int up, final int down, final int left, final int right) {
+    super(entity);
+    this.up = new ArrayList<>();
+    this.down = new ArrayList<>();
+    this.left = new ArrayList<>();
+    this.right = new ArrayList<>();
+
+    this.up.add(up);
+    this.down.add(down);
+    this.left.add(left);
+    this.right.add(right);
+    if (Input.keyboard() != null) {
+      Input.keyboard().onKeyPressed(this::handlePressedKey);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

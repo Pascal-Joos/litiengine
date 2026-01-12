@@ -1,0 +1,21 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no explicit guarantee that either Game.world() or Game.world().camera() is non-null:
+
+- The code calls Game.world().camera() directly with no prior null checks.
+- The snippet does not show how or when Game.world() is initialized.
+- The snippet does not show how or when the camera is created, attached to the world, or whether it can be absent (e.g., in headless mode, before initialization, or after disposal).
+- No contracts (e.g., @NonNull, documentation guarantees) are visible that would assert that Game.world() or its camera can never be null at this point in execution.
+
+Because the nullability of Game.world() and its camera entirely depends on the broader game framework (initialization order, lifecycle, and invariants in the Game/world/camera APIs) which are not shown, it is not possible to conclusively say that Game.world().camera() can never be null or can be null based solely on this fragment.
+
+Therefore, with the available information and without the guarantees from the Game API, the nullability of Game.world().camera() at this call site cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the implementation or API contract of Game.world(): its return type, initialization logic, and whether it can ever return null.]]></request>
+        <request><![CDATA[Show the implementation or API contract of world().camera(): how and when the camera is created/assigned, and whether it is documented as always present or possibly null.]]></request>
+    </requests>
+</response>
+```

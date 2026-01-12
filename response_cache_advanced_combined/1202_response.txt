@@ -1,0 +1,58 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private Point2D resolveCollision(final ICollisionEntity entity, final Point2D targetPosition) {
+      // first resolve x-axis movement
+      Point2D resolvedPosition = new Point2D.Double(targetPosition.getX(), entity.getY());
+  
+      final Rectangle2D targetCollisionBoxX = entity.getCollisionBox(resolvedPosition);
+      final Intersection intersectionX = this.getIntersection(entity, targetCollisionBoxX);
+      if (intersectionX != null) {
+        Rectangle2D entityCollisionBox = entity.getCollisionBox();
+        if (entityCollisionBox == null) {
+          return resolvedPosition;
+        }
+        if (entityCollisionBox.getX() < targetCollisionBoxX.getX()) {
+          // entity was moved left -> right, so push out to the left
+          resolvedPosition.setLocation(
+              Math.max(entity.getX(), resolvedPosition.getX() - intersectionX.getWidth()),
+              resolvedPosition.getY());
+        } else {
+          // push it out to the right
+          resolvedPosition.setLocation(
+              Math.min(entity.getX(), resolvedPosition.getX() + intersectionX.getWidth()),
+              resolvedPosition.getY());
+        }
+      }
+  
+      // then resolve y-axis movement
+      resolvedPosition.setLocation(resolvedPosition.getX(), targetPosition.getY());
+  
+      final Rectangle2D targetCollisionBoxY = entity.getCollisionBox(resolvedPosition);
+      final Intersection intersectionY = this.getIntersection(entity, targetCollisionBoxY);
+      if (intersectionY != null) {
+        Rectangle2D entityCollisionBox = entity.getCollisionBox();
+        if (entityCollisionBox == null) {
+          return resolvedPosition;
+        }
+        if (Nullability.castToNonnull(entity.getCollisionBox()).getY() < targetCollisionBoxY.getY()) {
+          // entity was moved top -> bottom so push out towards the top
+          resolvedPosition.setLocation(
+              resolvedPosition.getX(),
+              Math.max(entity.getY(), resolvedPosition.getY() - intersectionY.getHeight()));
+        } else {
+          resolvedPosition.setLocation(
+              resolvedPosition.getX(),
+              Math.min(entity.getY(), resolvedPosition.getY() + intersectionY.getHeight()));
+        }
+      }
+  
+      fireCollisionEvents(entity, intersectionX, intersectionY);
+  
+      return resolvedPosition;
+  }
+  ```
+    ]]>
+  </code>
+</response>

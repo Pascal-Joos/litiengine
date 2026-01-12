@@ -1,0 +1,51 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no visible guarantee that `this.miscEntities.get(renderType)` is non-null for all possible `renderType` values.
+
+Key observations:
+
+1. `miscEntities` is used as if it were a `Map<RenderType, ? extends Map<?, ?>>` (or similar), because:
+   - At render time: `this.miscEntities.get(renderType).values()`
+   - At metrics time: `this.miscEntities.get(renderType).size()`
+   Both usages dereference the result of `get(renderType)` without any null check.
+
+2. For `this.miscEntities.get(renderType)` to be guaranteed non-null, at least one of the following must be true:
+   - `miscEntities` is some kind of map implementation that:
+     - Never returns null from `get`, and
+     - Guarantees that all possible `RenderType` keys are always present and mapped to a non-null collection.
+   - Or there is code elsewhere that:
+     - Initializes `miscEntities` with a non-null value for every `RenderType` that can reach this method, and
+     - Prevents removal or replacement of those values with null.
+
+3. None of those guarantees are visible in the given snippet. Standard Java `Map` implementations (`HashMap`, `EnumMap`, etc.) can return null if:
+   - A key is not present, or
+   - A key is explicitly mapped to null.
+
+4. The control flow in `render` only checks `this.getMap()` and iterates `this.getRenderables(renderType)`; there is no previous access to `this.miscEntities` in this method that would assert or enforce non-null entries.
+
+5. The contracts of external methods used here (`MapRenderer.render`, `Game.graphics().renderEntities`, `Game.metrics().trackRenderTime`) do not, by themselves, constrain `miscEntities` or `renderType` in a way that would prove `this.miscEntities.get(renderType)` is non-null.
+
+Because we lack:
+- The declaration and initialization logic for `miscEntities`, and
+- Any documented invariant or contract that guarantees non-null values for all `RenderType` keys,
+
+we cannot soundly conclude that `this.miscEntities.get(renderType)` can never be null. At the same time, we cannot say with certainty that it *will* be null at runtime, because such a guarantee might exist in unseen code (e.g., constructor or initialization logic always populating the map).
+
+Therefore, based only on the provided method and standard Java semantics, it is not possible to definitively determine non-nullness; additional context about `miscEntities` is required.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[
+Provide the declaration of `miscEntities` (its type and how it is initialized), including:
+- Field declaration line (e.g., `private final Map<RenderType, Map<?, ?>> miscEntities;`)
+- All constructors or initialization blocks where `miscEntities` is assigned or populated.
+        ]]></request>
+        <request><![CDATA[
+Indicate whether `RenderType` is an enum, and if so, whether there is code that:
+- Iterates all enum constants and populates `miscEntities` with a non-null value for each, and
+- Prevents later insertion of null values into `miscEntities`.
+        ]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,27 @@
+<response>
+  <reason><![CDATA[At this call site, `this` is an instance of `de.gurkenlabs.litiengine.environment.tilemap.xml.MapObject`, and `this.getLayer()` is expected to return an `ILayer` whose `getMap()` method is declared only as:
+```java
+public IMap getMap()
+```
+No implementation or contract (e.g., `@Nonnull`) is provided, and there is no code here that assigns or guarantees a non-null map to the layer.
+
+The logic of `MapObject.isInfiniteMap()` explicitly checks:
+```java
+return this.getLayer() != null
+    && this.getLayer().getMap() != null
+    && this.getLayer().getMap().isInfinite()
+    && this.getLayer().getMap() instanceof TmxMap;
+```
+This condition only *guards* uses of `getMap()` *inside* `isInfiniteMap()` itself; it does not constrain the value of `getMap()` at other call sites. In multiple methods (`getX`, `getY`, `setX`, `setY`, `finish`, etc.), the code calls:
+```java
+TmxMap map = (TmxMap) this.getLayer().getMap();
+```
+directly if `this.isInfiniteMap()` is `true`. When `isInfiniteMap()` is `false`, those branches skip the `getMap()` call entirely and use fallback logic (e.g. `this.x == null ? 0 : this.x;`). Thus, the only guarantee about `getLayer().getMap()` being non-null is conditional on `isInfiniteMap()` being `true`, but that relies on the *same* `getMap()` call inside `isInfiniteMap()`.
+
+Crucially, in the provided call chain (e.g., `Blueprint.build`, `MapObjectSerializer.serialize`, the `MapObject` copy constructor), `MapObject` instances can be created and manipulated without ever assigning a layer or a map. Nothing in the shown code ensures that, for these objects, `this.getLayer()` is non-null or that `this.getLayer().getMap()` is non-null. Since the implementation of `ILayer.getMap()` is unknown, it is entirely possible that:
+- `this.getLayer()` is non-null but its internal map reference is `null`, causing `getMap()` to return `null`, or
+- depending on how the layer is constructed, `getMap()` may return `null` until some later initialization step.
+
+Because we have no implementation or explicit non-null contract for `ILayer.getMap()`, we cannot rule out a `null` return. The presence of explicit `null` checks in `isInfiniteMap()` further indicates that `null` is treated as a realistic possibility. Therefore, at the specific call site `this.getLayer().getMap()`, the method result can be `null`.]]></reason>
+  <value>YES</value>
+</response>

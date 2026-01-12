@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static List<ITile> getTilesByPixelLocation(final IMap map, final Point2D location) {
+    final List<ITile> tilesAtLocation = new ArrayList<>();
+    if (map == null || map.getOrientation() == null) {
+      return tilesAtLocation;
+    }
+    if (map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
+      return tilesAtLocation;
+    }
+
+    final Point tileLocation = map.getOrientation().getTile(location, map);
+    for (final ITileLayer layer : map.getTileLayers()) {
+      final ITile tile = layer.getTile(tileLocation.x, tileLocation.y);
+      if (tile != null) {
+        tilesAtLocation.add(tile);
+      }
+    }
+
+    return tilesAtLocation;
+  }
+  ```
+    ]]>
+  </code>
+</response>

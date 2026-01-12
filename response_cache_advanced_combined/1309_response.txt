@@ -1,0 +1,50 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` simply returns the static field `keyboard`:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+There is no initialization or assignment to `keyboard` shown anywhere in the provided call chain and method definitions. Since:
+
+- The value of `keyboard` is not constructed or assigned in `Game.init`, `GameLoop`, or any of the GUI/controller classes shown.
+- Multiple call sites explicitly perform a null-check before using `Input.keyboard()`:
+
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyTyped(...);
+  }
+  ```
+
+  and
+
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+    keyboard.onKeyPressed(...);
+  }
+  ```
+
+  These checks strongly indicate that the library itself expects `Input.keyboard()` to be possibly null at the time those calls occur.
+
+- There is at least one call site that does *not* guard against null:
+
+  ```java
+  Input.keyboard()
+      .onKeyTyped(
+          KeyEvent.VK_UP,
+          e -> {
+            ...
+          });
+  ```
+
+  in `DropdownListField.prepareInput()`.
+
+From the provided code alone, there is no guarantee that `keyboard` has been initialized to a non-null value before `DropdownListField.prepareInput()` (or any other shown call site) is invoked. Because the static field’s initialization is not shown, and other code defensively checks for null, the only sound conclusion is that `Input.keyboard()` can in fact return null at the call sites you’ve provided.
+
+Therefore, at the specific call site `Input.keyboard()` (e.g., in `DropdownListField.prepareInput()` and other usages), the return value can be null.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  void finish(URL location) throws TmxException {
+    super.finish(location);
+    if (this.gid != null
+        && this.getLayer() != null
+        && this.getLayer().getMap() != null) {
+      this.tile = this.getLayer().getMap().getTilesetEntry(this.gid);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

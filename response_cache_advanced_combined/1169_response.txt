@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean isOnCooldown() {
+      return (this.getCurrentExecution() != null
+          && this.getCurrentExecution().getExecutionTicks() > 0
+          && Game.time().since(this.getCurrentExecution().getExecutionTicks())
+              < Nullability.castToNonnull(this.getAttributes().cooldown().get()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

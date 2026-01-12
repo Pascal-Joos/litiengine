@@ -1,0 +1,6 @@
+<response>
+    <success>false</success>
+    <methods>
+      <method>getStringValue</method>
+    </methods>
+</response>

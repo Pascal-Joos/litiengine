@@ -1,0 +1,26 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  protected void process() {
+    this.updateInvariableEngineComponents();
+
+    if (this.getTimeScale() > 0) {
+      super.process();
+      this.executeTimedActions();
+    }
+
+    if (Game.world().camera() != null) {
+      Game.world().camera().updateFocus();
+    }
+    if (!Game.isInNoGUIMode()) {
+      Game.window().getRenderComponent().render();
+    }
+
+    this.trackRenderMetric();
+  }
+  ```
+    ]]>
+  </code>
+</response>

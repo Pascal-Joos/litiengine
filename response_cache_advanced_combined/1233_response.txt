@@ -1,0 +1,47 @@
+<response>
+  <reason><![CDATA[
+Game.world().camera() simply returns the GameWorld field `this.camera`.
+
+From the provided code, `camera` is manipulated in these ways:
+
+1. In `Game.init(...)`:
+   ```java
+   world.setCamera(new Camera());
+   ```
+   Here, after initialization, `world.camera` is explicitly set to a non-null `Camera` instance.
+
+2. In `GameWorld.setCamera(final ICamera cam)`:
+   ```java
+   public void setCamera( final ICamera cam) {
+     if (this.camera() != null) {
+       Game.loop().detach(camera);
+     }
+
+     camera = cam;
+
+     if (cam != null && !Game.isInNoGUIMode()) {
+       Game.loop().attach(cam);
+       cam.updateFocus();
+     }
+   }
+   ```
+   This method can set the field `camera` to `null` (e.g., in `GameWorld.clear()`).
+
+3. In `GameWorld.clear()`:
+   ```java
+   public void clear() {
+     this.unloadEnvironment();
+     this.environments.clear();
+     this.setCamera(null);
+     ...
+   }
+   ```
+   This explicitly sets the camera field to `null`.
+
+Therefore, the `camera()` getter can return `null` whenever `setCamera(null)` has been called, such as after `GameWorld.clear()`. Many call sites in the provided code defensively check for `Game.world().camera() != null` (e.g., in `Emitter.renderParticles`, `AStarGrid.render`), confirming that `null` is an expected and handled state.
+
+Nothing in the provided code guarantees that `Game.world().camera()` is always non-null at all times after `Game.init()`. Between `init()` and calls that might occur after `clear()` (or any other future invocation of `setCamera(null)`), the field can legitimately be `null`. Since the question concerns this call site in general (not under a stricter precondition like “before clear is ever called” or “only during a phase where the engine guarantees a camera”), the method can indeed return `null`.
+
+Thus, at this specific call site `Game.world().camera()`, the return value can be `null` because the underlying field can be set to `null` via `setCamera(null)` (e.g., in `clear()`), and there is no invariant or check preventing such a state before this call occurs.]]></reason>
+  <value>YES</value>
+</response>

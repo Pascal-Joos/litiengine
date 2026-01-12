@@ -1,0 +1,37 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+There are no assignments, checks, or alternative return paths in this method, so whether it can return null depends entirely on whether the static field `mouse` can be null at runtime.
+
+In the provided call chain and definitions:
+
+- Nowhere is `Input.mouse` shown being initialized.
+- Nowhere is it shown being guaranteed non-null (e.g., via static initializer or constructor).
+- Several other parts of the code assume it is non-null and immediately dereference it:
+  - `((Mouse) Input.mouse()).update();`
+  - `Input.mouse().isRightButtonPressed()`
+  - `Input.mouse().getLocation()`
+  - `Input.mouse().onClicked(...)`, `addMouseListener(this)`, etc.
+
+However, these call sites only show that the authors *expect* `mouse` to be non-null; they do not prove that `mouse` is actually initialized or cannot be null. Since we have no declaration or initialization of the `mouse` field itself, we must consider normal Java semantics:
+
+- A static reference field that is never explicitly initialized defaults to `null`.
+- Without seeing where and how `mouse` is assigned, we cannot rule out:
+  - it never being initialized (remaining null),
+  - it being set to null in some code path.
+
+Because the value returned by `Input.mouse()` is just the field `mouse`, and we lack the field declaration and its initialization logic, we cannot soundly conclude that `Input.mouse()` is non-null at the given call sites. Under Java’s default rules, `mouse` can be null unless we see code that proves otherwise.
+
+To make a confident determination, we need to see the declaration and initialization of the static field `mouse` in `de.gurkenlabs.litiengine.input.Input`.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>mouse</method>
+  </methods>
+</response>

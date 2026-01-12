@@ -1,0 +1,22 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+protected boolean isMatchingType(IMapObject mapObject) {
+    if (mapObject == null
+        || mapObject.getType() == null
+        || mapObject.getType().isEmpty()
+        || !mapObject.getType().equalsIgnoreCase(this.getMapObjectType())) {
+      log.log(
+          Level.SEVERE,
+          "Cannot load a mapobject of the type [{0}] with a loader of type [{1}].",
+          new Object[] {mapObject != null ? mapObject.getType() : null, this.getClass()});
+      return false;
+    }
+
+    return true;
+}
+  ```
+    ]]>
+  </code>
+</response>

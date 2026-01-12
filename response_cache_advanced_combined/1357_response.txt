@@ -1,0 +1,28 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the value of the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+Nowhere in the provided call chain or method bodies is the field `mouse` assigned, initialized, or guaranteed to be non-null. The code that uses `Input.mouse()` itself demonstrates that `null` is an expected and handled case in many locations:
+
+- `if (Input.mouse() != null) { ((Mouse) Input.mouse()).update(); }` in `GameLoop.updateInvariableEngineComponents()`
+- `final IMouse mouse = Input.mouse(); if (mouse != null) { ... }` in `MouseCursor.render()`
+- `final var mouse = Input.mouse(); if (mouse != null) { mouse.onClicked(...); }` in `TextFieldComponent`
+- Similar null-guards in `GuiComponent.prepare()` and `GuiComponent.suspend()`
+
+These checks would be unnecessary if `mouse` were guaranteed non-null. Since:
+
+1. The field `mouse`’s initialization is not shown,
+2. It is treated throughout the codebase as potentially null,
+3. The accessor `mouse()` has no internal logic that could ensure non-null,
+
+the return value of `Input.mouse()` can be null at the provided call sites (e.g., `Input.mouse().getLocation()`, `Input.mouse().getMapLocation()`, etc.), meaning the `Input.mouse()` call itself can evaluate to `null` there.
+
+Therefore, at this specific call site (and the others shown), `Input.mouse()` can return null.]]></reason>
+  <value>YES</value>
+</response>

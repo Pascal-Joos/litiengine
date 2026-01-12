@@ -1,0 +1,104 @@
+<response>
+  <reason><![CDATA[
+Game.loop() returns the static field Game.gameLoop directly:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+So the question reduces to: can Game.gameLoop be null at the times and contexts shown?
+
+From the provided Game class:
+
+- During initialization:
+  ```java
+  public static synchronized void init(String... args) {
+    ...
+    gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+    loop().attach(physics());
+    loop().attach(world());
+    ...
+    initialized = true;
+  }
+  ```
+  Inside init, gameLoop is explicitly set to a new GameLoop before any calls to Game.loop() in that method. After init completes successfully, gameLoop is non‑null.
+
+- When starting:
+  ```java
+  public static synchronized void start() {
+    if (!initialized) {
+      throw new IllegalStateException(...);
+    }
+
+    if (gameLoop == null) {
+      throw new IllegalStateException("The game loop has not been initialized.");
+    }
+
+    Nullability.castToNonnull(gameLoop).start();
+    ...
+    hasStarted = true;
+  }
+  ```
+  start() enforces that gameLoop is non‑null, otherwise it throws. After a successful call to start(), gameLoop remains non‑null.
+
+- During termination:
+  ```java
+  static synchronized void terminate() {
+    if (!initialized) {
+      return;
+    }
+
+    hasStarted = false;
+    initialized = false;
+
+    config().save();
+    if (gameLoop != null) {
+      gameLoop.terminate();
+    }
+    ...
+    gameLoop = null;
+    screenManager = null;
+    gameWindow = null;
+  }
+  ```
+  terminate() explicitly sets gameLoop to null after shutting down.
+
+Thus, at the JVM level, Game.loop() can return null whenever:
+- init() has not yet been called, or
+- terminate() has been called, or
+- init() failed before assigning gameLoop (e.g., unexpected exception thrown before `gameLoop = new GameLoop(...)`).
+
+The call sites you listed (e.g., in GameWorld.loadEnvironment, GameWindow.initializeWindowEventListeners, ScreenManager.display, Effect.update/apply, Emitter.activate/deactivate/update, MovementController.handleMovement, Camera.setZoom, etc.) are all ordinary usages that assume a running game loop. None of these methods perform a null‑check on Game.loop(), except where they explicitly use `Nullability.castToNonnull(Game.loop())` or `Game.loop() != null ? ... : ...`, which further implies that a null value is considered possible by the library authors.
+
+Crucially, these methods are not guarded by any guarantees that:
+- Game.init(...) has already been successfully called, and
+- Game.terminate() has not yet been called.
+
+For example:
+
+- GameWorld.loadEnvironment(Environment env) uses `Game.loop().getLock();` with no prior check of `initialized` or `hasStarted`.
+- GameWindow.initializeWindowEventListeners(Window window) calls `Game.loop().setTickRate(...)` when window state/focus changes; those events can conceptually fire at times where the game loop might be null (e.g., after terminate).
+- MovementController.handleMovement() uses `Game.loop().getDeltaTime()` and `Game.loop().getTimeScale()` without null checks.
+- Other code explicitly treats Game.loop() as potentially null:
+  ```java
+  "updatables: " + (Game.loop() != null ? Game.loop().getUpdatableCount() : 0)
+  ```
+  and:
+  ```java
+  this.lastScreenChange = Nullability.castToNonnull(Game.loop()).getTicks();
+  ```
+  where castToNonnull is needed only because Game.loop() may be null.
+
+Since the analysis rules require considering only the given code and not assuming external calling discipline, we must acknowledge that:
+
+- Game.gameLoop is a mutable static field.
+- It is explicitly set to null in terminate().
+- There is no global invariant in these call sites that prevents them from executing when gameLoop is null (no checks of Game.hasStarted(), initialized, or similar before every use).
+- Therefore, from the code alone, there exists a code path where Game.loop() == null at these call sites.
+
+Because the method returns the field directly and that field is nullable by design (set to null in terminate and uninitialized prior to init), the invocation `Game.loop()` can return null at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,63 @@
+<response>
+  <reason><![CDATA[
+At the call site
+
+```java
+Tileset tileset = XmlUtilities.read(Tileset.class, resourceName);
+```
+
+the method `XmlUtilities.read` executes this code:
+
+```java
+public static <T> T read(Class<T> cls, URL path) throws JAXBException {
+  final JAXBContext jaxbContext = getContext(cls);
+  if (jaxbContext == null) {
+    return null;
+  }
+
+  final Unmarshaller um = jaxbContext.createUnmarshaller();
+  um.setAdapter(new URLAdapter(path));
+
+  return cls.cast(um.unmarshal(path));
+}
+```
+
+The only explicit `null` return in `read` is:
+
+```java
+if (jaxbContext == null) {
+  return null;
+}
+```
+
+So `read` can return `null` if and only if `getContext(cls)` returns `null`.
+
+The implementation of `getContext` is:
+
+```java
+public static <T> JAXBContext getContext(Class<T> cls) {
+  try {
+    final JAXBContext jaxbContext;
+    if (jaxbContexts.containsKey(cls)) {
+      jaxbContext = jaxbContexts.get(cls);
+    } else {
+      jaxbContext = JAXBContext.newInstance(cls);
+      jaxbContexts.put(cls, jaxbContext);
+    }
+    return jaxbContext;
+  } catch (final JAXBException e) {
+    log.log(Level.SEVERE, e.getMessage(), e);
+  }
+
+  return null;
+}
+```
+
+Here, `getContext` returns `null` when `JAXBContext.newInstance(cls)` throws a `JAXBException`. This branch is reachable for any `cls`, including `Tileset.class`, depending on environment / configuration. The calling code does not constrain this away.
+
+Therefore, at this specific call site, `XmlUtilities.read(Tileset.class, resourceName)` can evaluate to `null` via the `jaxbContext == null` branch caused by an exception inside `getContext`. (Any failures later in the method would throw exceptions rather than return `null`, so they are not relevant to null-return analysis.)
+
+Hence, the `tileset` variable at this call site can be `null.`
+  ]]></reason>
+  <value>YES</value>
+</response>

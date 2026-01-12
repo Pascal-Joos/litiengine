@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setToMin() {
+      this.setBaseValue(Nullability.castToNonnull(this.getMin()));
+  }
+  ```
+    ]]>
+  </code>
+</response>

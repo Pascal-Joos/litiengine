@@ -1,0 +1,49 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void retrieveGamepadValues() {
+    final GamepadManager gamepadManager = Input.gamepads();
+    if (this.gamepadId == -1
+        || this.gamepadId != -1 && (gamepadManager == null || gamepadManager.getById(this.gamepadId) == null)) {
+      return;
+    }
+
+    final float x = gamepadManager.get(this.gamepadId).getPollData(Gamepad.Axis.X);
+    final float y = gamepadManager.get(this.gamepadId).getPollData(Gamepad.Axis.Y);
+
+    if (Math.abs(x) > this.gamepadDeadzone) {
+      this.setDx(x);
+    }
+
+    if (Math.abs(y) > this.gamepadDeadzone) {
+      this.setDy(y);
+    }
+
+    if (this.isRotateWithRightStick()) {
+      final float rightX = gamepadManager.get(this.gamepadId).getPollData(Gamepad.Axis.RX);
+      final float rightY = gamepadManager.get(this.gamepadId).getPollData(Gamepad.Axis.RY);
+      float targetX = 0;
+      float targetY = 0;
+      if (Math.abs(rightX) > this.gamepadRightStick) {
+        targetX = rightX;
+      }
+      if (Math.abs(rightY) > this.gamepadRightStick) {
+        targetY = rightY;
+      }
+
+      if (targetX != 0 || targetY != 0) {
+        final Point2D target =
+            new Point2D.Double(
+                this.getEntity().getCenter().getX() + targetX,
+                this.getEntity().getCenter().getY() + targetY);
+        final double angle =
+            GeometricUtilities.calcRotationAngleInDegrees(this.getEntity().getCenter(), target);
+        this.getEntity().setAngle((float) angle);
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

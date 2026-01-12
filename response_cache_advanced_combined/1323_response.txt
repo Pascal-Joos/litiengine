@@ -1,0 +1,45 @@
+<response>
+  <reason><![CDATA[
+The method `Input.mouse()` simply returns the value of the static field `mouse`:
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+No initialization, assignment, or invariant for the `mouse` field is shown anywhere in the provided call chain. There is also no evidence that `mouse` is guaranteed to be non-null at all times when these call sites execute.
+
+In fact, many of the call sites you provided explicitly perform null checks before using the value:
+
+```java
+final IMouse mouse = Input.mouse();
+this.navigating = mouse != null && mouse.isRightButtonPressed();
+```
+
+```java
+final IMouse mouse = Input.mouse();
+if (mouse != null) {
+  mouse.onDragged(...);
+}
+```
+
+```java
+if (Input.mouse() != null && !Input.mouse().isGrabMouse()) {
+  showDefaultCursor();
+}
+```
+
+```java
+if (Input.mouse() == null) {
+  return;
+}
+final double mouseX = Input.mouse().getLocation().getX();
+```
+
+These repeated null checks strongly indicate that the authors consider `Input.mouse()` capable of returning `null` at runtime. Because we have no declaration showing that `mouse` is initialized to a non-null value before these calls, or that it is ever enforced non-null (e.g., via constructor, static initializer, or lazy getter), the static field `mouse` may be `null` at the time of any given invocation.
+
+Therefore, at the specific call site `Input.mouse()` (and all ones you listed), the method can return `null`. There is not enough information to conclude otherwise, and the existing defensive checks support the possibility of a null value.
+  ]]></reason>
+  <value>YES</value>
+</response>

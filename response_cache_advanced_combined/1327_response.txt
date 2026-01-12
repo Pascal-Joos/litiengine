@@ -1,0 +1,39 @@
+<response>
+  <reason><![CDATA[
+The potential nullability at this call site depends on how `collisionEntities` is constructed and populated, and on whether it can contain `null` values for some `Collision` keys.
+
+From the provided code we only see:
+
+```java
+this.collisionEntities.get(type).clear();
+```
+
+within:
+
+```java
+for (Collision type : Collision.values()) {
+  if (type == Collision.NONE) {
+    continue;
+  }
+
+  this.collisionEntities.get(type).clear();
+  this.collisionBoxes.get(type).clear();
+}
+```
+
+To determine if `this.collisionEntities.get(type)` can be `null`, we need to know:
+
+1. The type of `collisionEntities` (e.g., `EnumMap<Collision, List<...>>`, `Map<Collision, Collection<...>>`, etc.).
+2. How `collisionEntities` is initialized and whether entries for all `Collision` enum values (except `Collision.NONE`) are guaranteed to be non-null before `clear()` is called.
+
+This information is not derivable from the shown `clear()` implementations or the call chain (`Game.terminate() → world().clear() → physics().clear()`), because none of these reveal how `collisionEntities` is set up or maintained. Without the field declaration/initialization or helper methods that populate it, we cannot rule out:
+
+- Missing entries for some `Collision` enum values, in which case `get(type)` would return `null`.
+- Entries explicitly set to `null`.
+
+Because of this, we cannot confidently assert that `this.collisionEntities.get(type)` is never `null` at this call site, nor that it definitely can be; we are missing the critical declaration/initialization details that determine this behavior.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>collisionEntities</method>
+  </methods>
+</response>

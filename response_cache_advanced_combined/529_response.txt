@@ -1,0 +1,12 @@
+<response>
+  <reason><![CDATA[The declaration of IImageLayer.getImage() is only shown as an interface method signature:
+```java
+public IMapImage getImage()
+```
+with no implementation or documentation indicating any non‑null guarantee. At the specific call site:
+```java
+Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
+```
+the code assumes layer.getImage() is non‑null by immediately dereferencing it via getSource(), but that is only a usage assumption, not proof that it cannot be null. Because getImage() is an interface method, its actual returned value depends entirely on the concrete implementation(s) of IImageLayer used at runtime, none of which are provided. Without at least one concrete implementation (or explicit contract) stating that getImage() never returns null, we must consider that an implementation could validly return null. Therefore, we cannot rule out a null return at this call site given the available information.]]></reason>
+  <value>YES</value>
+</response>

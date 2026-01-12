@@ -1,0 +1,25 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the method body provided, there is no explicit guarantee that `this.collisionEntities.get(type)` is non-null for every `type != Collision.NONE`.
+
+To determine nullability, we would need to know:
+
+1. How `collisionEntities` is declared and initialized (its type and generic parameters, e.g., `Map<Collision, Collection<...>>` or similar).
+2. Whether `collisionEntities` is always populated with non-null values for all `Collision` enum constants (except possibly `Collision.NONE`) before `clear()` is called.
+3. Whether any code path can remove entries from `collisionEntities`, or put `null` values into it.
+
+In the given method:
+- There is no null check on `this.collisionEntities.get(type)` before `.clear()` is called.
+- There is no use of a helper like `Nullability.castToNonnull` on `collisionEntities.get(type)`, unlike `this.collisionBoxes.get(type)`, which suggests that the author may *intend* `collisionEntities.get(type)` to be non-null but does not, by itself, prove that it always is.
+- The loop covers all `Collision.values()` except `Collision.NONE`, so if `collisionEntities` is a map and is missing an entry for any `Collision` value, `get(type)` will return `null` and `.clear()` will throw a `NullPointerException`.
+
+Without additional information about the initialization and invariants of `collisionEntities`, we cannot soundly conclude that `get(type)` is always non-null. It is therefore not possible to definitively answer "YES" or "NO" about nullability from this snippet alone.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the declaration and initialization of `collisionEntities` (field type, constructor, or builder code).]]></request>
+        <request><![CDATA[Show any invariants or documentation (e.g., comments, annotations like @NonNull, @Nullable, or class-level contracts) that describe whether `collisionEntities` always contains non-null values for all `Collision` enum constants (except NONE).]]></request>
+    </requests>
+</response>
+```

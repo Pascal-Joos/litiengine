@@ -1,0 +1,19 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean collides(
+      Rectangle2D rect, Collision collision,  ICollisionEntity entity) {
+    if (this.environmentBounds != null && !this.environmentBounds.intersects(rect)) {
+      return true;
+    }
+
+    return collides(
+        entity,
+        collision,
+        otherEntity -> GeometricUtilities.intersects(Nullability.castToNonnull(otherEntity.getCollisionBox()), rect));
+  }
+  ```
+    ]]>
+  </code>
+</response>

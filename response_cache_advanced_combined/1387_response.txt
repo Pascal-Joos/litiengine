@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public MusicPlayback playMusic(Sound music) {
+    return playMusic(new LoopedTrack(Nullability.castToNonnull(music)));
+  }
+  ```
+    ]]>
+  </code>
+</response>

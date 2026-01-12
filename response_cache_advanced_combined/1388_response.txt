@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public IntroTrack(String intro, String loop) {
+      this(Nullability.castToNonnull(Resources.sounds().get(intro)), Resources.sounds().get(loop));
+  }
+  ```
+    ]]>
+  </code>
+</response>

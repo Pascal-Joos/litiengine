@@ -1,0 +1,25 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no information about the implementation or contract of Input.keyboard(). It is a static method call on some Input class, and there are:
+
+- No prior initializations or assignments to Input or its internal state in this snippet.
+- No null-checks on Input.keyboard() before it is used.
+- No visible guarantees (e.g., annotations like @NotNull, documentation, or framework contracts) that would ensure it never returns null.
+
+Whether Input.keyboard() can be null depends entirely on:
+- How the Input class is implemented.
+- Whether keyboard() is guaranteed (by design or documentation) to always return a non-null object (e.g., a singleton or a lazily initialized instance).
+- Whether there are any lifecycle constraints (e.g., it returns null before some initialization method is called).
+
+Since none of that context is provided, and Java allows a static method to return null, a sound analysis cannot safely conclude that the result is never null. At the same time, we also cannot assert that it definitely *can* be null without seeing the implementation or its contract.
+
+Therefore, with the given code alone, the possibility of null cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation (or relevant excerpt) of the Input class, specifically the keyboard() method.]]></request>
+        <request><![CDATA[If available, provide any documentation, annotations, or framework guarantees related to Input.keyboard() (e.g., whether it is specified to never return null).]]></request>
+    </requests>
+</response>
+```

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private void dispose() {
+      this.componentPollListeners.clear();
+      this.componentPressedListeners.clear();
+      if (Game.config().input().isGamepadSupport()) {
+          Input.gamepads().remove(this);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

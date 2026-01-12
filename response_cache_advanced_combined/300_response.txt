@@ -1,0 +1,25 @@
+<response>
+  <reason><![CDATA[
+The only information provided about `IMobileEntity.movement()` is its interface-style declaration:
+
+```java
+IMovementController movement()
+```
+
+There is no implementation, no documentation, and no guarantee (such as annotations or comments) that the method never returns null. At the call site:
+
+```java
+IMovementController mvmtControl = entity.movement();
+if (mvmtControl != null) {
+  GravityForce force = new GravityForce(entity, this.getGravity(), Direction.DOWN);
+  force.setIdentifier(GRAVITY_IDENTIFIER);
+  entity.movement().apply(force);
+  this.gravityForces.put(entity.getMapId(), force);
+}
+```
+
+the code explicitly checks `if (mvmtControl != null)`, which strongly suggests the author expects that `entity.movement()` may sometimes return null.
+
+Because we do not have the concrete implementation(s) of `IMobileEntity.movement()`, and no other methods in the provided call chain influence its return value, we cannot rule out null. Therefore, at this specific call site, `entity.movement()` can be null.]]></reason>
+  <value>YES</value>
+</response>

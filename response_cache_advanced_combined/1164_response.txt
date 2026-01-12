@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public Ellipse2D calculatePotentialImpactArea() {
+    final int range = Nullability.castToNonnull(this.getAttributes().impact().get());
+    final double arcX = this.getExecutor().getCollisionBox().getCenterX() - range * 0.5;
+    final double arcY = this.getExecutor().getCollisionBox().getCenterY() - range * 0.5;
+
+    return new Ellipse2D.Double(arcX, arcY, range, range);
+}
+  ```
+    ]]>
+  </code>
+</response>

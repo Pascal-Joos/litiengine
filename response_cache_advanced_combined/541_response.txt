@@ -1,0 +1,50 @@
+<response>
+  <reason><![CDATA[
+At the specific call sites in question, the invocation is always guarded by `isInfiniteMap()`:
+
+```java
+if (this.isInfiniteMap()) {
+  TmxMap map = (TmxMap) this.getLayer().getMap();
+  ...
+}
+```
+
+and similarly in every place where
+
+```java
+TmxMap map = (TmxMap) this.getLayer().getMap();
+```
+
+appears.
+
+The implementation of `isInfiniteMap()` is:
+
+```java
+private boolean isInfiniteMap() {
+  return this.getLayer() != null
+      && this.getLayer().getMap() != null
+      && this.getLayer().getMap().isInfinite()
+      && this.getLayer().getMap() instanceof TmxMap;
+}
+```
+
+For the guarded code to execute, `isInfiniteMap()` must evaluate to `true`. That requires all of the following to be true:
+
+1. `this.getLayer() != null`
+2. `this.getLayer().getMap() != null`
+3. `this.getLayer().getMap().isInfinite()` (only evaluated if #2 is true)
+4. `this.getLayer().getMap() instanceof TmxMap` (only evaluated if #2 is true)
+
+Because Java evaluates `&&` left-to-right and short-circuits, condition (2) must be true before `isInfiniteMap()` can return `true`. Therefore, inside the `if (this.isInfiniteMap())` block, `this.getLayer().getMap()` is guaranteed to be non-null and to be an instance of `TmxMap`.
+
+Thus, at this specific call site—inside the `if (this.isInfiniteMap())` blocks—the expression:
+
+```java
+(TmxMap) this.getLayer().getMap()
+```
+
+cannot be null. If `getMap()` were null, `isInfiniteMap()` would have been `false`, and the guarded block (including this call site) would not run at all.
+
+Therefore, given the control-flow and short-circuit logic at this exact call site, `getMap()` cannot return null here.]]></reason>
+  <value>NO</value>
+</response>

@@ -1,0 +1,11 @@
+<response>
+  <reason><![CDATA[The provided code only shows the declaration of ITilesetEntry.getTileset(), not its implementation. Without its body, we cannot see all return paths or whether it may legally return null under any circumstances. The call site:
+
+tile.getTilesetEntry().getTileset().getTileOffset()
+
+assumes a non-null tileset, but that alone does not guarantee that ITilesetEntry.getTileset() never returns null; it only shows how it is *used*, not how it is *implemented*. To determine nullability at this specific call site per the guidelines, we must inspect the implementation of ITilesetEntry.getTileset().]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getTileset</method>
+  </methods>
+</response>

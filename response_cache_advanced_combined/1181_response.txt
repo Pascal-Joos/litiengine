@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public float getRemainingCooldownInSeconds() {
+        if (this.getCurrentExecution() == null
+            || this.getExecutor() == null
+            || this.getExecutor().isDead()) {
+          return 0;
+        }
+    
+        // calculate cooldown in seconds
+        return (float)
+            (!this.canCast()
+                ? (Nullability.castToNonnull(this.getAttributes().cooldown().get())
+                        - Game.time().since(this.getCurrentExecution().getExecutionTicks()))
+                    * 0.001
+                : 0);
+  }
+  ```
+    ]]>
+  </code>
+</response>

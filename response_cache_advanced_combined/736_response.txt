@@ -1,0 +1,56 @@
+<response>
+  <reason><![CDATA[
+The call site is `entity1.getLocation()` where `entity1` is an `IEntity`. The only implementation details provided for `IEntity.getLocation()` are:
+
+```java
+class de.gurkenlabs.litiengine.entities.IEntity {
+  Point2D getLocation()
+}
+```
+
+This is just an interface-style declaration; there is no body, so we have no information about its implementation or invariants (such as "never returns null").
+
+Looking at the rest of the call chain:
+
+- Several methods use `entity.getLocation()` without a null check and sometimes even wrap it in `Nullability.castToNonnull(entity.getLocation())`, which suggests it *should* be non-null, but that is a usage convention, not a guarantee we can prove from the code shown.
+- `EntityEmitter.getLocation()` *explicitly* returns `null` if `this.getEntity() == null`:
+  ```java
+  if (this.getEntity() == null) {
+    return null;
+  }
+  return this.hasDynamicLocation() ? this.getEntity().getLocation() : super.getLocation();
+  ```
+  This shows that at least some `getLocation()` implementations in this codebase are allowed to return `null`.
+
+However, for the specific call site `entity1.getLocation()` in:
+
+```java
+class de.gurkenlabs.litiengine.entities.EntityDistanceComparator {
+  @Override
+  public int compare(final IEntity entity1, final IEntity entity2) {
+    if (this.getRelativeEntity() == null) {
+      return 0;
+    }
+
+    final double distance1 = entity1.getLocation().distance(this.getRelativeEntity().getLocation());
+    final double distance2 = entity2.getLocation().distance(this.getRelativeEntity().getLocation());
+    ...
+  }
+}
+```
+
+we only know:
+
+- `entity1` has type `IEntity`.
+- No null-check is performed on the result of `entity1.getLocation()` before calling `.distance(...)`.
+- The comparator does *not* restrict `entity1` to a subtype whose `getLocation()` implementation we can see.
+
+Since:
+
+1. `IEntity.getLocation()` as declared has no body and hence no guarantee it never returns null.
+2. Other `getLocation()` implementations in this codebase (e.g., `EntityEmitter.getLocation()`) *can* return null.
+3. We have no further implementation of `IEntity.getLocation()` to inspect.
+
+we cannot rule out that some implementation of `IEntity` passed as `entity1` may return `null` from `getLocation()` at runtime. Therefore, at this call site, the result of `entity1.getLocation()` **can** be null.]]></reason>
+  <value>YES</value>
+</response>

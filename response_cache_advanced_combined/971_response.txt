@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+protected void setSliderComponent(final ImageComponent slider) {
+    this.sliderComponent = slider;
+    this.sliderComponent.onMousePressed(e -> this.isDragging = true);
+    final IMouse mouse = Input.mouse();
+    if (mouse != null) {
+        mouse.onDragged(
+            e -> {
+              if (this.isDragging()) {
+                this.setValueRelativeToMousePosition();
+                this.getChangeConsumer()
+                    .forEach(consumer -> consumer.accept(this.getCurrentValue()));
+              }
+            });
+
+        mouse.onReleased(
+            e -> {
+              if (this.isDragging()) {
+                this.isDragging = false;
+              }
+            });
+    }
+    this.getComponents().add(this.getSliderComponent());
+}
+  ```
+    ]]>
+  </code>
+</response>

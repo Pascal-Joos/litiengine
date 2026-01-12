@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static Point getTile(IMap map, final Point2D mapLocation) {
+      if (map == null || map.getOrientation() == null) {
+        return new Point(-1, -1);
+      }
+      return map.getOrientation().getTile(mapLocation, map);
+  }
+  ```
+    ]]>
+  </code>
+</response>

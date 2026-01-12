@@ -1,0 +1,45 @@
+<response>
+  <reason><![CDATA[
+At the provided call sites, `map` is a variable of type `IMap`, and `IMap.getOrientation()` is invoked directly:
+
+- `MapUtilities.getTileBoundingBox(final IMap map, final Rectangle2D box)`:
+  ```java
+  final Point minTilePoint = map.getOrientation().getTile(minX, minY, map);
+  ```
+  This method has no null-check on `map` or `map.getOrientation()` before this call. It is therefore logically possible for `map.getOrientation()` to be `null` here, which would lead to a `NullPointerException` when calling `.getTile(...)`. Nothing in the shown code enforces non-nullness of the orientation on the `IMap` instance.
+
+- `MapUtilities.getTilesByPixelLocation(final IMap map, final Point2D location)`:
+  ```java
+  final Point tileLocation = map.getOrientation().getTile(location, map);
+  ```
+  Again, no null-check on `map.getOrientation()` is performed here. Other methods in `MapUtilities` explicitly guard against `map.getOrientation() == null` (e.g., `getTileBoundingBox(IMap, Point2D)` and `getTile(IMap, Point2D)` return safe defaults when orientation is null), which demonstrates that the orientation is considered nullable by the library authors.
+
+- `MapUtilities.getTileBoundingBox(final IMap map, final Point tile)`:
+  ```java
+  return map.getOrientation().getBounds(tile, map);
+  ```
+  This method only checks `map == null`, not `map.getOrientation()`. A null orientation remains possible.
+
+- `MapRenderer.drawTile(...)`:
+  ```java
+  Point p = map.getOrientation().getLocation(x, y, map);
+  ```
+  No null-check on `map` or its orientation is present.
+
+- `DebugRenderer.drawTileBoundingBox(Graphics2D, IMap, Point2D)`:
+  ```java
+  final Rectangle2D playerTile =
+      map.getOrientation().getEnclosingTileShape(location, map).getBounds2D();
+  ...
+  final Point tileLocation = map.getOrientation().getTile(location, map);
+  ```
+  This method does not guard against `map.getOrientation()` being null. The separate public `MapUtilities` methods that take only a `Point2D` parameter *do* have such a guard, again indicating that `IMap.getOrientation()` may validly be null and must be checked by callers that wish to be safe.
+
+Since:
+- `IMap` is just an interface with `public IMapOrientation getOrientation()` and no contract is shown that guarantees a non-null orientation.
+- Multiple utility methods explicitly check `map.getOrientation() == null`, which would be unnecessary if null were impossible.
+- Some other methods use `map.getOrientation()` without null checks, meaning they are simply assuming non-null at runtime but not enforcing it in the type system.
+
+There is no provided invariant that prevents the underlying implementation of `IMap` from returning `null` at these call sites. Thus, at the specific call site `map.getOrientation()` (as used in the provided code), the result can be `null`.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,7 @@
+<response>
+  <reason><![CDATA[The implementation of IImageLayer.getImage() is not provided. At the call site, layer is only known to be an instance of IImageLayer (an interface), and nothing in MapRenderer.renderImageLayer or renderLayers constrains or checks the return value of layer.getImage() before dereferencing it with layer.getImage().getSource() and layer.getImage().getAbsoluteSourcePath(). Without the concrete implementation(s) of getImage(), we cannot determine whether it guarantees a non-null IMapImage or can return null under some conditions. Since the return value depends entirely on that unseen implementation, a confident decision requires its declaration/definition.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getImage</method>
+  </methods>
+</response>

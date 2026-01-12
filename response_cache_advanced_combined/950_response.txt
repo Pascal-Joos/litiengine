@@ -1,0 +1,52 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void prepareInput() {
+    if (Input.keyboard() != null) {
+      Input.keyboard()
+          .onKeyTyped(
+              KeyEvent.VK_UP,
+              e -> {
+                if (this.isSuspended()
+                    || !this.isVisible()
+                    || !this.isArrowKeyNavigation()
+                    || !this.getChosenElementComponent().isHovered()) {
+                  return;
+                }
+                this.getContentList().setSelection(0, this.getSelectedIndex() - 1);
+              });
+
+      Input.keyboard()
+          .onKeyTyped(
+              KeyEvent.VK_DOWN,
+              e -> {
+                if (this.isSuspended()
+                    || !this.isVisible()
+                    || !this.isArrowKeyNavigation()
+                    || !this.getChosenElementComponent().isHovered()) {
+                  return;
+                }
+                this.getContentList().setSelection(0, this.getSelectedIndex() + 1);
+              });
+    }
+
+    this.onMouseWheelScrolled(
+        e -> {
+          if (this.isSuspended()
+              || !this.isVisible()
+              || !this.getChosenElementComponent().isHovered()) {
+            return;
+          }
+          if (e.getEvent().getWheelRotation() < 0) {
+            this.getContentList().setSelection(0, this.getSelectedIndex() - 1);
+          } else {
+            this.getContentList().setSelection(0, this.getSelectedIndex() + 1);
+          }
+          return;
+        });
+}
+  ```
+    ]]>
+  </code>
+</response>

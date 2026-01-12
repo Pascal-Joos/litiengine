@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public default void detach() {
+      Nullability.castToNonnull(Game.loop()).detach(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

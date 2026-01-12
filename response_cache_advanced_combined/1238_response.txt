@@ -1,0 +1,70 @@
+<response>
+  <reason><![CDATA[
+Game.world().camera() simply returns the GameWorld field `this.camera`.
+
+From the provided code:
+
+- Game.init(...) sets the camera once during initialization:
+  ```java
+  world.setCamera(new Camera());
+  ```
+  So after init, `camera` is non-null.
+
+- However, GameWorld.clear() explicitly nulls the camera:
+  ```java
+  public void clear() {
+    this.unloadEnvironment();
+    this.environments.clear();
+    this.setCamera(null);
+    ...
+  }
+  ```
+
+- GameWorld.setCamera(...) allows setting a null camera and does not prevent it:
+  ```java
+  public void setCamera(final ICamera cam) {
+    if (this.camera() != null) {
+      Game.loop().detach(camera);
+    }
+
+    camera = cam;
+
+    if (cam != null && !Game.isInNoGUIMode()) {
+      Game.loop().attach(cam);
+      cam.updateFocus();
+    }
+  }
+  ```
+  Here `camera = cam;` can assign null.
+
+- Many call sites explicitly guard against a null camera, proving that the API expects `Game.world().camera()` to sometimes be null:
+  - In Mouse.getMapLocation():
+    ```java
+    return Game.world().camera() != null
+        ? Game.world().camera().getMapLocation(...)
+        : null;
+    ```
+  - In Emitter.renderParticles():
+    ```java
+    final Rectangle2D viewport =
+        Game.screens() != null && Game.world().camera() != null
+            ? Game.world().camera().getViewport()
+            : null;
+    ```
+  - In AStarGrid.render():
+    ```java
+    final Rectangle2D viewport =
+        Game.screens() != null && Game.world().camera() != null
+            ? Game.world().camera().getViewport()
+            : null;
+    if (viewport == null) {
+      return;
+    }
+    ```
+  - In RenderEngine methods, some explicitly early-return when `Game.world().camera() == null`.
+
+Because `setCamera(null)` is reachable (via clear()) and no invariant or check guarantees that clear() cannot be called before or during the contexts where Game.world().camera() is used, there exist executions where the field `camera` is null when Game.world().camera() is evaluated.
+
+Therefore, at this specific call site `Game.world().camera()`, the method can return null.]]></reason>
+  <value>YES</value>
+</response>

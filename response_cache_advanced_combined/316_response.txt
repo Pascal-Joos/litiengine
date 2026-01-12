@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public Collection<IEntity> getEntities(final RenderType renderType) {
+      return Collections.unmodifiableCollection(Nullability.castToNonnull(this.miscEntities.get(renderType)).values());
+  }
+  ```
+    ]]>
+  </code>
+</response>

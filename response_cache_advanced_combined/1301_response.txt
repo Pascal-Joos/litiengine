@@ -1,0 +1,28 @@
+<response>
+  <reason><![CDATA[The method `Input.keyboard()` simply returns the static field `keyboard`:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+There is no guarantee in the provided code that this static `keyboard` field is ever initialized to a non-null value before use. At the specific call site in `GameLoop.updateInvariableEngineComponents()`:
+
+```java
+((Keyboard) Input.keyboard()).update();
+```
+
+there is no preceding null check, unlike in `Game.init(...)` where `Input.keyboard()` *is* considered potentially null:
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard().onKeyTyped(...);
+}
+```
+
+The existence of this null check in `Game.init` proves that, in the library’s own logic, `Input.keyboard()` is allowed to be null at runtime. Since the initialization of the static `keyboard` field is not shown and might depend on environment, platform, or other code paths, we cannot conclude that it must be non-null at the moment `updateInvariableEngineComponents()` runs.
+
+Given only the provided snippets, the static field `keyboard` may still be null when `GameLoop.updateInvariableEngineComponents()` executes, so the expression `Input.keyboard()` at this call site can evaluate to null, making `((Keyboard) Input.keyboard())` a potential null value.]]></reason>
+  <value>YES</value>
+</response>

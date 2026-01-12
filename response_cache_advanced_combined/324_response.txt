@@ -1,0 +1,92 @@
+<response>
+  <reason><![CDATA[The call site in question is `this.getEnvironment().getMap()`, used inside `de.gurkenlabs.litiengine.graphics.AmbientLight.renderLightSource`.
+
+From the provided code, `AmbientLight` has:
+
+```java
+public AmbientLight(final Environment environment, final Color ambientColor) {
+  super(environment, ambientColor);
+}
+```
+
+and `ColorLayer` (the superclass) has:
+
+```java
+protected ColorLayer(Environment env, final Color color) {
+  this.environment = env;
+  this.color = color;
+
+  Dimension size = env.getMap().getSizeInPixels();
+  this.layer = Imaging.getCompatibleImage(size.width, size.height);
+  this.updateSection(this.environment.getMap().getBounds());
+}
+```
+
+Key point: the `ColorLayer` constructor *immediately* dereferences `env.getMap()` (twice: `env.getMap().getSizeInPixels()` and `this.environment.getMap().getBounds()`). If `env.getMap()` could be `null` at construction time, the constructor would throw a `NullPointerException` and the `AmbientLight` instance would never be created.
+
+How is `AmbientLight` constructed?
+
+```java
+// in Environment
+private void addAmbientLight() {
+  final Color ambientColor =
+      this.getMap().getColorValue(MapProperty.AMBIENTCOLOR, AmbientLight.DEFAULT_COLOR);
+  this.ambientLight = new AmbientLight(this, ambientColor);
+}
+```
+
+`addAmbientLight` is only called under the guard:
+
+```java
+public final void init() {
+  if (this.initialized) {
+    return;
+  }
+
+  if (this.getMap() != null) {
+    this.loadMapObjects();
+    this.addStaticShadows();
+    this.addAmbientLight();
+  }
+  ...
+}
+```
+
+So:
+
+1. `addAmbientLight()` is called only if `this.getMap() != null` in `Environment.init()`.
+2. Inside `addAmbientLight()`, before constructing `AmbientLight`, it again dereferences `this.getMap()` (`getColorValue(...)`), so if `map` were null here, it would already NPE and never reach the constructor.
+3. The `AmbientLight` constructor, via `ColorLayer`, dereferences `env.getMap()`; if that were null at construction, you get an NPE and the object is not fully constructed.
+
+Thus, for any *successfully constructed* `AmbientLight` object, its `environment` field refers to an `Environment` whose `map` field was non‑null at construction time and successfully used in several dereferences.
+
+Could `Environment.map` become null later? The provided code never assigns `this.map = null`; it is set in constructors:
+
+```java
+public Environment(final IMap map) {
+  this();
+  this.map = map;
+  if (this.getMap() != null) {
+    Game.physics().setBounds(this.getMap().getBounds());
+    this.setGravity(this.getMap().getIntValue(MapProperty.GRAVITY));
+  }
+}
+public Environment(final String mapPath) {
+  this(Resources.maps().get(mapPath));
+}
+```
+
+No other mutation of `map` is shown. The environments are reset, loaded, unloaded, etc., but unloading only sets `this.environment = null` on `GameWorld`, not `env.map` to null. So once an `Environment` is constructed with a non‑null `IMap`, that map reference remains non‑null in the given code.
+
+Finally, `renderLightSource` uses:
+
+```java
+final double mapWidth = this.getEnvironment().getMap().getSizeInPixels().width;
+final double mapHeight = this.getEnvironment().getMap().getSizeInPixels().height;
+```
+
+Here `this.getEnvironment()` is the `Environment` originally passed into `AmbientLight`. For this method to be running at all, the `AmbientLight` object must have been successfully constructed, which (as shown) implies `environment.getMap()` was non‑null and has not been shown to change to null later.
+
+Therefore, at this specific call site, given the provided code, `this.getEnvironment().getMap()` cannot be null when `renderLightSource` executes; if it ever were, the code would already have thrown an exception during construction or earlier map usage, and the `AmbientLight` instance (and thus this method invocation) would not exist.]]></reason>
+  <value>NO</value>
+</response>

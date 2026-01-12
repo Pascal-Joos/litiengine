@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(Graphics2D g) {
+    if (this.isVisible()) {
+      final IMouse mouse = Input.mouse();
+      if (mouse != null) {
+        final Point2D locationWithOffset =
+            new Point2D.Double(
+                mouse.getLocation().getX() + this.getOffsetX(),
+                mouse.getLocation().getY() + this.getOffsetY());
+        ImageRenderer.renderTransformed(g, this.getImage(), locationWithOffset, this.getTransform());
+      }
+    }
+
+    if (Game.config().debug().isRenderDebugMouse()) {
+      final IMouse mouse = Input.mouse();
+      if (mouse != null) {
+        ImageRenderer.render(g, DEBUG_CURSOR_IMAGE, mouse.getLocation());
+      }
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

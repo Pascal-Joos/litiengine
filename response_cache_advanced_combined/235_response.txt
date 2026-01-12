@@ -1,0 +1,43 @@
+<response>
+  <reason><![CDATA[
+The potentially null part of the call site is the final `.get(tag)`:
+
+```java
+this.getEnvironment()
+    .getEntitiesByTag()
+    .get(tag)
+```
+
+To determine whether this can be null, we must know:
+
+1. What `this.getEnvironment()` returns (can it be null?).
+2. What `this.getEnvironment().getEntitiesByTag()` returns (null or non-null, and of what type).
+3. How `Map.get(tag)` (or equivalent) is specified for that return type — in particular, whether it can return null for missing/unknown tags.
+
+None of those method declarations (`getEnvironment` or `getEntitiesByTag`) are provided in the snippet. The surrounding logic:
+
+```java
+if (Game.world().environment() == null) {
+  return;
+}
+this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
+if (this.getEnvironment().getEntitiesByTag().get(tag).isEmpty()) {
+  this.getEnvironment().getEntitiesByTag().remove(tag);
+}
+```
+
+only ensures `Game.world().environment() != null`, but does not guarantee:
+- that `this.getEnvironment()` is the same instance as `Game.world().environment()`, or
+- that `getEntitiesByTag().get(tag)` cannot be null (e.g., for a tag that was never registered, or already removed).
+
+Without the contracts and implementations of `getEnvironment()` and `getEntitiesByTag()`, it is not possible to conclude that `.get(tag)` is guaranteed non-null at this call site. It could be:
+- a `Map<String, Collection<Entity>>` (or similar) where `get(tag)` returns null if no collection exists for that tag, in which case the call site would dereference null, or
+- a map-like structure that always returns a non-null empty collection, in which case it is safe.
+
+Because the behavior depends directly on those missing method declarations, I cannot reliably determine nullability here without them.]]></reason>
+  <success>false</success>
+  <methods>
+    <method>getEnvironment</method>
+    <method>getEntitiesByTag</method>
+  </methods>
+</response>

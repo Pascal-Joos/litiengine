@@ -1,0 +1,22 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+simply returns the static field `mouse`. There is no initialization logic or invariant shown for this field in the provided code. At the specific call site `Input.mouse()`, the return value is exactly the value currently held in that static field.
+
+From the surrounding usage, we see many places that assume `Input.mouse()` is non-null (e.g., casts to `Mouse`, dereferences like `Input.mouse().getLocation()`, `Input.mouse().isRightButtonPressed()`, etc.), but these usages only show *assumptions*, not guarantees. None of the provided snippets shows:
+
+- where or how `Input.mouse` is initialized, or
+- any check/assertion that would prevent it from being null.
+
+Without the field declaration and its initialization code, it is entirely possible (from a static analysis standpoint) that `mouse` is never set or is explicitly set to null at some point, in which case `Input.mouse()` would return null at this call site.
+
+Because the nullability of `Input.mouse()` is entirely determined by the state of the static field `mouse`, and we have not been shown its declaration or initialization, we cannot conclude that it is guaranteed non-null. Therefore, we must treat `Input.mouse()` as potentially returning null at this call site.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,29 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public T getMax() {
+  return this.applyMaxModifiers(this.maxBaseValue);
+}
+```
+
+directly returns the result of `this.applyMaxModifiers(this.maxBaseValue)`.
+
+At the shown call sites (`this.getMax()` inside `RangeAttribute`, `this.getHitPoints().getMax()` in `CombatEntity`, and `this.getHitPoints().getMax()` in `Prop`), there is no additional condition, null check, or transformation that would constrain or alter the possible nullness of the return value of `getMax()`. The nullability of `getMax()` at these call sites therefore entirely depends on:
+
+1. Whether `this.maxBaseValue` can be null.
+2. Whether `applyMaxModifiers(...)` can return null for the passed argument.
+
+Neither the declaration nor the implementation of `applyMaxModifiers` is provided, and we also do not see any guarantees that `maxBaseValue` is non-null. Additionally, other parts of the codebase explicitly use `Nullability.castToNonnull(this.getMax())`, which strongly suggests that `getMax()` is considered possibly nullable by the library authors (otherwise that cast would be unnecessary).
+
+Because:
+- The only returned value is the result of `applyMaxModifiers(this.maxBaseValue)`.
+- We lack the implementation of `applyMaxModifiers`.
+- Other code defensively treats `getMax()` as possibly null.
+
+we cannot safely conclude that `this.getMax()` cannot be null; it may be null depending on the behavior of `applyMaxModifiers` and the state of `maxBaseValue`. Therefore, `this.getMax()` can return null at this call site.
+
+  ]]></reason>
+  <value>YES</value>
+</response>

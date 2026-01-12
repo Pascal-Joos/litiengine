@@ -1,0 +1,48 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void renderEntities(
+      final Graphics2D g, final Collection<? extends IEntity> entities, final boolean sort) {
+    final ICamera camera = Game.world().camera();
+    if (camera == null) {
+      for (final IEntity entity : entities) {
+        this.renderEntity(g, entity);
+      }
+      return;
+    }
+
+    // filter out entities that are outside of the viewport and always include emitters which have
+    // an internal mechanism do determine on a per-particle basis whether it should be rendered
+    final List<? extends IEntity> entitiesToRender =
+        entities.stream()
+            .filter(
+                x ->
+                    camera.getViewport().intersects(x.getBoundingBox())
+                        || x instanceof Emitter)
+            .collect(Collectors.toList());
+
+    // in order to render the entities in a 2.5D manner, we sort them by their max Y Coordinate
+    if (sort) {
+      // THIS COSTS THE MOST TIME OF THE RENDERING LOOP... MAYBE USE A
+      // BETTER DATASTRUCTURE FOR THE (HEAP)
+      // AND UPDATE THE HEAP WHENEVER AN ENTITY MOVES.
+      try {
+        Collections.sort(entitiesToRender, this.entityComparator);
+      } catch (final IllegalArgumentException e) {
+        for (final IEntity entity : entities) {
+          this.renderEntity(g, entity);
+        }
+
+        return;
+      }
+    }
+
+    for (final IEntity entity : entitiesToRender) {
+      this.renderEntity(g, entity);
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

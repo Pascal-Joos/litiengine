@@ -1,0 +1,72 @@
+<response>
+  <reason><![CDATA[
+Game.loop() simply returns the static field gameLoop:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided Game class:
+
+- In `init(...)`, `gameLoop` is created and assigned:
+
+```java
+gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+loop().attach(physics());
+loop().attach(world());
+...
+initialized = true;
+```
+
+- In `start()`:
+
+```java
+public static synchronized void start() {
+  if (!initialized) {
+    throw new IllegalStateException(...);
+  }
+
+  if (gameLoop == null) {
+    throw new IllegalStateException("The game loop has not been initialized.");
+  }
+
+  Nullability.castToNonnull(gameLoop).start();
+  ...
+  hasStarted = true;
+}
+```
+
+So, after a successful `Game.start()`, `gameLoop` is guaranteed non-null (otherwise start() would have thrown earlier).
+
+- In `terminate()`:
+
+```java
+static synchronized void terminate() {
+  if (!initialized) {
+    return;
+  }
+
+  ...
+  gameLoop = null;
+  ...
+}
+```
+
+Thus, `gameLoop` can be:
+- null before `init()` runs;
+- non-null between `init()` and `terminate()`; and
+- set back to null after `terminate()`.
+
+The call sites you provided (e.g., `GameWorld.loadEnvironment`, `EntityNavigator` constructor, `GameWindow.initializeWindowEventListeners`, `ScreenManager.display`, `Emitter.activate/deactivate`, many update methods, etc.) are all ordinary uses of `Game.loop()` without any guarding against `null` (except where `Nullability.castToNonnull(Game.loop())` or explicit null checks are used). The codebase also shows that `Game.loop()` is expected to be possibly null at some points (hence those `Nullability.castToNonnull` calls and one explicit ternary check `Game.loop() != null ? ... : 0` in `GameMetrics`).
+
+Because `gameLoop` is explicitly set to `null` in `Game.terminate()`, any of these call sites can see `Game.loop()` as `null` if they are invoked:
+- before `Game.init(...)` has assigned `gameLoop`, or
+- after `Game.terminate()` has executed.
+
+There are no additional guarantees at the specific call site that would prove `Game.terminate()` has not run or that `Game.init()` has already run and not been undone. The API is public and static, so external code can call `Game.loop()` at arbitrary times in the application lifecycle.
+
+Therefore, for the specific invocation `Game.loop()` at this call site, the method can return null in valid execution paths (no exception path, just a `null` field).]]></reason>
+  <value>YES</value>
+</response>

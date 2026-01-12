@@ -1,0 +1,71 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` simply returns the value of the static field `keyboard`:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+No initialization or assignment of the `keyboard` field is shown anywhere in the provided call chain or surrounding code. There is also no guarantee (e.g., via constructor, static initializer, or other method) in the given snippets that `keyboard` is ever set to a non-null value before any of the shown call sites execute.
+
+The way the API is used further supports that `keyboard` may be null:
+- Several call sites explicitly check for null before use, e.g.:
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard().onKeyTyped(this::handleTypedKey);
+}
+```
+
+```java
+IKeyboard keyboard = Input.keyboard();
+if (keyboard != null) {
+  ((Keyboard) keyboard).update();
+}
+```
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard()
+      .onKeyTyped(
+          KeyEvent.VK_PRINTSCREEN,
+          key -> { ... });
+}
+```
+
+```java
+if (Input.keyboard() != null) {
+  Input.keyboard().onKeyPressed(this::handlePressedKey);
+}
+```
+
+These defensive null checks show that the library authors themselves consider `Input.keyboard()` capable of returning null at runtime.
+
+Some other sites (e.g. `PlatformingMovementController` constructor and the `prepareInput` methods in GUI components) call `Input.keyboard()` without a null-check:
+
+```java
+Input.keyboard().onKeyPressed(this::handlePressedKey);
+```
+
+and
+
+```java
+Input.keyboard()
+    .onKeyTyped(
+        KeyEvent.VK_UP,
+        e -> { ... });
+```
+
+However, the absence of a null-check there only indicates an assumption by the caller; it does not provide any guarantee that `keyboard` is non-null in those contexts, because no shown code enforces or proves such an invariant, and the same class (`Input`) is used elsewhere with null checks.
+
+Given:
+- The method has a single return path that directly returns a field.
+- No code provided shows initialization of that field to a non-null value.
+- Multiple call sites explicitly guard against `Input.keyboard()` being null.
+
+It is entirely possible for `keyboard` to be null when `Input.keyboard()` is invoked at the call sites shown. Therefore this method can return null at those specific call sites.
+  ]]></reason>
+  <value>YES</value>
+</response>

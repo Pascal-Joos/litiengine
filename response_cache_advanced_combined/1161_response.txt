@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public float getCooldownInSeconds() {
+      return (float) (Nullability.castToNonnull(this.getAttributes().cooldown().get()) * 0.001);
+  }
+  ```
+    ]]>
+  </code>
+</response>

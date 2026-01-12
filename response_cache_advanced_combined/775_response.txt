@@ -1,0 +1,28 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void render(
+      final Graphics2D g,
+      final Color color,
+      final float fontSize,
+      final double x,
+      final double y,
+      final boolean bold) {
+    final Color oldColor = g.getColor();
+    final Font oldFont = g.getFont();
+    g.setColor(color);
+    final Font baseFont = this.getFont() == null ? g.getFont() : this.getFont();
+    if (bold) {
+      g.setFont(baseFont.deriveFont(Font.BOLD, fontSize));
+    } else {
+      g.setFont(baseFont.deriveFont(fontSize));
+    }
+    TextRenderer.render(g, this.getText(), x, y);
+    g.setColor(oldColor);
+    g.setFont(oldFont);
+  }
+  ```
+    ]]>
+  </code>
+</response>

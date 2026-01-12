@@ -1,0 +1,89 @@
+<response>
+  <reason><![CDATA[
+The field `currentValue` is of type `BigDecimal` and is directly returned by `getCurrentValue()` with no additional logic:
+
+```java
+public BigDecimal getCurrentValue() {
+  return this.currentValue;
+}
+```
+
+Whether `this.getCurrentValue()` can be null depends entirely on whether `this.currentValue` can ever be null at the points where it is read.
+
+From the provided code, `currentValue` is written in exactly these places:
+
+```java
+public void setCurrentValue(final BigDecimal newValue) {
+  if (newValue.compareTo(this.getUpperBound()) > 0) {
+    this.currentValue = this.getUpperBound();
+  } else if (newValue.compareTo(this.getLowerBound()) < 0) {
+    this.currentValue = this.getLowerBound();
+  } else {
+    this.currentValue = newValue;
+  }
+  this.setText(this.getCurrentValue() + "");
+  this.valueChangeConsumers.forEach(c -> c.accept(this.getCurrentValue()));
+}
+```
+
+and via the constructor:
+
+```java
+public NumberAdjuster(
+    ...,
+    final double lowerBound,
+    final double upperBound,
+    final double startValue,
+    final double stepSize) {
+  ...
+  this.lowerBound = BigDecimal.valueOf(lowerBound);
+  this.upperBound = BigDecimal.valueOf(upperBound);
+  this.setCurrentValue(BigDecimal.valueOf(startValue));
+  this.step = BigDecimal.valueOf(stepSize);
+  ...
+}
+```
+
+Also, `setUpperBound`, `setLowerBound`, `increment`, and `decrement` only read `currentValue` and/or call `setCurrentValue`; they never assign `null`:
+
+- `setUpperBound`:
+  ```java
+  if (Nullability.castToNonnull(this.getCurrentValue()).compareTo(this.getUpperBound()) > 0) {
+    this.setCurrentValue(this.getUpperBound());
+  }
+  ```
+- `setLowerBound`:
+  ```java
+  if (this.getCurrentValue().compareTo(this.getLowerBound()) < 0) {
+    this.setCurrentValue(this.getLowerBound());
+  }
+  ```
+- `increment`:
+  ```java
+  BigDecimal current = this.getCurrentValue();
+  if (current != null) {
+    this.setCurrentValue(current.add(this.getStepSize()));
+  }
+  ```
+- `decrement`:
+  ```java
+  this.setCurrentValue(Nullability.castToNonnull(this.getCurrentValue()).subtract(this.getStepSize()));
+  ```
+
+In `setCurrentValue`, all assignments are from:
+
+- `this.getUpperBound()` (a `BigDecimal` field `upperBound` initialized via `BigDecimal.valueOf(upperBound)`),
+- `this.getLowerBound()` (a `BigDecimal` field `lowerBound` initialized via `BigDecimal.valueOf(lowerBound)`),
+- or `newValue`, which at all visible call sites is:
+  - `BigDecimal.valueOf(startValue)` (constructor),
+  - `current.add(this.getStepSize())` (from `increment`, guarded by `current != null`),
+  - `Nullability.castToNonnull(this.getCurrentValue()).subtract(this.getStepSize())` (from `decrement`),
+  - `BigDecimal.valueOf(Double.parseDouble(this.getText()))` (from the `prepare`'s change-confirmed handler).
+
+All of these `BigDecimal.valueOf(...)`, arithmetic operations (`add`, `subtract`), and field reads (`upperBound`, `lowerBound`, `step`) are non-null by construction in the given code. None of the shown code paths ever assign `null` to `currentValue`.
+
+Therefore, at any point where `this.getCurrentValue()` is called in the provided code, `currentValue` has only been assigned non-null values, and there is no assignment of `null` or uninitialized state visible. Under the constraints of the provided snippets (and not assuming external mutation of the field), the result of `this.getCurrentValue()` cannot be null at this call site.
+
+]]></reason>
+  <value>NO</value>
+</response>

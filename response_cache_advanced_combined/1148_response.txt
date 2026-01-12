@@ -1,0 +1,55 @@
+<response>
+  <reason><![CDATA[
+Game.loop() directly returns the static field Game.gameLoop:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided Game class:
+
+- During initialization (`Game.init`), `gameLoop` is assigned:
+
+```java
+gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+loop().attach(physics());
+loop().attach(world());
+...
+initialized = true;
+```
+
+So after a successful `init`, `gameLoop` is non-null.
+
+- During termination (`Game.terminate`), `gameLoop` is explicitly set to null:
+
+```java
+if (gameLoop != null) {
+  gameLoop.terminate();
+}
+...
+gameLoop = null;
+```
+
+There is no guard against calling `Game.loop()` before `init()` or after `terminate()`. In particular:
+
+- `Game.loop()` is used in many places without null checks (e.g., `GameWindow` constructor, `EntityNavigator` constructor, various `attach/detach` calls).
+- The presence of `Nullability.castToNonnull(Game.loop())` in several call sites is a strong indication that the authors consider `Game.loop()` potentially null at runtime (otherwise the cast would be unnecessary).
+- The static method `start()` even explicitly throws if `gameLoop == null`, which again acknowledges that `gameLoop` might be null:
+
+```java
+if (gameLoop == null) {
+  throw new IllegalStateException("The game loop has not been initialized.");
+}
+```
+
+Since the question is about the specific call site `Game.loop()` as written (with no surrounding guarantee that `Game.init()` has already been called and `Game.terminate()` has not yet been called), the value of `gameLoop` at that moment is not statically guaranteed to be non-null. It is null:
+
+- Before `Game.init(...)` has run, or
+- After `Game.terminate()` has run.
+
+Therefore, at this call site, `Game.loop()` can evaluate to null depending on lifecycle timing, even though many usages assume it is non-null during normal operation.
+]]></reason>
+  <value>YES</value>
+</response>

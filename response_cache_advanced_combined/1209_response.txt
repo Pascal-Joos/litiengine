@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public String getSoundName() {
+    if (this.sound == null) {
+      return null;
+    }
+    return Nullability.castToNonnull(this.sound).getName();
+  }
+  ```
+    ]]>
+  </code>
+</response>

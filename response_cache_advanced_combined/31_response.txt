@@ -1,0 +1,64 @@
+<response>
+  <reason><![CDATA[
+Game.loop() simply returns the static field gameLoop:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided Game class:
+
+- During initialization (`Game.init`), `gameLoop` is assigned:
+
+```java
+gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+if (loop() != null) {
+  loop().attach(physics());
+  loop().attach(world());
+}
+```
+
+Right after this assignment, `loop()` is already non‑null (it just received a new GameLoop), and the null check is effectively redundant at that time.
+
+- During termination (`Game.terminate`), `gameLoop` is explicitly set to null:
+
+```java
+gameLoop.terminate();
+...
+gameLoop = null;
+```
+
+So across the lifecycle:
+- Before `Game.init` is called, `gameLoop` is null.
+- After `Game.init` completes and before `Game.terminate` is called, `gameLoop` is non‑null.
+- After `Game.terminate` finishes, `gameLoop` becomes null again.
+
+The many call sites you provided use Game.loop() both with and without null checks:
+
+- Some sites guard the call:
+
+```java
+if (Game.loop() != null) {
+  Game.loop().detach(this);
+}
+```
+
+- Many other sites call it unconditionally:
+
+```java
+Game.loop().getLock();
+Game.loop().attach(this);
+Game.loop().getTickRate();
+Game.loop().perform(...);
+```
+
+Because there is no additional invariant or guard at the specific call site (“Game.loop()” as given) and no guarantee in the code that callers only invoke it between `init` and `terminate`, the field `gameLoop` can legally be null:
+- before initialization,
+- after termination,
+or if `terminate` is triggered concurrently while other code still runs.
+
+Thus, at this call site, the method can return null, as `gameLoop` is not statically guaranteed to be non‑null at all times.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,60 @@
+<response>
+  <reason><![CDATA[
+The method `Game.loop()` simply returns the static field `gameLoop`:
+
+```java
+public static IGameLoop loop() {
+  return gameLoop;
+}
+```
+
+From the provided `Game` class:
+
+- `gameLoop` is assigned in `init`:
+  ```java
+  public static synchronized void init(String... args) {
+    ...
+    gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+    loop().attach(physics());
+    loop().attach(world());
+    ...
+    initialized = true;
+  }
+  ```
+- `gameLoop` is set back to `null` in `terminate`:
+  ```java
+  static synchronized void terminate() {
+    if (!initialized) {
+      return;
+    }
+
+    hasStarted = false;
+    initialized = false;
+
+    config().save();
+    if (gameLoop != null) {
+      gameLoop.terminate();
+    }
+    ...
+    gameLoop = null;
+    ...
+  }
+  ```
+
+There are no other assignments to `gameLoop`. Therefore, at any point in time:
+
+- Before `Game.init(...)` is called: `gameLoop` is `null`.
+- Between successful completion of `init` and a call to `terminate`: `gameLoop` is non-null.
+- After `terminate` completes: `gameLoop` is `null` again.
+
+The call site you are analyzing is simply `Game.loop()` (used in many places, e.g., `GameWorld.loadEnvironment`, entity controllers, `ScreenManager.display`, etc.). None of those call sites themselves guarantee that `init` has been called, nor that `terminate` has not been called. They also do not perform any null-check on the result (except when explicitly using `Nullability.castToNonnull`, which is a defensive assertion, not a guarantee that `gameLoop` is never null).
+
+Since:
+- `gameLoop` can be `null` by design (e.g., before `init` or after `terminate`),
+- `Game.loop()` directly returns `gameLoop` without checks or lazy initialization,
+
+it follows that the invocation `Game.loop()` at this call site can return `null` under valid control flows (e.g., any usage prior to `Game.init(...)` or after `Game.terminate()`).
+
+Thus, `Game.loop()` is not null-safe in general, and its result can be `null` at this call site.]]></reason>
+  <value>YES</value>
+</response>

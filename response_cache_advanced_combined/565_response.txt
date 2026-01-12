@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public String toString() {
+    return this.getAbsoluteSourcePath() == null ? "null" : this.getAbsoluteSourcePath().toExternalForm();
+  }
+  ```
+    ]]>
+  </code>
+</response>

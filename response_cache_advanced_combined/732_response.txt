@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+default Point2D getViewportLocation(IEntity entity) {
+    Point2D entityLocation = entity.getLocation();
+    if (entityLocation == null) {
+      return null;
+    }
+    return getViewportLocation(entityLocation.getX(), entityLocation.getY());
+}
+  ```
+    ]]>
+  </code>
+</response>

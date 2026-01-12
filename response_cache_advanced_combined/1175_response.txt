@@ -1,0 +1,11 @@
+<response>
+  <success>false</success>
+  <methods>
+    <method>getMax</method>
+    <method>getBase</method>
+    <method>setBaseValue</method>
+    <method>applyModifiers</method>
+    <method>modify</method>
+    <method>castToNonnull</method>
+  </methods>
+</response>

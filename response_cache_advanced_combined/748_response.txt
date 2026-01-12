@@ -1,0 +1,36 @@
+<response>
+  <reason><![CDATA[
+At the call site, `this.getColor()` in `TextParticle.render` and `ShapeParticle.render` simply returns the field `this.color` from `Particle`:
+
+```java
+public Color getColor() {
+  return this.color;
+}
+```
+
+There is no initialization or invariant shown that guarantees `this.color` is non-null. In fact, `getOpacity()` explicitly handles the possibility that `getColor()` returns null:
+
+```java
+public float getOpacity() {
+  Color color = this.getColor();
+  if (color != null && this.isFading() && this.getTimeToLive() > 0) {
+    ...
+  }
+  return 1;
+}
+```
+
+This null-check indicates that `this.color` may legitimately be null at runtime. At the specific call site in `TextParticle.render` and `ShapeParticle.render`:
+
+```java
+g.setColor(
+  new Color(
+    this.getColor().getRed() / 255f,
+    this.getColor().getGreen() / 255f,
+    this.getColor().getBlue() / 255f,
+    this.getOpacity()));
+```
+
+no null-check is performed before dereferencing the result of `this.getColor()`. Because nothing in the provided code ensures `this.color` is always initialized to a non-null `Color`, the invocation `this.getColor()` can evaluate to null at this call site, which would then cause a `NullPointerException` on calls like `this.getColor().getRed()`.]]></reason>
+  <value>YES</value>
+</response>

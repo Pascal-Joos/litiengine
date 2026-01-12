@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void renderImage(Graphics2D g, final Image image, Point2D location) {
+      if (Game.world().camera() == null) {
+        return;
+      }
+
+      Point2D viewPortLocation = Game.world().camera().getViewportLocation(location);
+      ImageRenderer.render(
+          g,
+          image,
+          viewPortLocation.getX() * Game.world().camera().getRenderScale(),
+          viewPortLocation.getY() * Game.world().camera().getRenderScale());
+  }
+  ```
+    ]]>
+  </code>
+</response>

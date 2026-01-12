@@ -1,0 +1,87 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` is defined as:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+It simply returns the value of a static field `keyboard`. Nowhere in the provided call chain is this static field shown being initialized, assigned, or guaranteed to be non-null.
+
+Across the code you provided, the authors explicitly defend against `Input.keyboard()` being null in several places:
+
+- `ListField.prepareInput()`:
+  ```java
+  if (Input.keyboard() != null) {
+      Input.keyboard().onKeyTyped(...);
+      ...
+  }
+  ```
+- `TextFieldComponent` constructor:
+  ```java
+  if (Input.keyboard() != null) {
+      Input.keyboard().onKeyTyped(this::handleTypedKey);
+  }
+  ```
+- `GameLoop.updateInvariableEngineComponents()`:
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+      ((Keyboard) keyboard).update();
+  }
+  ```
+- `KeyboardEntityController` constructor:
+  ```java
+  if (Input.keyboard() != null) {
+      Input.keyboard().onKeyPressed(this::handlePressedKey);
+  }
+  ```
+- `Game.init(...)`:
+  ```java
+  if (Input.keyboard() != null) {
+      Input.keyboard().onKeyTyped(KeyEvent.VK_PRINTSCREEN, ...);
+  }
+  ```
+- `PlatformingMovementController` constructor:
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+      keyboard.onKeyPressed(this::handlePressedKey);
+  }
+  ```
+
+These repeated null checks demonstrate that the library itself considers `Input.keyboard()` potentially null at runtime.
+
+At the specific call sites you provided, there is at least one that uses `Input.keyboard()` without any null check:
+
+```java
+class de.gurkenlabs.litiengine.gui.DropdownListField {
+  private void prepareInput() {
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_UP,
+            e -> { ... });
+
+    Input.keyboard()
+        .onKeyTyped(
+            KeyEvent.VK_DOWN,
+            e -> { ... });
+
+    ...
+  }
+}
+```
+
+Here, `prepareInput` unconditionally calls `Input.keyboard()` and dereferences it. Since the value of the static field `keyboard` is not shown to be definitely initialized to a non-null value before this `prepareInput` is invoked, and elsewhere in the code base it is treated as possibly null, the return value of `Input.keyboard()` at this call site is not guaranteed to be non-null.
+
+Because:
+- The method body is just `return keyboard;` with no construction or fallback,
+- No assignment to `keyboard` is provided,
+- Other parts of the code consistently guard against it being null,
+it follows that at the specific call site `Input.keyboard()` in `DropdownListField.prepareInput()` the returned value can indeed be null at runtime.
+
+Thus, `Input.keyboard()` can return null at this specific call site.]]></reason>
+  <value>YES</value>
+</response>

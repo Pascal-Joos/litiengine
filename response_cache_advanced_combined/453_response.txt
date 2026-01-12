@@ -1,0 +1,20 @@
+<response>
+  <reason><![CDATA[
+The only available information about `IMap.getOrientation()` is its declaration:
+
+```java
+public IMapOrientation getOrientation()
+```
+
+No implementation or contract (e.g., documentation, annotations like `@NotNull`) is provided. Therefore:
+
+- We cannot see any internal logic or guarantees that it always initializes or returns a non-null `IMapOrientation`.
+- The surrounding call sites **assume** non-null (they immediately dereference, e.g. `map.getOrientation().getTile(...)`, `map.getOrientation().getBounds(...)`, etc.), but such usage does not prove the method cannot return null; it only shows that callers do not defensively check for null.
+- The call sites you provided also do not check `map` for null in several places (e.g., `MapRenderer.drawTile`, `DebugRenderer.drawTileBoundingBox`), so the codebase in general does not systematically enforce null-safety through checks. This further weakens any inference that `getOrientation()` must be non-null by design.
+
+Because we lack the implementation of `getOrientation()` and any explicit non-null guarantees, we cannot rule out that `getOrientation()` may return null for some `IMap` instances, including at the specific call sites (`map.getOrientation()`) shown.
+
+Given the constraints (“do not assume their return values unless their full declarations are provided”), the method **can** return null at this call site from our perspective.
+  ]]></reason>
+  <value>YES</value>
+</response>

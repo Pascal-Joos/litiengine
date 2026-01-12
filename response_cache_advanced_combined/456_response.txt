@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  public static ITile getTopMostTile(final IMap map, final Point2D location) {
+    if (map.getTileLayers() == null || map.getTileLayers().isEmpty()) {
+      return null;
+    }
+
+    if (map.getOrientation() == null) {
+      return null;
+    }
+
+    return getTopMostTile(map.getOrientation().getTile(location, map));
+  }
+  ```
+    ]]>
+  </code>
+</response>

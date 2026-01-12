@@ -1,0 +1,38 @@
+<response>
+  <reason><![CDATA[
+The method `Input.keyboard()` is a trivial getter:
+
+```java
+public static IKeyboard keyboard() {
+  return keyboard;
+}
+```
+
+Its return value is exactly the value of the static field `keyboard`. No other methods are called, no parameters are involved, and there are no alternative control-flow paths.
+
+From the provided code, there is clear evidence that `keyboard` may be null at runtime:
+
+- In `GameLoop.updateInvariableEngineComponents()`:
+  ```java
+  IKeyboard keyboard = Input.keyboard();
+  if (keyboard != null) {
+    ((Keyboard) keyboard).update();
+  }
+  ```
+  This null-check is only meaningful if `Input.keyboard()` can return null.
+
+- In `Game.init(...)`:
+  ```java
+  if (Input.keyboard() != null) {
+    Input.keyboard().onKeyTyped(...);
+  }
+  ```
+  Again, a direct null-check before use indicates `Input.keyboard()` may be null.
+
+These usages come from the same static getter, with no additional guarding logic or reinitialization shown. Since the field declaration and initialization of `keyboard` are not provided, there is no guarantee that it is non-null at all times. The existence of multiple null-checks strongly suggests the library authors expect `Input.keyboard()` to sometimes return null.
+
+Because the method body is just `return keyboard;` and there is no evidence in the provided snippets that `keyboard` is always initialized to a non-null value before any of the call sites (e.g., in `ListField.prepareInput()`, `TextFieldComponent` constructor, `KeyboardEntityController` constructor, `PlatformingMovementController` constructor, or `DropdownListField.prepareInput()`), the only safe conclusion for the specific call site `Input.keyboard()` is that it can return null.
+
+Therefore, at the call site `Input.keyboard()` in the shown code, the result can be null.]]></reason>
+  <value>YES</value>
+</response>

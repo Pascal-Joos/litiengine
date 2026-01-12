@@ -1,0 +1,13 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public boolean isActive() {
+          return this.getCurrentExecution() != null
+              && Game.time().since(this.getCurrentExecution().getExecutionTicks())
+                  < Nullability.castToNonnull(this.getAttributes().duration().get());
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,45 @@
+<response>
+  <reason><![CDATA[
+The call site is `this.getMax()` on `de.gurkenlabs.litiengine.attributes.RangeAttribute`.
+
+`getMax` is defined as:
+```java
+public T getMax() {
+    return this.applyMaxModifiers(this.maxBaseValue);
+}
+```
+
+The value returned by `getMax()` is exactly the value returned by `applyMaxModifiers`, which is defined as:
+```java
+protected T applyMaxModifiers(final T maxValue) {
+  T currentValue = maxValue;
+  for (final AttributeModifier<T> modifier : this.getMaxModifiers()) {
+    currentValue = modifier.modify(currentValue);
+  }
+
+  return currentValue;
+}
+```
+
+From this code:
+- `currentValue` is initialized to `maxValue`, i.e., `this.maxBaseValue`.
+- Each iteration applies `modifier.modify(currentValue)` and assigns the result back to `currentValue`.
+- Finally, it returns `currentValue` directly.
+
+There is no null check, defaulting, or creation of a non-null substitute. Thus, if:
+- `this.maxBaseValue` is null, then `currentValue` starts as null and will remain null unless some modifier replaces it with a non-null value.
+- Any `modifier.modify(...)` implementation can also return null and assign that to `currentValue`.
+
+Because:
+- We do not have the declaration of `getMaxModifiers()` and thus cannot assume the list is empty or that its modifiers never return null.
+- We do not have the declaration of `AttributeModifier.modify` and thus cannot assume it never returns null.
+- We do not have any guarantee that `maxBaseValue` is non-null.
+
+there is a realistic path in which `applyMaxModifiers` (and therefore `getMax`) returns null.
+
+The call sites shown (`getRelativeCurrentValue`, `setToMax`, `valueInRange`, `CombatEntity.resurrect`, `Prop.getState`) all use `getMax()` but do not impose any additional non-null guarantees on `getMax()` itself; they just consume its result. None of those usages prove that `maxBaseValue` or modifier outputs must be non-null.
+
+Therefore, based solely on the provided method bodies, `this.getMax()` can evaluate to null at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

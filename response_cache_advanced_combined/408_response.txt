@@ -1,0 +1,40 @@
+```xml
+<response>
+    <reason><![CDATA[
+In the provided method, the return expression is either:
+
+1) The result of:
+   Game.world()
+       .camera()
+       .getMapLocation(...)
+
+or
+
+2) null (from the ternary operator).
+
+The condition of the ternary operator is:
+
+    Game.world().camera() != null
+
+This ensures that in the "then" branch, the expression Game.world().camera() is evaluated only under the assumption that it is not null at the moment of the conditional check.
+
+However, determining whether Game.world().camera() CAN be null at runtime depends on the semantics and guarantees of the Game.world() and camera() methods, which are not included in the snippet. Specifically:
+
+- We do not know if Game.world() can ever return null.
+- We do not know if Game.world().camera() can ever return null.
+- We do not know whether Game.world() or camera() can change between the evaluation of the condition and the use in the true branch (e.g., due to concurrency or mutable global state).
+- We do not know if there is any framework or contract (e.g., annotations like @NonNull, lifecycle guarantees) that state that Game.world() or world().camera() are never null.
+
+Given only the snippet, there is no definitive guarantee that Game.world() or Game.world().camera() are non-null values. The code itself acknowledges the possibility of a null camera by explicitly checking `Game.world().camera() != null` and returning null in that case.
+
+Therefore, based solely on the given information, we cannot conclusively determine that `Game.world().camera()` (and especially `Game.world()` itself) can *never* be null; nor can we conclusively assert it *can* be null without examining the implementations and contracts of those methods.
+
+Hence, the answer is UNKNOWN without additional information about Game.world() and camera().
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or documented contract of Game.world().]]></request>
+        <request><![CDATA[Provide the implementation or documented contract of the world().camera() method, including any @NonNull/@Nullable annotations or lifecycle guarantees.]]></request>
+    </requests>
+</response>
+```

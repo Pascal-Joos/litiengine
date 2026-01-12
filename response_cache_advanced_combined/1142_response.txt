@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void setCamera( final ICamera cam) {
+      if (this.camera() != null) {
+        Nullability.castToNonnull(Game.loop()).detach(camera);
+      }
+
+      camera = cam;
+
+      if (cam != null && !Game.isInNoGUIMode()) {
+        Nullability.castToNonnull(Game.loop()).attach(cam);
+        cam.updateFocus();
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

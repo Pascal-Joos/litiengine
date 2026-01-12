@@ -1,0 +1,14 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public void resume() {
+      SFXPlayback playback = this.getPlayback();
+      if (playback != null) {
+          playback.resumePlayback();
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

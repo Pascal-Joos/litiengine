@@ -1,0 +1,39 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the given method alone, there is no explicit guarantee that `this.getEnvironment()` is non-null.
+
+Control flow:
+
+1. The only null check present is:
+   ```java
+   if (Game.world().environment() == null) {
+     return;
+   }
+   ```
+   This ensures that `Game.world().environment()` is not null after the `if` block. However, this is *not necessarily the same* object as `this.getEnvironment()`.
+
+2. The code then calls:
+   ```java
+   this.getEnvironment().getEntitiesByTag().get(tag).remove(this);
+   ```
+   There is no prior check that:
+   - `this.getEnvironment()` is non-null, or
+   - `this.getEnvironment()` == `Game.world().environment()`.
+
+3. Whether `this.getEnvironment()` can be null depends on:
+   - How the field backing `getEnvironment()` is initialized,
+   - Whether it can be cleared or set to null during the object's lifecycle,
+   - Whether there is a class invariant or API contract that `getEnvironment()` is always non-null when `removeTag` is called, or that it always points to `Game.world().environment()`.
+
+4. Without those guarantees visible, the static analysis cannot safely conclude that `this.getEnvironment()` is always non-null. The presence of a null check on `Game.world().environment()` alone is insufficient to prove `this.getEnvironment()` is non-null.
+
+Therefore, based solely on the provided code, it is possible that `this.getEnvironment()` is null at the point of use.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or contract of `getEnvironment()` (and any backing field), including how and when it is set and whether it can ever be null.]]></request>
+        <request><![CDATA[Clarify whether `this.getEnvironment()` is guaranteed to always reference `Game.world().environment()` or otherwise be non-null when `removeTag` is invoked.]]></request>
+    </requests>
+</response>
+```

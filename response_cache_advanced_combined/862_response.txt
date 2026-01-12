@@ -1,0 +1,99 @@
+<response>
+  <reason><![CDATA[
+At the specific call site
+
+  this.getVerticalSlider()
+      .getSliderComponent()
+
+inside ListField.initContentList(), the code that uses it is:
+
+  if (this.getVerticalSlider() != null) {
+    this.getVerticalSlider()
+        .onChange(
+            sliderValue -> {
+              this.setVerticalLowerBound(sliderValue.intValue());
+              this.getVerticalSlider()
+                  .getSliderComponent()
+                  .setLocation(this.getVerticalSlider().getRelativeSliderPosition());
+              this.refresh();
+            });
+  }
+
+So the lambda is only registered if this.getVerticalSlider() is non‑null. Inside the lambda, the vertical slider is obtained again and then getSliderComponent() is called.
+
+We need to know whether, given a non‑null VerticalSlider, its getSliderComponent() can be null at the time the lambda executes.
+
+For VerticalSlider we have:
+
+  @Override
+  protected void initializeComponents() {
+    super.initializeComponents();
+    ...
+    this.setSliderComponent(
+        new ImageComponent(
+            this.getRelativeSliderPosition().getX(),
+            this.getRelativeSliderPosition().getY(),
+            this.getWidth(),
+            sliderHeight,
+            this.getSliderSpritesheet(),
+            "",
+            null));
+    Nullability.castToNonnull(this.getSliderComponent()).setSpriteSheet(this.getSliderSpritesheet());
+  }
+
+and in the base Slider:
+
+  public ImageComponent getSliderComponent() {
+    return this.sliderComponent;
+  }
+
+  protected void setSliderComponent(final ImageComponent slider) {
+    this.sliderComponent = slider;
+    this.sliderComponent.onMousePressed(e -> this.isDragging = true);
+    Input.mouse()
+        .onDragged(
+            e -> {
+              if (this.isDragging()) {
+                this.setValueRelativeToMousePosition();
+                this.getChangeConsumer()
+                    .forEach(consumer -> consumer.accept(this.getCurrentValue()));
+              }
+            });
+
+    Input.mouse()
+        .onReleased(
+            e -> {
+              if (this.isDragging()) {
+                this.isDragging = false;
+              }
+            });
+    this.getComponents().add(this.getSliderComponent());
+  }
+
+Key points:
+
+1. VerticalSlider.initializeComponents always calls setSliderComponent with a newly created ImageComponent; it never passes null.
+2. setSliderComponent immediately assigns that non‑null ImageComponent to this.sliderComponent, uses it, and adds it to the components list. There is no code here that ever sets sliderComponent back to null.
+3. VerticalSlider.initializeComponents then immediately calls:
+   
+     Nullability.castToNonnull(this.getSliderComponent()).setSpriteSheet(...);
+
+   This castToNonnull call would be unsafe and pointless if getSliderComponent() could be null right after initialization; its presence strongly indicates the library’s contract is that sliderComponent is non‑null once initialized.
+4. For ListField, sliders are created and initialized before initContentList() is invoked in the constructor:
+
+   - ListField constructor:
+       this.initSliders();
+       this.initContentList();
+
+   VerticalSlider.initializeComponents (called from its construction/initialization path) sets sliderComponent as shown above before ListField.initContentList() runs and registers the onChange handler.
+5. After initialization, none of the provided code paths modify sliderComponent or set it to null.
+
+Given these facts, for any VerticalSlider instance that exists (non‑null), its sliderComponent has been set exactly once to a non‑null ImageComponent and is never reset to null in the provided code. Therefore, at the moment the lambda runs and calls:
+
+  this.getVerticalSlider().getSliderComponent()
+
+the returned value is guaranteed non‑null under the class’ own initialization and usage pattern.
+
+Thus, at this specific call site, getSliderComponent() cannot return null.]]></reason>
+  <value>NO</value>
+</response>

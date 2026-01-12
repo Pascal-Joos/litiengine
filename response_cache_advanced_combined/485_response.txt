@@ -1,0 +1,10 @@
+<response>
+    <reason><![CDATA[
+Based on the criteria you described, initializer methods are:
+- Known framework lifecycle/init methods (e.g., onCreate, init in specific interfaces), or
+- Methods whose names start with "init" or "initialize" and are not setters.
+
+The given method is named setValue, clearly following a setter naming pattern (setX). Even though it assigns to fields (value and location), that alone does not make it an initializer method under your definition. It is a conventional setter and should not be treated as a special initializer for NullAway.
+    ]]></reason>
+    <value>NO</value>
+</response>

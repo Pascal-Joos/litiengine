@@ -1,0 +1,50 @@
+<response>
+  <reason><![CDATA[
+The only information provided for `IMapObject.getType()` is its signature:
+
+```java
+public String getType()
+```
+
+There is no implementation shown, nor any documentation or annotation indicating it is guaranteed non-null. Within the provided code, there are multiple usages that explicitly treat `getType()` as potentially null:
+
+- In `Environment.load`:
+  ```java
+  if (mapObject.getType() == null || mapObject.getType().isEmpty()) {
+      loader = mapObjectLoaders.getOrDefault(MapObjectType.UNDEFINED_MAPOBJECTTYPE, null);
+  } else {
+      loader = mapObjectLoaders.get(mapObject.getType());
+  }
+  ```
+  This condition would only be meaningful if `mapObject.getType()` can, in fact, be `null`.
+
+- In `Environment.loadFromMap`:
+  ```java
+  .filter(
+      mapObject ->
+          mapObject.getType() != null
+              && !mapObject.getType().isEmpty()
+              && mapObject.getId() == mapId)
+  ```
+  Again, `getType()` is checked against `null`, implying it may be `null`.
+
+- In `MapObjectLayer.getMapObjects(String... types)`:
+  ```java
+  type.equals(mapObject.getType())
+  ```
+  This is written in a null-safe way (calling `equals` on `type`, not on `mapObject.getType()`), which is a common pattern when `mapObject.getType()` may be `null`.
+
+- In `MapObjectLoader.isMatchingType`:
+  ```java
+  if (!mapObject.getType().equalsIgnoreCase(this.getMapObjectType())) { ... }
+  ```
+  This specific usage would throw a `NullPointerException` if `getType()` returns `null`, but it does not establish a non-null contract for all callers; it only means this particular path is unsafe if `getType()` is `null`. Other parts of the code clearly defend against `null`.
+
+Because:
+- The implementation of `getType()` is not provided, and
+- Multiple callers explicitly guard against `null` return values from `getType()`,
+
+we cannot conclude that `mapObject.getType()` is guaranteed non-null at the call site. Therefore, `mapObject.getType()` can be `null` at this specific invocation. 
+  ]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,79 @@
+<response>
+  <reason><![CDATA[
+At the call site in question:
+
+```java
+private void updateRowsAndCols() {
+    final BufferedImage sprite = this.getImage();
+    this.columns = sprite.getWidth() / this.spriteWidth;
+    this.rows = sprite.getHeight() / this.spriteHeight;
+}
+```
+
+we are evaluating whether `this.getImage()` can be null.
+
+1. The field `image` is set in the `Spritesheet` constructor:
+
+```java
+public Spritesheet(
+       final BufferedImage image,
+       final String path,
+       final int spriteWidth,
+       final int spriteHeight) {
+    checkImage(image, path);
+    this.image = image;
+    ...
+    this.updateRowsAndCols();
+}
+```
+
+2. Before assignment, `checkImage(image, path)` is called:
+
+```java
+private static void checkImage(BufferedImage image, String name) {
+    if (image == null) {
+      throw new IllegalArgumentException("The image for the spritesheet '" + name + "' is null!");
+    }
+
+    if (image.getWidth() <= 0 || image.getHeight() <= 0) {
+      ...
+      throw new IllegalArgumentException(error);
+    }
+}
+```
+
+So:
+- If the passed-in `image` is null, **the constructor throws an exception** and the `Spritesheet` instance is never successfully created.
+- Only if `image` is non-null and has valid dimensions does execution proceed to `this.image = image;`.
+
+3. The same constructor then immediately calls:
+
+```java
+this.updateRowsAndCols();
+```
+
+inside which the call site appears:
+
+```java
+final BufferedImage sprite = this.getImage();
+```
+
+By this point, within any successfully constructed `Spritesheet`:
+- `this.image` has been assigned to a non-null `BufferedImage` validated by `checkImage`.
+- There is no code shown that ever assigns `this.image = null` after construction.
+
+4. The `getImage` method is a trivial getter:
+
+```java
+public BufferedImage getImage() {
+    return this.image;
+}
+```
+
+Thus, for any `Spritesheet` instance that reaches `updateRowsAndCols()` without throwing during construction, `this.image` is guaranteed non-null, and therefore `this.getImage()` is non-null.
+
+If construction fails (e.g., image is null), an `IllegalArgumentException` is thrown before `updateRowsAndCols` and its `this.getImage()` call can ever execute; but per your guidelines, exceptions are not considered null returns.
+
+Therefore, at this specific call site in `updateRowsAndCols`, `this.getImage()` cannot evaluate to null.]]></reason>
+  <value>NO</value>
+</response>

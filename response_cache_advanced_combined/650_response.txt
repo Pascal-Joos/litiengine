@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Nullable
+  @Override
+  public BufferedImage getImage() {
+    if (this.animation == null) {
+      return this.getBasicImage();
+    }
+    Tile tile = this.tileset.getTile(this.animation.getCurrentFrame().getTileId());
+    if (tile == null) {
+      return null;
+    }
+    return tile.getBasicImage();
+  }
+  ```
+    ]]>
+  </code>
+</response>

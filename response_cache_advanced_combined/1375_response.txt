@@ -1,0 +1,37 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method body alone, there is no explicit guarantee that `this.collisionEntities.get(type)` is non‑null:
+
+- `this.collisionEntities` appears to be some kind of `Map<Collision, Collection<ICollisionEntity>>` (or similar), but the code shown does not include:
+  - How `collisionEntities` is initialized,
+  - Whether all `Collision` enum values (except `NONE`) are always present as keys,
+  - Whether the map values are ever allowed to be `null`.
+
+- In contrast, for `this.collisionBoxes.get(type)`, the code explicitly uses `Nullability.castToNonnull(...)`, which suggests:
+  - The author is aware that `get(type)` might be nullable (at least from the type system’s perspective),
+  - They are relying on some external invariant (not visible here) that those values are actually non‑null at runtime.
+
+- For `this.collisionEntities.get(type)`, there is:
+  - No `Nullability.castToNonnull(...)`,
+  - No null check before calling `.stream()`.
+
+Given only this snippet, the following are all possible:
+1. `collisionEntities` is a `Map` that is fully populated for all non‑NONE `Collision` values, and its values are never null (by class invariant or initialization logic elsewhere). In this case, `get(type)` cannot be null in practice.
+2. `collisionEntities` is a normal `Map` that may not contain entries for all `Collision` values or may have null values. In this case, `get(type)` can be null, and the call to `.stream()` would NPE.
+
+Without seeing:
+- The declaration and type of `collisionEntities`,
+- The constructor(s) or initialization logic where `collisionEntities` is populated,
+- Any class or method contracts that guarantee non‑null values for those keys,
+
+we cannot soundly conclude that `this.collisionEntities.get(type)` is never null. The code as written does not itself enforce or check non‑nullness, so whether it can be null depends on information not present in the snippet.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration (field type) of `collisionEntities`, including any annotations (e.g., @Nonnull, @Nullable).]]></request>
+        <request><![CDATA[Provide the constructor(s) or initialization code that sets up `collisionEntities` and populates it with entries for each `Collision` value.]]></request>
+        <request><![CDATA[If available, provide any documented invariants or contracts (e.g., Javadoc, comments, or external specs) that state whether `collisionEntities` must contain non-null values for all non-NONE `Collision` keys.]]></request>
+    </requests>
+</response>
+```

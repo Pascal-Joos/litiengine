@@ -1,0 +1,34 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void render(final Graphics2D g) {
+    super.render(g);
+    g.setFont(this.getFont());
+    final FontMetrics fm = g.getFontMetrics();
+
+    if (this.isSelected() && Game.time().since(this.lastToggled) > this.flickerDelay) {
+      this.cursorVisible = !this.cursorVisible;
+      this.lastToggled = Game.time().now();
+    }
+    if (this.isSelected() && this.cursorVisible) {
+      Font font = this.getFont();
+      if (font == null) {
+        font = new JLabel().getFont().deriveFont((float) (this.getHeight() * 3 / 6f));
+        this.setFont(font);
+      }
+      final Rectangle2D cursor =
+          new Rectangle2D.Double(
+              this.getX() + this.getTextX() + fm.stringWidth(this.getTextToRender(g)),
+              this.getY() + this.getTextY(),
+              font.getSize2D() * 3 / 5,
+              font.getSize2D() * 1 / 5);
+      g.setColor(this.getAppearance().getForeColor());
+      g.fill(cursor);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

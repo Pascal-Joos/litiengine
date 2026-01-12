@@ -1,0 +1,24 @@
+<response>
+  <reason><![CDATA[
+The method has an explicit null-return path:
+
+```java
+final JAXBContext jaxbContext = getContext(cls);
+if (jaxbContext == null) {
+  return null;
+}
+```
+
+Since `getContext(cls)` may return `null` (its declaration/implementation is not provided, so we cannot assume otherwise), the condition `jaxbContext == null` can be true, in which case the method returns `null` directly.
+
+The other return path is:
+
+```java
+return cls.cast(um.unmarshal(path));
+```
+
+This path may or may not return null depending on what `um.unmarshal(path)` returns, but we do not need to know that to establish that the method *can* return null: the early return on a null `jaxbContext` already guarantees that null is a possible return value.
+
+Therefore, based solely on the method body and without making assumptions about `getContext`, this method can return null.]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,5 @@
+<response>
+    <reason><![CDATA[
+The method name is setButton2 and follows the standard Java setter naming pattern (starts with "set" and takes one parameter that is assigned directly to a corresponding field). NullAway’s notion of an initializer method explicitly excludes setter methods, and also treats as initializers methods with names like onCreate, init, initialize, etc., or names starting with "init"/"initialize" that are not setters. Even though this method performs some additional wiring (registering a click handler and adding the component to a collection), its primary role and shape are that of a setter, and its name does not match the initializer patterns described. Therefore, it should not be treated as an initializer method for NullAway’s purposes.]]></reason>
+    <value>NO</value>
+</response>

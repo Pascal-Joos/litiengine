@@ -1,0 +1,77 @@
+```xml
+<response>
+    <reason><![CDATA[
+In the line:
+
+    if (distinctTilesets.stream()
+        .anyMatch(x -> x.getName() != null && x.getName().equals(tileset.getName()))) {
+
+the potentially problematic expression is the *second* call to `x.getName()` inside the lambda:
+
+    x -> x.getName() != null && x.getName().equals(tileset.getName())
+
+We need to determine whether that `x.getName()` can be null at the point where `.equals(...)` is invoked.
+
+1. `distinctTilesets` is populated only in this loop:
+
+    List<Tileset> distinctTilesets = new ArrayList<>();
+    for (Tileset tileset : this.getTilesets()) {
+      if (tileset.getName() == null) {
+        continue;
+      }
+      if (distinctTilesets.stream()
+          .anyMatch(x -> x.getName() != null && x.getName().equals(tileset.getName()))) {
+        continue;
+      }
+
+      distinctTilesets.add(tileset);
+    }
+
+   The only elements ever added to `distinctTilesets` are `tileset` instances that passed:
+
+    if (tileset.getName() == null) {
+        continue;
+    }
+
+   So at the moment of adding, each `tileset` has `tileset.getName() != null`.
+
+2. However, there is no guarantee here that `Tileset` is immutable, nor that `setName` (if such a setter exists) is never called from other threads or other code paths after the object is added to `distinctTilesets`. The method itself does not reassign or modify `x.getName()`, but:
+
+   - If `Tileset` is mutable and accessible elsewhere, other code could call something like `x.setName(null)` after it has been added to `distinctTilesets`.
+   - From the perspective of this isolated method, we cannot prove that `x.getName()` cannot become null later.
+
+3. The lambda does include a guard:
+
+    x.getName() != null && x.getName().equals(tileset.getName())
+
+   In Java, the `&&` operator short-circuits: if `x.getName() != null` is false, the second part (`x.getName().equals(...)`) is not evaluated. This protects against calling `.equals` on a null *provided that the two `getName()` calls evaluate to the same value*.
+
+   But they are two independent method calls:
+
+    - First call: `x.getName() != null`
+    - Second call: `x.getName().equals(...)`
+
+   If `getName()` is not guaranteed to be stable (e.g., the name can change between those two calls, possibly to null, due to mutation or concurrency), then it is theoretically possible that:
+
+    - The first `getName()` returns a non-null value (so the condition proceeds),
+    - Between the two calls `x.getName()` is changed to `null`,
+    - The second `getName()` then returns `null`, and `.equals(...)` is invoked on `null` → potential NullPointerException.
+
+4. Therefore, under a strict static reasoning with no additional guarantees about:
+   - the immutability of `Tileset`,
+   - the thread-safety of the surrounding code,
+   - or invariants such as "name is never set to null once non-null",
+
+   we cannot soundly conclude that `x.getName()` is *impossible* to be null at the second call. The method as written does not enforce that guarantee.
+
+Because of this, the safe, conservative conclusion is that `x.getName()` *can* be null when `.equals(...)` is invoked, in the presence of possible mutation or race conditions.
+
+A safer pattern would be to call `getName()` once and store it in a local variable, or to reverse the equals:
+
+    anyMatch(x -> tileset.getName().equals(x.getName()))
+
+which avoids calling `.equals` on a possibly-null `x.getName()` and relies on the previously-checked non-null `tileset.getName()`.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

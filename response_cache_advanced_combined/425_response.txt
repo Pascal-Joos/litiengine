@@ -1,0 +1,106 @@
+<response>
+  <reason><![CDATA[
+The method `GameWorld.environment()` simply returns the field `this.environment`:
+
+```java
+public Environment environment() {
+  return this.environment;
+}
+```
+
+From the provided code, `this.environment` is explicitly set to `null` in at least two places:
+
+1. In `unloadEnvironment()`:
+```java
+public void unloadEnvironment() {
+  if (this.environment() != null) {
+    // ...
+  }
+  this.environment = null;
+}
+```
+
+2. Indirectly in `clear()`:
+```java
+public void clear() {
+  this.unloadEnvironment();
+  // ...
+}
+```
+`unloadEnvironment()` is called by `clear()`, so after either `unloadEnvironment()` or `clear()` has executed, `this.environment` is `null` until some later call to `loadEnvironment(env)` with a non‑null `env`:
+
+```java
+public void loadEnvironment(final Environment env) {
+  Lock lock = Game.loop().getLock();
+  lock.lock();
+  try {
+    unloadEnvironment();
+    this.environment = env;
+    if (env != null) {
+      // ...
+      env.load();
+      // ...
+    }
+  } finally {
+    lock.unlock();
+  }
+}
+```
+
+Note that `loadEnvironment` assigns:
+
+```java
+this.environment = env;
+if (env != null) {
+  // ...
+}
+```
+
+So if `env` is `null`, `this.environment` remains `null` and no further safeguards are put in place.
+
+Throughout the codebase, many call sites explicitly guard against `Game.world().environment()` being `null`:
+
+- `EntityAnimationController.update()`:
+```java
+if (Game.world().environment() == null || Game.world().environment().getMap() == null) {
+  return;
+}
+```
+
+- `LightSource.updateAmbientLayers()`:
+```java
+if (Game.world().environment() != null
+    && Game.world().environment().getAmbientLight() != null) {
+  // ...
+}
+```
+
+- `Emitter.delete()`:
+```java
+if (Game.world().environment() != null) {
+  Game.world().environment().remove(this);
+}
+```
+
+- `MapUtilities.getCurrentMap()`:
+```java
+if (Game.world().environment() == null) {
+  return null;
+}
+return Game.world().environment().getMap();
+```
+
+- Many other methods (e.g., `FreeFlightCamera.handleFreeFlightCamera`, `Camera.clampToMap`, `Trigger.update`, `Creature.updateAnimationController`) also check `Game.world().environment() == null`.
+
+These repeated null checks are strong evidence that `Game.world().environment()` is *intended* and *expected* to be possibly `null` at runtime. No invariant is shown that would guarantee a non-null value at all times; instead, several places handle the null case explicitly.
+
+Because:
+
+- `this.environment` is explicitly set to `null` in `unloadEnvironment()`,
+- `loadEnvironment` may be called with `env == null`, leaving it `null`,
+- and multiple call sites treat `Game.world().environment()` as potentially `null`,
+
+the invocation `Game.world().environment()` at the shown call sites (including the ones that directly pass it on, such as `Game.world().environment().findCombatEntities(...)`) can evaluate to `null` at runtime. There is no provided code that rules this out at those points in execution.
+  ]]></reason>
+  <value>YES</value>
+</response>

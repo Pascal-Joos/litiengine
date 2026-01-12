@@ -1,0 +1,36 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there are no null checks or prior guarantees about the return value of `Input.keyboard()`.
+
+Key observations:
+
+1. Control flow:
+   - The method starts by reading `currentText` and potentially returning early if it's null.
+   - The `if (Input.keyboard().isPressed(KeyEvent.VK_SHIFT))` is reached only when `currentText != null`.
+   - However, the value of `currentText` is unrelated to the value of `Input.keyboard()`; there is no data or control dependency ensuring `Input.keyboard()` is not null.
+
+2. Null checks:
+   - There is no explicit null check on `Input.keyboard()` in this method.
+   - The code directly dereferences `Input.keyboard()` with `.isPressed(...)`.
+
+3. External dependency:
+   - The nullability of `Input.keyboard()` depends entirely on the implementation and contract of the `Input` class and its `keyboard()` method.
+   - Without seeing that implementation, we cannot infer whether:
+     - `keyboard()` is guaranteed to return a non-null singleton or static instance, or
+     - it may return null under some conditions (e.g., no keyboard available, not yet initialized, disposed, or in headless mode).
+
+4. Language/semantics:
+   - In Java, a static method like `Input.keyboard()` may legally return null.
+   - There is no language-level or visible annotation (@NonNull, etc.) in the snippet that would enforce non-null behavior.
+
+Conclusion:
+Based solely on this method, we cannot determine whether `Input.keyboard()` can be null. That depends on the external contract/implementation of `Input.keyboard()`, which is not provided here. Therefore, the correct answer is that it is UNKNOWN from the given code.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the implementation or API contract (including any nullability annotations or documentation) for Input.keyboard().]]></request>
+        <request><![CDATA[If available, share any global initialization or lifecycle logic that sets up the keyboard input system used by Input.keyboard().]]></request>
+    </requests>
+</response>
+```

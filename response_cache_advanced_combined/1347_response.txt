@@ -1,0 +1,60 @@
+<response>
+  <reason><![CDATA[
+At the call site `this.animation.getDefault()` (in `SpriteParticle.setLoopSprite`), the receiver `this.animation` is an `AnimationController` instance. We know from `SpriteParticle.setLoopSprite`:
+
+```java
+public void setLoopSprite(boolean loopSprite) {
+  this.loopSprite = loopSprite;
+  if (this.animation == null) {
+    return;
+  }
+  this.animation.getDefault().setLooping(loopSprite);
+}
+```
+
+So at the moment of the call, `this.animation` is *non-null*, but this says nothing about what `getDefault()` returns.
+
+The implementation of `AnimationController.getDefault()` is:
+
+```java
+@Override
+public Animation getDefault() {
+  if (this.defaultAnimation != null) {
+    return this.defaultAnimation;
+  }
+
+  if (this.getAll().isEmpty()) {
+    return null;
+  }
+
+  return this.getAll().stream().findFirst().orElse(null);
+}
+```
+
+There are three return paths:
+
+1. `this.defaultAnimation != null` → returns a non-null `Animation`.
+2. `this.getAll().isEmpty()` is `true` → returns `null`.
+3. `this.getAll().isEmpty()` is `false` → returns `.stream().findFirst().orElse(null)`.
+
+Even in the third case, `orElse(null)` makes it explicitly possible to return `null` (e.g., if `getAll()` returns a non-empty collection that still yields no element in the stream, or if `getAll()` itself can contain `null` in some edge behavior). The second branch also clearly returns `null` when `getAll()` is empty.
+
+Critically, for this specific call site, no additional constraints are imposed on `defaultAnimation` or on `getAll()` before calling `getDefault()` – the code only checks `this.animation != null`, not `this.animation.getDefault() != null`. Other methods in the class (e.g. `update()` and `remove()`) do guard uses of `getDefault()` with a null check:
+
+```java
+if (this.getDefault() != null) {
+  this.play(this.getDefault().getName());
+}
+```
+
+That pattern indicates the authors themselves consider `getDefault()` nullable.
+
+Since:
+
+- `this.animation` being non-null does not imply `defaultAnimation` is set, and
+- `getAll()` can be empty (or lead to `orElse(null)`), and
+- there is no additional guarantee at this site that at least one animation exists or that a default has been set,
+
+the result of `this.animation.getDefault()` at this call site can be `null`. Thus `this.animation.getDefault().setLooping(loopSprite);` can dereference a `null` value and is unsafe without a prior null check.]]></reason>
+  <value>YES</value>
+</response>

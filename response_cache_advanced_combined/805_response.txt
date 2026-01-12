@@ -1,0 +1,49 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within initSliders(), the expression this.getVerticalSlider() at the line
+
+    this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
+
+is executed only inside the block:
+
+    if (maxNbOfRows > 0) {
+        ...
+        this.verticalSlider = new VerticalSlider(...);
+        ...
+        this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
+        this.getComponents().add(this.getVerticalSlider());
+    }
+
+So we only need to analyze code paths where maxNbOfRows > 0.
+
+Inside that if (maxNbOfRows > 0) block, there are three mutually exclusive cases:
+
+1) this.isSliderInside() == true AND this.getHorizontalSlider() != null
+   → verticalSlider is assigned with new VerticalSlider(...) in the first inner if branch.
+
+2) this.isSliderInside() == true AND this.getHorizontalSlider() == null
+   → verticalSlider is assigned with new VerticalSlider(...) in the inner else branch.
+
+3) this.isSliderInside() == false
+   → verticalSlider is assigned with new VerticalSlider(...) in the outer else branch.
+
+In all three branches, this.verticalSlider is definitely assigned a new VerticalSlider instance before reaching:
+
+    this.getVerticalSlider().setCurrentValue(...);
+
+Thus, assuming:
+- getVerticalSlider() is a simple accessor returning this.verticalSlider (without additional conditional logic that could return null), and
+- new VerticalSlider(...) never returns null (i.e., it either constructs a valid object or throws),
+
+then this.getVerticalSlider() is guaranteed to be non-null on all code paths that reach the call to setCurrentValue.
+
+The only remaining theoretical ways for this.getVerticalSlider() to be null at that point would be:
+- getVerticalSlider() is implemented with extra logic that can return null even when this.verticalSlider is non-null, or
+- verticalSlider is reassigned to null between its initialization and the call (which is not visible in the given method).
+
+Given only the shown method body and typical Java getter semantics, there is no control-flow path within initSliders() where the call to this.getVerticalSlider() can evaluate to null.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

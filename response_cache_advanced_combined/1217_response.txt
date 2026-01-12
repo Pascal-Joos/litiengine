@@ -1,0 +1,61 @@
+<response>
+  <reason><![CDATA[
+At the call site `this.getEnvironment().getMap()`, the `getMap()` method is:
+
+```java
+public IMap getMap() {
+  return this.map;
+}
+```
+
+`this.map` is assigned in the `Environment` constructor:
+
+```java
+public Environment(final IMap map) {
+  this();
+  this.map = map;
+  if (this.getMap() != null) {
+    Game.physics().setBounds(this.getMap().getBounds());
+    this.setGravity(this.getMap().getIntValue(MapProperty.GRAVITY));
+  }
+}
+```
+
+and `Environment` instances are created via:
+
+```java
+public Environment getEnvironment(IMap map) {
+  if (map == null || map.getName() == null || map.getName().isEmpty()) {
+    return null;
+  }
+
+  Environment env =
+      this.getEnvironments().stream()
+          .filter(e -> e.getMap().equals(map))
+          .findFirst()
+          .orElse(null);
+  if (env != null) {
+    return env;
+  }
+
+  env = new Environment(map);   // map is guaranteed non-null here
+  this.addEnvironment(env);
+  return env;
+}
+```
+
+Thus:
+- `Environment.getEnvironment(IMap)` returns `null` if the `map` argument is `null`, has `null` name, or empty name.
+- If it returns a non-null `Environment`, that `Environment` has been constructed with a non-null `IMap` argument, so its `this.map` field is non-null.
+- The `getMap()` method is just a field getter; it does not introduce any additional nullability beyond what was assigned.
+
+Since the question is only about whether `getMap()` itself can return null at the specific call site `this.getEnvironment().getMap()`:
+
+- If `this.getEnvironment()` returns `null`, then the call would throw a `NullPointerException` before `getMap()` is even invoked; this is not considered a "null return value" per your guidelines.
+- If `this.getEnvironment()` returns a non-null `Environment` (as it does when created through `getEnvironment(IMap)`), that `Environment` has `map != null`, and therefore `getMap()` returns a non-null `IMap`.
+
+Under the shown construction and usage, for any non-null `Environment` obtained via `getEnvironment(IMap)`, `getMap()` cannot return `null`. Any scenario where no map is available results in `Environment` itself being `null`, not `getMap()` returning `null`.
+
+Therefore, at this call site, the result of `getMap()` itself is not null; the only failure mode is `this.getEnvironment()` being null, which is an NPE, not a null return.]]></reason>
+  <value>NO</value>
+</response>

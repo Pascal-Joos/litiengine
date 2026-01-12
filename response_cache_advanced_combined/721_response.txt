@@ -1,0 +1,11 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public static BufferedImage flipSpritesHorizontally(final Spritesheet sprite) {
+    return flipSprites(Nullability.castToNonnull(sprite), Imaging::horizontalFlip);
+  }
+  ```
+    ]]>
+  </code>
+</response>

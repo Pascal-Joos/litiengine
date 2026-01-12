@@ -1,0 +1,37 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void setLocation(final Point2D adjustMouse) {
+    if (adjustMouse == null) {
+      return;
+    }
+
+    if (Game.window() == null || Game.window().getRenderComponent() == null) {
+      return;
+    }
+
+    this.location = adjustMouse;
+    this.lastLocation = adjustMouse;
+
+    final MouseEvent mouseEvent =
+        new MouseEvent(
+            Game.window().getRenderComponent(),
+            MouseEvent.MOUSE_MOVED,
+            0,
+            0,
+            (int) this.getLocation().getX(),
+            (int) this.getLocation().getY(),
+            0,
+            false,
+            MouseEvent.NOBUTTON);
+    final MouseEvent wrappedEvent = this.createEvent(mouseEvent);
+    for (final MouseMovedListener listener : this.mouseMovedListeners) {
+      listener.mouseMoved(wrappedEvent);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

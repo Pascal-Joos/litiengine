@@ -1,0 +1,84 @@
+<response>
+  <reason><![CDATA[
+At the specific call site:
+
+```java
+img = sprite.getImage();
+```
+
+inside `MapRenderer.renderImageLayer`, `sprite` is obtained from:
+
+```java
+Spritesheet sprite = Resources.spritesheets().get(layer.getImage().getSource());
+```
+
+If `sprite == null`, the code **does not** call `getImage()`; it executes:
+
+```java
+if (sprite == null) {
+  img = Resources.images().get(layer.getImage().getAbsoluteSourcePath());
+} else {
+  img = sprite.getImage();
+}
+```
+
+Thus, `sprite.getImage()` is only executed when `sprite != null`.
+
+The `Spritesheet` constructor shown is the only place in the provided chain where `this.image` is assigned:
+
+```java
+public Spritesheet(
+       final BufferedImage image,
+       final String path,
+       final int spriteWidth,
+       final int spriteHeight) {
+  checkImage(image, path);
+  this.image = image;
+  ...
+}
+```
+
+Here, before assignment, `checkImage(image, path)` is called. You can also see multiple methods (`checkHeight`, `checkWidth`, `updateRowsAndCols`) using `this.getImage()` or `Nullability.castToNonnull(this.getImage())` and then accessing `getWidth()`/`getHeight()` immediately:
+
+```java
+private void checkHeight(int value) {
+  checkDimension(value, Nullability.castToNonnull(this.getImage()).getHeight(), this.getName(), "height");
+}
+
+private void checkWidth(int value) {
+  checkDimension(value, this.getImage().getWidth(), this.getName(), "width");
+}
+
+private void updateRowsAndCols() {
+  final BufferedImage sprite = this.getImage();
+  this.columns = Nullability.castToNonnull(sprite).getWidth() / this.spriteWidth;
+  this.rows = Nullability.castToNonnull(sprite).getHeight() / this.spriteHeight;
+}
+```
+
+These usages assume `this.getImage()` is non-null after construction; otherwise, they would immediately `NullPointerException`. The constructor *always* calls `checkHeight` and `checkWidth` after assigning `this.image = image`:
+
+```java
+this.image = image;
+this.name = FileUtilities.getFileName(path);
+this.checkHeight(spriteHeight);
+this.checkWidth(spriteWidth);
+```
+
+Therefore, for any `Spritesheet` instance that successfully finishes construction (i.e., no exception thrown), `this.image` must be non-null. If `image` were null, either `checkImage(image, path)` or the subsequent direct dereferences (`getWidth()`, `getHeight()`) would throw an exception before the instance could be used or registered in `Resources.spritesheets()`.
+
+Since `MapRenderer.renderImageLayer` obtains `sprite` via `Resources.spritesheets().get(...)`, any non-null `sprite` returned from that registry must be a fully constructed `Spritesheet`, and hence has a non-null `this.image`.
+
+Thus, at the specific call site `sprite.getImage()` in `renderImageLayer`, when it is executed (`sprite != null`), `this.image` is guaranteed to be non-null, so `getImage()` cannot return null there. The later null-check:
+
+```java
+if (img == null) {
+  return;
+}
+```
+
+is defensive but not reachable via the `sprite.getImage()` branch given the provided constructor and usages.
+
+Therefore, `this.getImage()` at this call site cannot yield null.]]></reason>
+  <value>NO</value>
+</response>

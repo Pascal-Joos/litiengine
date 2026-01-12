@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  AbilityExecution(final Ability ability) {
+      this.appliedEffects = new CopyOnWriteArrayList<>();
+      this.ability = ability;
+      this.executionTicks = Game.time().now();
+      this.impactArea = ability.calculateImpactArea();
+      this.castLocation = ability.getExecutor().getCenter();
+      Nullability.castToNonnull(Game.loop()).attach(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,48 @@
+<response>
+  <reason><![CDATA[
+The specific call site is:
+
+```java
+this.collisionEntities.get(entity.getCollisionType())
+```
+
+This is a `Map#get`-style call (or equivalent indexing operation) whose nullability depends entirely on how `collisionEntities` is initialized and populated. In the provided code, there is no guarantee shown that:
+
+1. `collisionEntities` contains a non-null value for the key `Collision.DYNAMIC`, and
+2. `collisionEntities` contains a non-null value for the key `Collision.STATIC`.
+
+From the `add` method:
+
+```java
+if (entity.getCollisionType() == null) {
+  return;
+}
+
+switch (entity.getCollisionType()) {
+  case DYNAMIC:
+  case STATIC:
+    this.collisionEntities.get(entity.getCollisionType()).add(entity);
+    break;
+  default:
+    return;
+}
+```
+
+The switch restricts `entity.getCollisionType()` to `DYNAMIC` or `STATIC` at this call site, but that only constrains the key passed to `get`; it does not ensure that `collisionEntities.get(...)` is non-null for those keys. No defensive null-check is performed, and unlike the later line:
+
+```java
+Nullability.castToNonnull(this.collisionEntities.get(Collision.ANY)).add(entity);
+```
+
+there is no explicit non-null assertion or cast around `this.collisionEntities.get(entity.getCollisionType())`.
+
+Because the declaration and initialization of `collisionEntities` are not provided, we cannot prove that:
+
+- `collisionEntities` is always fully populated with non-null collections for each applicable `Collision` value (including `DYNAMIC` and `STATIC`), nor that
+- `get` has been overridden or wrapped to never return null.
+
+Under Java’s standard Map contract, `Map#get(key)` can return null if either the key is absent or the value associated with the key is null. Without seeing how `collisionEntities` is declared and populated, the safe conclusion is that this invocation can return null at runtime.
+
+Therefore, at this specific call site, the result of `this.collisionEntities.get(entity.getCollisionType())` can be null.]]></reason>
+  <value>YES</value>
+</response>

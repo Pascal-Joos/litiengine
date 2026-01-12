@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void update() {
+
+    for (final Iterator<EffectApplication> iterator = this.getActiveAppliances().iterator();
+        iterator.hasNext(); ) {
+      final EffectApplication appliance = iterator.next();
+      // if the effect duration is reached
+      if (this.hasEnded(appliance)) {
+
+        iterator.remove();
+        this.cease(appliance);
+      }
+    }
+
+    // 4. unregister if all appliances are finished
+    if (this.getActiveAppliances().isEmpty() && Game.loop() != null) {
+      Game.loop().detach(this);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

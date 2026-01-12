@@ -1,0 +1,14 @@
+<response>
+  <reason><![CDATA[All provided usages show that ICollisionEntity.getCollisionBox() is allowed to be null for some entities: many callers explicitly check for null (e.g., in PhysicsEngine.raycast: `Rectangle2D collisionBox = collisionEntity.getCollisionBox(); if (collisionBox == null) { return null; }`, in Trigger.getEntitiesInCollisionBox and EntityPivot.getPoint, etc.). Other call sites assume non-null and therefore use Nullability.castToNonnull around getCollisionBox(), which is a runtime assertion, not a static guarantee that getCollisionBox() never returns null.
+
+However, the question is about the specific call site `entity.getCollisionBox()` where `entity` is an ICollisionEntity (e.g., in Force.hasReached, EntityNavigator.update/rotateTowards, PathFinder.applyPathMargin, PhysicsEngine.resolveCollisionForRaycastToNewPosition, etc.). Whether that particular invocation can return null depends entirely on the concrete implementation of ICollisionEntity.getCollisionBox() for the runtime type of `entity`. The interface itself:
+
+```java
+interface ICollisionEntity {
+  Rectangle2D getCollisionBox();
+}
+```
+
+does not specify non-null behavior, and no implementation is shown. Without seeing at least one concrete implementation (e.g., some class implementing ICollisionEntity) or a contract that guarantees a non-null Rectangle2D for navigable/moving entities, we cannot rule out that `getCollisionBox()` returns null at this call site. Because the engine already handles null collision boxes in several places, null is clearly a supported and expected possibility for some ICollisionEntity instances. Therefore, for this specific call site, getCollisionBox() *can* evaluate to null, unless the implementation of getCollisionBox() for that particular entity type explicitly prevents it—which we do not have enough information to assert.]]></reason>
+  <value>YES</value>
+</response>

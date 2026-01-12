@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public float getY() {
+    if (this.isInfiniteMap()
+        && this.getLayer() != null
+        && this.getLayer().getMap() != null
+        && this.getLayer().getMap() instanceof TmxMap) {
+      TmxMap map = (TmxMap) this.getLayer().getMap();
+      return this.y - map.getChunkOffsetY() * map.getTileHeight();
+    }
+
+    return this.y == null ? 0 : this.y;
+  }
+  ```
+    ]]>
+  </code>
+</response>

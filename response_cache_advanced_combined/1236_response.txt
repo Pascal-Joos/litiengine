@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public void renderText(
+      final Graphics2D g, final String text, final double x, final double y, boolean antialias) {
+    if (text == null || text.isEmpty()) {
+      return;
+    }
+
+    if (Game.world().camera() == null) {
+      return;
+    }
+
+    final Point2D viewPortLocation = Game.world().camera().getViewportLocation(x, y);
+    double viewPortX = (float) viewPortLocation.getX() * Game.world().camera().getRenderScale();
+    double yiewPortY = (float) viewPortLocation.getY() * Game.world().camera().getRenderScale();
+
+    TextRenderer.render(g, text, viewPortX, yiewPortY, antialias);
+}
+  ```
+    ]]>
+  </code>
+</response>

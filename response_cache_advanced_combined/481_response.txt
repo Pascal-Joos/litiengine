@@ -1,0 +1,15 @@
+<response>
+  <reason><![CDATA[
+The only information provided for the method
+
+  public IPolyShape getPolyline()
+
+is its signature; the method body is not shown at all. Without the implementation, it is impossible to determine whether any return paths can produce null, nor whether it always returns a non-null IPolyShape or potentially throws instead.
+
+Since the return value does not depend on any other disclosed methods (there are no method calls shown, only the declaration itself), the missing and only necessary piece of information is the actual body of getPolyline().
+  ]]></reason>
+  <value>UNKNOWN</value>
+  <requests>
+    <request><![CDATA[Please provide the full declaration including the method body of `public IPolyShape getPolyline()` in `de.gurkenlabs.litiengine.environment.tilemap.IMapObject`.]]></request>
+  </requests>
+</response>

@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected Collection<ICombatEntity> getEntitiesInImpactArea(final Shape impactArea) {
+    if (Game.world().environment() == null) {
+      return java.util.Collections.emptyList();
+    }
+
+    return Game.world().environment().findCombatEntities(impactArea);
+  }
+  ```
+    ]]>
+  </code>
+</response>

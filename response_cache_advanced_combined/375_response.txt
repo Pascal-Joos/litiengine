@@ -1,0 +1,86 @@
+<response>
+  <reason><![CDATA[
+The `GameWorld.camera()` method simply returns the field `this.camera`:
+
+```java
+public ICamera camera() {
+  return this.camera;
+}
+```
+
+The same `GameWorld` class defines:
+
+```java
+public void setCamera(final ICamera cam) {
+  if (this.camera() != null) {
+    Game.loop().detach(camera);
+  }
+
+  camera = cam;
+
+  if (cam != null && !Game.isInNoGUIMode()) {
+    Game.loop().attach(cam);
+    cam.updateFocus();
+  }
+}
+```
+
+and:
+
+```java
+public void clear() {
+  this.unloadEnvironment();
+  this.environments.clear();
+  this.setCamera(null);
+  Game.physics().clear();
+  ...
+}
+```
+
+So `this.camera` is explicitly allowed to become `null` via `setCamera(null)`, and `clear()` in turn calls `setCamera(null)`. There is no invariant in `GameWorld` that prevents `camera` from being null.
+
+Now, at the application level, `Game.init(...)` does set a default camera:
+
+```java
+public static synchronized void init(String... args) {
+  ...
+  world.setCamera(new Camera());
+  ...
+}
+```
+
+However, that only guarantees a non-null camera *right after init*. After that point:
+
+- `GameWorld.clear()` may be called, which sets the camera to `null`.
+- `setCamera` can be called directly with `null`.
+
+The call site we are analyzing is `Game.world().camera()` in many locations (e.g., `Mouse`, `RenderEngine`, `Environment`, etc.). Importantly, some call sites already explicitly guard against `Game.world().camera()` being null, for example:
+
+```java
+final Rectangle2D viewport =
+    Game.screens() != null && Game.world().camera() != null
+        ? Game.world().camera().getViewport()
+        : null;
+```
+
+and:
+
+```java
+if (this.getMap() != null && Game.world().camera() != null) {
+  MapRenderer.render(g, this.getMap(), Game.world().camera().getViewport(), this, renderType);
+}
+```
+
+These guards only make sense if `Game.world().camera()` can in fact be null at runtime.
+
+Because:
+
+- `camera()` directly returns a field,
+- that field is deliberately set to `null` in `clear()` (and potentially in other code via `setCamera(null)`),
+- and other parts of the code explicitly check for `Game.world().camera() != null`,
+
+the invocation `Game.world().camera()` is not guaranteed to be non-null. At any such call site, including the ones without explicit null-checks, the result can be `null` depending on the lifecycle (e.g., after `GameWorld.clear()` or another `setCamera(null)` call).
+
+Therefore, at this specific call site pattern `Game.world().camera()`, the method can return null.]]></reason>
+  <value>YES</value>
+</response>

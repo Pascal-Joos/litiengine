@@ -1,0 +1,49 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided method alone, there is no guarantee that `this.collisionEntities.get(entity.getCollisionType())` is non-null.
+
+Control-flow and checks:
+- The method first checks `if (entity.getCollisionType() == null) return;`, so `entity.getCollisionType()` is non-null in the subsequent code.
+- The `switch` only allows `DYNAMIC` and `STATIC` through to the line in question:
+  
+  ```java
+  switch (entity.getCollisionType()) {
+    case DYNAMIC:
+    case STATIC:
+      this.collisionEntities.get(entity.getCollisionType()).remove(entity);
+      break;
+    default:
+      return;
+  }
+  ```
+
+So, at that line, we know:
+- `entity.getCollisionType()` is either `DYNAMIC` or `STATIC` (and non-null).
+
+However, what we do *not* know from this snippet:
+- How `this.collisionEntities` is initialized.
+- Whether `collisionEntities` is a `Map<Collision, Collection<ICollisionEntity>>`, `EnumMap`, etc.
+- Whether all relevant keys (`DYNAMIC` and `STATIC`) are guaranteed to be present and mapped to non-null collections.
+- Whether `get` is overridden in a way that could guarantee a non-null value.
+
+Without such a guarantee, standard Java `Map#get(key)` semantics apply:
+- `Map#get(key)` returns `V` or `null` if there is no mapping for the key.
+
+Therefore, for `entity.getCollisionType()` equal to `DYNAMIC` or `STATIC`, if the map does not contain that key, or the value stored for that key is `null`, then:
+- `this.collisionEntities.get(entity.getCollisionType())` can evaluate to `null`,
+- resulting in a possible `NullPointerException` when calling `.remove(entity)`.
+
+The later line:
+
+```java
+Nullability.castToNonnull(this.collisionEntities.get(Collision.ANY)).remove(entity);
+```
+
+only asserts non-nullness for the `Collision.ANY` entry, not for `DYNAMIC` or `STATIC`. It provides no guarantee for the expression under analysis.
+
+Because the snippet gives no invariant or initialization that ensures non-null values for `DYNAMIC` and `STATIC` keys, the expression can be null in at least some possible program states.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

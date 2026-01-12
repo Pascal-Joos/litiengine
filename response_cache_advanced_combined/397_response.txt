@@ -1,0 +1,41 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void update() {
+    if (this.currentText == null) {
+      this.hide();
+      return;
+    }
+
+    if (Game.world().camera() == null) {
+      return;
+    }
+
+    this.entityCenter = Game.world().camera().getViewportLocation(this.getEntity().getCenter());
+
+    // old text was displayed long enough
+    if (this.lastTextDisplay != 0
+        && Game.time().since(this.lastTextDisplay) > this.currentTextDisplayTime) {
+      this.currentText = null;
+      this.lastTextDisplay = 0;
+      return;
+    }
+
+    // display new text
+    if (this.textIndex < this.currentText.length()
+        && Game.time().since(this.lastCharPoll) > LETTER_WRITE_DELAY) {
+      this.textIndex++;
+      this.lastCharPoll = Game.time().now();
+      if (this.typeSound != null) {
+        Game.audio().playSound(this.typeSound, this.getEntity());
+      }
+    }
+
+    // continue displaying currently displayed text
+  }
+  ```
+    ]]>
+  </code>
+</response>

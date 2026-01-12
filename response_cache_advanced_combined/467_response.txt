@@ -1,0 +1,34 @@
+<response>
+  <reason><![CDATA[
+The type `IMap` is an interface:
+
+```java
+class de.gurkenlabs.litiengine.environment.tilemap.IMap {
+  public IMapOrientation getOrientation()
+}
+```
+
+No implementation of `getOrientation()` is provided, so we cannot know whether any concrete `IMap` will ever return a non-null `IMapOrientation`. By contract, returning `null` is allowed for a reference return type unless explicitly constrained, and there is no such constraint shown.
+
+The surrounding call sites confirm that `map.getOrientation()` is expected to possibly be `null`:
+
+```java
+if (map == null || map.getOrientation() == null) {
+  return new Rectangle2D.Double();
+}
+```
+
+and:
+
+```java
+if (map.getOrientation() == null) {
+  return null;
+}
+```
+
+These checks exist precisely to handle the case where `map.getOrientation()` evaluates to `null`. That means that, at the specific call site `map.getOrientation()`, there is no guarantee it will be non-null; the code is explicitly written to guard against `null`.
+
+Because we have no implementation details that would rule out `null` and we have explicit defensive checks treating it as nullable, the invocation `map.getOrientation()` can return `null` at this call site.
+  ]]></reason>
+  <value>YES</value>
+</response>

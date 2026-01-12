@@ -1,0 +1,25 @@
+<response>
+  <reason><![CDATA[
+Within XmlUtilities.getContext, there are exactly two kinds of return paths:
+
+1. Normal path inside the try:
+   - If jaxbContexts.containsKey(cls) is true, it returns jaxbContexts.get(cls).
+   - Otherwise, it calls JAXBContext.newInstance(cls), stores it in the map, and returns it.
+   In both sub‑cases, a non‑null JAXBContext is expected under normal operation.
+
+2. Fallback path after the catch:
+   - If JAXBContext.newInstance(cls) (or some map operation) throws a JAXBException, the exception is caught, logged, and the method then executes the final `return null;`.
+
+Because we are required not to assume behavior of called methods (like JAXBContext.newInstance or the map operations) beyond what their signatures guarantee, we must allow for the possibility that JAXBContext.newInstance(ResourceBundle.class) throws JAXBException at runtime for this particular class. If that happens, control flows out of the try, through the catch (which only logs), and then to the `return null;` at the end.
+
+No additional conditions at the specific call site `XmlUtilities.getContext(ResourceBundle.class)` prevent this exception scenario or alter the control flow; the call is a plain invocation with ResourceBundle.class and directly uses the method’s result. Therefore, at this exact call site, there is a real execution path (via JAXBException being thrown) that leads to the method returning null.
+
+Hence, the invocation
+
+```java
+final JAXBContext jaxbContext = XmlUtilities.getContext(ResourceBundle.class);
+```
+
+can result in `jaxbContext` being null.]]></reason>
+  <value>YES</value>
+</response>

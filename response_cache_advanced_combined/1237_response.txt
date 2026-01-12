@@ -1,0 +1,77 @@
+<response>
+  <reason><![CDATA[
+The method `Game.world().camera()` simply returns the field `this.camera` of `GameWorld`:
+
+```java
+public ICamera camera() {
+  return this.camera;
+}
+```
+
+So the question is whether `this.camera` can be `null` at the points where `Game.world().camera()` is used in the provided call sites.
+
+From the initialization sequence in `Game.init`:
+
+```java
+public static synchronized void init(String... args) {
+  ...
+  gameLoop = new GameLoop("Main Update Loop", config().client().getMaxFps());
+  loop().attach(physics());
+  loop().attach(world());
+  ...
+  world.setCamera(new Camera());
+  ...
+  initialized = true;
+}
+```
+
+`world.setCamera(new Camera())` is called during initialization, so after `Game.init` has run successfully, the world's camera is set to a non‑null `Camera` instance.
+
+However, `GameWorld.setCamera` explicitly allows the camera to be cleared:
+
+```java
+public void setCamera(final ICamera cam) {
+  if (this.camera() != null) {
+    Game.loop().detach(camera);
+  }
+
+  camera = cam;
+
+  if (cam != null && !Game.isInNoGUIMode()) {
+    Game.loop().attach(cam);
+    cam.updateFocus();
+  }
+}
+```
+
+`cam` is assigned directly to `camera`. At depth 2, `GameWorld.clear()` does:
+
+```java
+public void clear() {
+  this.unloadEnvironment();
+  this.environments.clear();
+  this.setCamera(null);
+  Game.physics().clear();
+  ...
+}
+```
+
+Here `setCamera(null)` is called, so `this.camera` becomes `null`. There is no subsequent unconditional re‑initialization of the camera shown after `clear()` is called. Thus, after `GameWorld.clear()` has been invoked, `Game.world().camera()` will return `null` unless some other code later calls `setCamera` with a non‑null argument.
+
+The call uses provided in the code (e.g., in `GameLoop.process`, `Environment.render`, many rendering and input utilities) do not guard against `null` in many places:
+
+```java
+Game.world().camera().updateFocus();
+...
+g.scale(Game.world().camera().getRenderScale(), Game.world().camera().getRenderScale());
+...
+final Rectangle2D viewport = Game.world().camera().getViewport();
+...
+listenerLocation = Game.world().camera().getFocus();
+```
+
+Since `setCamera(null)` is a legitimate and actually used operation (`clear()`), and there is no guarantee that `clear()` cannot be called before or between such usages, the field `camera` can be `null` at these call sites. The method `camera()` directly returns this possibly‑null field with no checks or fallback.
+
+Therefore, at the specific call site `Game.world().camera()`, the result can be `null` under valid control flows (e.g., after `Game.world().clear()` has executed).]]></reason>
+  <value>YES</value>
+</response>

@@ -1,0 +1,12 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+public IMapObject add( IMapObjectLayer layer, IMapObject mapObject) {
+      Nullability.castToNonnull(layer).addMapObject(mapObject);
+      return mapObject;
+}
+  ```
+    ]]>
+  </code>
+</response>

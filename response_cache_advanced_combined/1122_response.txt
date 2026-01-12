@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  protected void updateAnimationController() {
+      IEntityAnimationController<?> controller = this.createAnimationController();
+      this.getControllers().addController(controller);
+      if (Game.world().environment() != null && Game.world().environment().isLoaded()) {
+        Nullability.castToNonnull(Game.loop()).attach(controller);
+      }
+  }
+  ```
+    ]]>
+  </code>
+</response>

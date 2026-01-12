@@ -1,0 +1,30 @@
+<response>
+  <reason><![CDATA[
+At the call site `this.collisionEntities.get(type)` inside `PhysicsEngine.clear()`, there is no information in the provided code that guarantees the `Map` returned by `collisionEntities.get(type)` is non-null for all `Collision` enum values except `Collision.NONE`.
+
+Key points:
+
+- `collisionEntities` is used as a map keyed by `Collision`:
+  ```java
+  this.collisionEntities.get(type).clear();
+  ```
+  There is no preceding null check or null-to-nonnull cast (unlike `collisionBoxes`, which uses `Nullability.castToNonnull`), so the code assumes `get(type)` returns a non-null value.
+
+- However, no declaration or initialization of `collisionEntities` is provided. Without seeing:
+  - how `collisionEntities` is constructed,
+  - when and how entries for each `Collision` value are populated,
+  we cannot conclude that every `Collision` (other than `NONE`) always has a non-null value in the map.
+
+- The fact that `collisionBoxes` is explicitly wrapped with `Nullability.castToNonnull(...)` while `collisionEntities` is not does not logically ensure non-nullness of `collisionEntities.get(type)`; it only shows a different style of null-handling. It could be that `collisionEntities` is also supposed to be fully populated but this is an assumption, not enforced by the shown code.
+
+- The call chain (`Game.terminate` → `world().clear()` / `Environment.clear()` → `Game.physics().clear()`) does not provide further constraints on the initialization state of `collisionEntities` at the moment `clear()` is called.
+
+Given the rules:
+- We must not assume behaviors of other code without its full declaration.
+- We must determine nullability strictly from the provided code.
+
+Thus, it is entirely possible that for some `Collision type != Collision.NONE`, `collisionEntities.get(type)` returns `null` (e.g., map not fully populated, or entries cleared earlier), which would lead to a `NullPointerException` at `.clear()`. The provided snippets do not rule this out.
+
+Therefore, at this specific call site, the result of `this.collisionEntities.get(type)` **can** be null.]]></reason>
+  <value>YES</value>
+</response>

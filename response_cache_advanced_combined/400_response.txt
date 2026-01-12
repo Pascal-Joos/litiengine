@@ -1,0 +1,82 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private static Area getObstructedVisionArea(final IEntity mob, final Point2D center) {
+    final Polygon shadowPolygon = new Polygon();
+
+    final Ellipse2D shadowEllipse = getShadowEllipse(mob);
+
+    final Rectangle2D bounds = shadowEllipse.getBounds2D();
+
+    // radius of Entity's bounding circle
+    final float r = (float) bounds.getWidth() / 2f;
+    final float ry = (float) bounds.getHeight() / 2f;
+
+    if (Game.world().camera() == null) {
+      return new Area();
+    }
+
+    // get relative center of entity
+    final Point2D relativeCenter =
+        Game.world()
+            .camera()
+            .getViewportLocation(new Point((int) (bounds.getX() + r), (int) (bounds.getY() + ry)));
+    final double cx = relativeCenter.getX();
+    final double cy = relativeCenter.getY();
+
+    // get direction from light to entity center
+    final double dx = cx - center.getX();
+    final double dy = cy - center.getY();
+
+    // get euclidean distance from entity to center
+    final double distSq = dx * dx + dy * dy; // avoid sqrt for performance
+
+    // normalize the direction to a unit vector
+    final float len = (float) Math.sqrt(distSq);
+    double nx = dx;
+    double ny = dy;
+    if (len != 0) { // avoid division by 0
+      nx /= len;
+      ny /= len;
+    }
+
+    // get perpendicular of unit vector
+    final double px = -ny;
+    final double py = nx;
+
+    // our perpendicular points in either direction from radius
+    final Point2D.Double pointA = new Point2D.Double(cx - px * r, cy - py * ry);
+    final Point2D.Double pointB = new Point2D.Double(cx + px * r, cy + py * ry);
+
+    // project the points by our SHADOW_EXTRUDE amount
+    final Point2D pointC = GeometricUtilities.project(center, pointA, OBSTRUCTED_VISION_RADIUS);
+    final Point2D pointD = GeometricUtilities.project(center, pointB, OBSTRUCTED_VISION_RADIUS);
+
+    // construct a polygon from our points
+    shadowPolygon.reset();
+    shadowPolygon.addPoint((int) pointA.getX(), (int) pointA.getY());
+    shadowPolygon.addPoint((int) pointB.getX(), (int) pointB.getY());
+    shadowPolygon.addPoint((int) pointD.getX(), (int) pointD.getY());
+    shadowPolygon.addPoint((int) pointC.getX(), (int) pointC.getY());
+
+    final Point2D shadowRenderLocation =
+        Game.world()
+            .camera()
+            .getViewportLocation(new Point2D.Double(shadowEllipse.getX(), shadowEllipse.getY()));
+    final Ellipse2D relativeEllipse =
+        new Ellipse2D.Double(
+            shadowRenderLocation.getX(),
+            shadowRenderLocation.getY(),
+            shadowEllipse.getWidth(),
+            shadowEllipse.getHeight());
+
+    final Area ellipseArea = new Area(relativeEllipse);
+    final Area shadowArea = new Area(shadowPolygon);
+    shadowArea.add(ellipseArea);
+    return shadowArea;
+}
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,77 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+private void initSliders() {
+    final double sliderSize = this.getHeight() / 5;
+    final int maxNbOfRows = this.getMaxRows() - this.getNumberOfShownRows();
+    if (this.getNumberOfShownColumns() < this.getContent().length) {
+      if (this.isSliderInside()) {
+        this.horizontalSlider =
+            new HorizontalSlider(
+                this.getX(),
+                this.getY() + this.getHeight() - sliderSize,
+                this.getWidth() - sliderSize,
+                sliderSize,
+                0,
+                this.nbOfColumns - this.getNumberOfShownColumns(),
+                1);
+      } else {
+        this.horizontalSlider =
+            new HorizontalSlider(
+                this.getX(),
+                this.getY() + this.getHeight(),
+                this.getWidth(),
+                sliderSize,
+                0,
+                this.nbOfColumns - this.getNumberOfShownColumns(),
+                1);
+      }
+      if (this.getHorizontalSlider() != null) {
+        this.getHorizontalSlider().setCurrentValue(this.getHorizontalLowerBound());
+      }
+      this.getComponents().add(this.getHorizontalSlider());
+    }
+
+    if (maxNbOfRows > 0) {
+      if (this.isSliderInside()) {
+        if (this.getHorizontalSlider() != null) {
+          this.verticalSlider =
+              new VerticalSlider(
+                  this.getX() + this.getWidth() - sliderSize,
+                  this.getY(),
+                  sliderSize,
+                  this.getHeight() - sliderSize,
+                  0,
+                  this.getMaxRows() - this.getNumberOfShownRows(),
+                  1);
+        } else {
+          this.verticalSlider =
+              new VerticalSlider(
+                  this.getX() + this.getWidth() - sliderSize,
+                  this.getY(),
+                  sliderSize,
+                  this.getHeight(),
+                  0,
+                  this.getMaxRows() - this.getNumberOfShownRows(),
+                  1);
+        }
+      } else {
+        this.verticalSlider =
+            new VerticalSlider(
+                this.getX() + this.getWidth(),
+                this.getY(),
+                sliderSize,
+                this.getHeight(),
+                0,
+                this.getMaxRows() - this.getNumberOfShownRows(),
+                1);
+      }
+      this.getVerticalSlider().setCurrentValue(this.getVerticalLowerBound());
+      this.getComponents().add(this.getVerticalSlider());
+    }
+}
+  ```
+    ]]>
+  </code>
+</response>

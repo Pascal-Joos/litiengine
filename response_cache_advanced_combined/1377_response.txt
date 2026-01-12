@@ -1,0 +1,24 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public void update() {
+    // retrieve all collision box rectangles once per update
+    for (Collision type : Collision.values()) {
+      if (type == Collision.NONE) {
+        continue;
+      }
+
+      Nullability.castToNonnull(this.collisionBoxes.get(type)).clear();
+      Nullability.castToNonnull(this.collisionBoxes.get(type))
+          .addAll(
+              Nullability.castToNonnull(this.collisionEntities.get(type)).stream()
+                  .map(ICollisionEntity::getCollisionBox)
+                  .collect(Collectors.toList()));
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

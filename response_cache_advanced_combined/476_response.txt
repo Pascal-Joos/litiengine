@@ -1,0 +1,17 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @Override
+  public Dimension getSizeInPixels() {
+    IMapOrientation orientation = this.getOrientation();
+    if (orientation == null) {
+      orientation = MapOrientations.forName(this.orientation);
+      this.mapOrientation = orientation;
+    }
+    return orientation.getSize(this);
+  }
+  ```
+    ]]>
+  </code>
+</response>

@@ -1,0 +1,103 @@
+<response>
+  <reason><![CDATA[
+At the specific call site in question, x is a de.gurkenlabs.litiengine.environment.tilemap.xml.Tileset instance used inside the ResourceBundle.beforeMarshal and Resources.load flows.
+
+The implementation of Tileset.getName is:
+
+  return this.sourceTileset != null ? this.sourceTileset.getName() : this.name;
+
+So getName() can return null in two distinct ways:
+1. this.sourceTileset != null but this.sourceTileset.getName() returns null.
+2. this.sourceTileset == null and this.name is null.
+
+From the provided code:
+
+- In ResourceBundle.beforeMarshal:
+
+  for (Tileset tileset : this.getTilesets()) {
+    if (tileset.getName() == null) {
+      continue;
+    }
+    if (distinctTilesets.stream()
+        .anyMatch(x -> x.getName() != null && x.getName().equals(tileset.getName()))) {
+      continue;
+    }
+    distinctTilesets.add(tileset);
+  }
+  this.tilesets = distinctTilesets;
+
+Here, tilesets that end up in this.tilesets are guaranteed to have tileset.getName() != null at the time beforeMarshal runs. However, this only constrains the values used inside beforeMarshal; it does not globally guarantee that getName() is always non-null for all Tileset instances or all later usages. It also does not constrain the internal fields this.sourceTileset or this.name directly; only the overall result at the time of iteration is filtered.
+
+- In Resources.load(URL):
+
+  for (final Tileset tileset : file.getTilesets()) {
+    if (Resources.tilesets().contains(tileset.getName())) {
+      continue;
+    }
+    Resources.tilesets().add(tileset.getName(), tileset);
+  }
+
+At this call site, x corresponds to tileset inside the loop body, and x.getName() is called twice:
+  - once in contains(tileset.getName())
+  - once in add(tileset.getName(), tileset)
+
+Crucially, there is no null-check around tileset.getName() in this method. The only constraints on file.getTilesets() come from ResourceBundle.load, which calls:
+
+  for (Tileset tileset : gameFile.getTilesets()) {
+    tileset.finish(file);
+  }
+
+and then later lets maps call Tileset.load on some tilesets:
+
+  for (TmxMap map : gameFile.getMaps()) {
+    for (final ITileset tileset : map.getTilesets()) {
+      if (tileset instanceof Tileset) {
+        ((Tileset) tileset).load(gameFile.getTilesets());
+      }
+    }
+    map.finish(file);
+  }
+
+There is no guarantee shown that:
+- this.name is non-null for all Tileset instances, or
+- this.sourceTileset is always non-null and has a non-null getName().
+
+The Tileset constructor shown:
+
+  public Tileset(Tileset source) {
+    this.source = source.getName() + "." + FILE_EXTENSION;
+    this.sourceTileset = source;
+    this.firstgid = 1;
+  }
+
+already demonstrates a path where source.getName() is used without a null check. For this constructor call to be safe, source.getName() must *not* be relied upon by the type system to be non-null; otherwise, this would be a potential NPE site. That indicates that the library does not enforce a global non-null contract for Tileset.getName().
+
+Furthermore, the load(List<Tileset> rawTilesets) method:
+
+  public void load(List<Tileset> rawTilesets) {
+    if (this.source == null) {
+      return;
+    }
+
+    for (Tileset set : rawTilesets) {
+      String fileName = FileUtilities.getFileName(this.source);
+      if (set.getName() != null && set.getName().equals(fileName)) {
+        this.sourceTileset = set;
+        break;
+      }
+    }
+  }
+
+explicitly checks set.getName() != null before equals(..), which implies that set.getName() is in fact allowed to be null for some Tileset instances in the list.
+
+Since:
+- Tileset.getName() is allowed to be null in general (as evidenced by explicit null-checks like set.getName() != null),
+- There is no code shown that enforces non-null name values for every Tileset that can reach Resources.load,
+- Resources.load(URL) uses tileset.getName() without guarding it by any null check, and
+- The control flow that populates file.getTilesets() and the fields this.sourceTileset and this.name is not fully constrained to non-null names,
+
+it follows that, at the specific call site in Resources.load where x.getName() is used (x being a Tileset from file.getTilesets()), the result of x.getName() can be null.
+
+Therefore, the invocation x.getName() at this call site can evaluate to null.]]></reason>
+  <value>YES</value>
+</response>

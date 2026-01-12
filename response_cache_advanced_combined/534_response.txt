@@ -1,0 +1,35 @@
+<response>
+  <reason><![CDATA[
+At every call site you provided, including
+
+  TmxMap map = (TmxMap) this.getLayer().getMap();
+
+the call to getMap() is guarded by a preceding call to isInfiniteMap(), e.g.:
+
+  if (this.isInfiniteMap()) {
+    TmxMap map = (TmxMap) this.getLayer().getMap();
+    ...
+  }
+
+The implementation of isInfiniteMap() is:
+
+  private boolean isInfiniteMap() {
+    return this.getLayer() != null
+        && this.getLayer().getMap() != null
+        && this.getLayer().getMap().isInfinite()
+        && this.getLayer().getMap() instanceof TmxMap;
+  }
+
+For isInfiniteMap() to evaluate to true (and thus for execution to enter the if‑block where the call site is located), all of the following must be true:
+
+1. this.getLayer() != null
+2. this.getLayer().getMap() != null
+3. this.getLayer().getMap().isInfinite() == true
+4. this.getLayer().getMap() instanceof TmxMap
+
+In particular, condition (2) explicitly rules out this.getLayer().getMap() being null whenever the body of the if (this.isInfiniteMap()) is executed. Therefore, at this specific call site, inside the if (this.isInfiniteMap()) block, getMap() cannot return null: if it were null, isInfiniteMap() would have returned false and the code containing the call site would not run.
+
+Thus, at this call site, the expression this.getLayer().getMap() is guaranteed non‑null at runtime, and the assignment to TmxMap map cannot receive a null value. Any null result from getMap() would prevent reaching this line rather than manifest at the assignment.
+  ]]></reason>
+  <value>NO</value>
+</response>

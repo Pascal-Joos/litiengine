@@ -1,0 +1,6 @@
+<response>
+    <reason><![CDATA[
+The method name is `setHexSideLength`, which follows the JavaBeans setter convention (`setXyz`) rather than starting with `init` or `initialize`. By your own criteria, setter methods should not be considered initializer methods, even if they assign to fields. Therefore, this method is a regular setter, not an initializer method for NullAway’s purposes.
+    ]]></reason>
+    <value>NO</value>
+</response>

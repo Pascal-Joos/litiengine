@@ -1,0 +1,34 @@
+<response>
+  <reason><![CDATA[
+The specific call site `this.getMax()` ultimately returns the result of `applyMaxModifiers(this.maxBaseValue)`.
+
+From the provided code:
+
+```java
+public T getMax() {
+    return this.applyMaxModifiers(this.maxBaseValue);
+}
+
+protected T applyMaxModifiers(final T maxValue) {
+  T currentValue = maxValue;
+  for (final AttributeModifier<T> modifier : this.getMaxModifiers()) {
+    currentValue = modifier.modify(Nullability.castToNonnull(currentValue));
+  }
+
+  return currentValue;
+}
+```
+
+Key points:
+
+1. `applyMaxModifiers` starts with `currentValue = maxValue` and then iteratively calls `modifier.modify(...)`. The final returned value is whatever the last modifier returns, or `maxValue` if there are no modifiers.
+2. There is no null check or non-null guarantee on:
+   - `this.maxBaseValue`
+   - The return values of `modifier.modify(...)` (each call result becomes `currentValue` and may be `null`).
+3. `Nullability.castToNonnull(currentValue)` is used only for the *argument* to `modify`, and does not prevent `modify` from returning `null`. If `modify` returns `null`, that `null` is stored in `currentValue` and will be returned.
+4. No other constraints in the shown code ensure that `maxBaseValue` or any modifier result is non-null.
+
+At this call site (`this.getMax()` from `RangeAttribute`, `CombatEntity`, or `Prop`), the same implementation is used, and nothing in the provided code path guarantees a non-null `maxBaseValue` or non-null modifier results. Therefore, `getMax()` can evaluate to `null` at this specific call site.
+]]></reason>
+  <value>YES</value>
+</response>

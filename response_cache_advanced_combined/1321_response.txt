@@ -1,0 +1,31 @@
+<response>
+  <reason><![CDATA[
+The method
+
+```java
+public static IMouse mouse() {
+  return mouse;
+}
+```
+
+simply returns the value of the static field `mouse`. There is no assignment or initialization of this field shown anywhere in the provided code.
+
+Across the provided call sites, the library code itself consistently treats `Input.mouse()` as *potentially* null:
+
+- Many places guard it explicitly:
+  - `final IMouse mouse = Input.mouse(); if (mouse != null) { ... }` (e.g., `Slider`, `MouseCursor.render`, `TextFieldComponent`, `GuiComponent.prepare/suspend`, `GameLoop.updateInvariableEngineComponents`, etc.).
+- Other places dereference `Input.mouse()` without a null-check (e.g., `FreeFlightCamera.handleFreeFlightCamera`, `HorizontalSlider.setValueRelativeToMousePosition`, `VerticalSlider.setValueRelativeToMousePosition`, `DebugRenderer.renderMapDebugInfo`), but these are *usage assumptions*, not guarantees about the field’s initialization.
+
+No code in what you provided guarantees that the `mouse` field is:
+1. Non-null by construction, or
+2. Initialized before any of the shown call sites execute.
+
+Since:
+- `mouse` is a static field whose initialization is not shown, and
+- Many call sites explicitly handle the case `Input.mouse() == null`,
+
+the only safe conclusion based strictly on the given declarations is that `mouse` may indeed be null at runtime, and thus `Input.mouse()` can return null at the shown call sites.
+
+Without seeing the declaration and initialization of the static `mouse` field (or a factory/initializer that always assigns a non-null instance before any use), we cannot prove that the value is never null. Therefore, `Input.mouse()` must be treated as possibly returning null at this call site.]]></reason>
+  <value>YES</value>
+</response>

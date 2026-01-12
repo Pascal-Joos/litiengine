@@ -1,0 +1,56 @@
+<response>
+  <reason><![CDATA[
+`Game.world().environment()` returns the value of the `environment` field in `GameWorld`:
+
+```java
+public Environment environment() {
+  return this.environment;
+}
+```
+
+From the provided code, this field is explicitly set to `null` in `unloadEnvironment()`:
+
+```java
+public void unloadEnvironment() {
+  if (this.environment() != null) {
+    ...
+  }
+  this.environment = null;
+}
+```
+
+It is set from outside via `loadEnvironment(Environment env)`:
+
+```java
+public void loadEnvironment(final Environment env) {
+  ...
+  unloadEnvironment();
+  this.environment = env;
+  if (env != null) {
+    ...
+  }
+}
+```
+
+There is no invariant or guard shown that forces `env` to be non-null when `loadEnvironment` is called, nor any other code that would ensure `this.environment` is always non-null. In fact, many call sites explicitly check for `Game.world().environment() == null`, e.g.:
+
+```java
+if (Game.world().environment() == null || Game.world().environment().getMap() == null) {
+  return;
+}
+```
+
+and
+
+```java
+if (Game.world().environment() != null
+    && Game.world().environment().getAmbientLight() != null) {
+  ...
+}
+```
+
+These checks are only meaningful if `Game.world().environment()` can indeed be `null`. Also, `clear()` calls `unloadEnvironment()` and does not subsequently set a non-null `environment`, so after `clear()` the field remains `null`.
+
+Because the method simply returns that field with no additional logic, and because the field is sometimes explicitly set to `null` and relied upon as such, the invocation `Game.world().environment()` can evaluate to `null` at runtime at the given call site.]]></reason>
+  <value>YES</value>
+</response>
