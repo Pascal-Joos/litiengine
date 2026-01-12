@@ -2571,7 +2571,8 @@ public final class Environment implements IRenderable {
   }
 
   private void fireRenderEvent(Graphics2D g, RenderType type) {
-    for (EnvironmentRenderedListener listener : this.renderListeners.get(type)) {
+    for (EnvironmentRenderedListener listener :
+        Nullability.castToNonnull(this.renderListeners.get(type))) {
       listener.rendered(g, type);
     }
   }
