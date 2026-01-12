@@ -223,6 +223,10 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
       return terrains;
     }
 
+    if (this.allTiles == null) {
+      return terrains;
+    }
+
     TilesetEntry tile = this.allTiles.get(tileId);
     int[] tileTerrains = tile.getTerrainIds();
     for (int i = 0; i < 4; i++) {
@@ -269,6 +273,10 @@ public class Tileset extends CustomPropertyProvider implements ITileset {
     }
 
     if (id < 0 || id >= this.getTileCount()) {
+      return null;
+    }
+
+    if (this.allTiles == null) {
       return null;
     }
 
