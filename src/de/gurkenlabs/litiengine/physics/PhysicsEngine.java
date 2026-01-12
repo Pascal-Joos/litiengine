@@ -905,7 +905,8 @@ public final class PhysicsEngine implements IUpdateable {
     }
 
     // 1. fire collision event on the collider with all the involved entities
-    CollisionEvent event = new CollisionEvent(collider, involvedEntities);
+    CollisionEvent event =
+        new CollisionEvent(collider, Nullability.castToNonnull(involvedEntities));
     collider.fireCollisionEvent(event);
 
     // 2. fire collision event on the involved entities with the collider entity
