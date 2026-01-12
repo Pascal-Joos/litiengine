@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 public abstract class Slider extends GuiComponent {
-  private ImageComponent button1;
-  private ImageComponent button2;
+  @Nullable private ImageComponent button1;
+  @Nullable private ImageComponent button2;
   @Nullable private ImageComponent sliderComponent;
 
   @Nullable private Spritesheet buttonSprite;
@@ -43,10 +43,12 @@ public abstract class Slider extends GuiComponent {
         });
   }
 
+  @Nullable
   public ImageComponent getButton1() {
     return this.button1;
   }
 
+  @Nullable
   public ImageComponent getButton2() {
     return this.button2;
   }
